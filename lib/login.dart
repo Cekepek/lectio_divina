@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/register.dart';
 
 class MyLogin extends StatelessWidget {
   @override
@@ -69,8 +70,10 @@ class _LoginState extends State<Login> {
         //   ),
         //   backgroundColor: Colors.cyan,
         // ),
-        resizeToAvoidBottomInset: false,
-        body: Container(
+        // resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height, //Container harus dikasik fixed size apabila menggunakan singlechildscrollview!!
           child: Column(children: [
             Padding(
               padding:
@@ -115,7 +118,7 @@ class _LoginState extends State<Login> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
-                    hintText: 'Enter Email'),
+                    hintText: 'Masukkan email anda'),
               ),
             ),
             Padding(
@@ -138,8 +141,8 @@ class _LoginState extends State<Login> {
                           });
                         })),
                     border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    labelText: 'Kata Sandi',
+                    hintText: 'Masukkan kata sandi'),
               ),
             ),
             if (error_login != "") Text(error_login),
@@ -203,7 +206,12 @@ class _LoginState extends State<Login> {
                   Text("Tidak punya akun ? "),
                   GestureDetector(
                     onTap: () {
-                      print("Buat");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyRegister(),
+                        ),
+                      );
                     },
                     child: Text(
                       "Buat akun sekarang",
@@ -216,6 +224,8 @@ class _LoginState extends State<Login> {
               ),
             )
           ]),
-        ));
+        ),
+        ),
+        );
   }
 }
