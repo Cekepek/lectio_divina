@@ -6,12 +6,15 @@ class MyLogin extends StatelessWidget {
     return MaterialApp(
       title: 'LECTIO DIVINA',
       theme: ThemeData(
+        fontFamily: 'Poppins',
         primarySwatch: Colors.blue,
       ),
       home: Login(),
     );
   }
 }
+
+var isObscured;
 
 class Login extends StatefulWidget {
   @override
@@ -29,9 +32,10 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _user_id = "";
-    _user_password = "";
+    _user_id = "test";
+    _user_password = "test";
     error_login = "";
+    isObscured = true;
   }
 
   // void doLogin() async {
@@ -52,16 +56,56 @@ class _LoginState extends State<Login> {
   //   } else {
   //     throw Exception('Failed to read API');
   //   }
-  }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Daily Meme Digest'),
-        ),
+        // appBar: AppBar(
+        //   title: Text(
+        //     'Lectio Divina',
+        //     style: TextStyle(fontFamily: 'Poppins'),
+        //     textAlign: TextAlign.center,
+        //   ),
+        //   backgroundColor: Colors.cyan,
+        // ),
+        resizeToAvoidBottomInset: false,
         body: Container(
           child: Column(children: [
+            Padding(
+              padding:
+                  EdgeInsets.only(top: 50, bottom: 10, left: 10, right: 10),
+              child: Container(
+                color: Colors.grey,
+                width: 128.0,
+                height: 128.0,
+              ),
+            ), //CONTAINER UNTUK LOGO
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "Lectio Divina",
+                style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Poppins"),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              child: Container(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(10),
               child: TextField(
@@ -70,19 +114,29 @@ class _LoginState extends State<Login> {
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    hintText: 'Enter Username'),
+                    labelText: 'Email',
+                    hintText: 'Enter Email'),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                obscureText: true,
+                obscureText: isObscured,
                 onChanged: (value) {
                   _user_password = value;
                 },
                 decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        padding: const EdgeInsetsDirectional.only(end: 12),
+                        icon: isObscured
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off),
+                        onPressed: (() {
+                          setState(() {
+                            isObscured = !isObscured;
+                          });
+                        })),
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter secure password'),
@@ -90,46 +144,77 @@ class _LoginState extends State<Login> {
             ),
             if (error_login != "") Text(error_login),
             Padding(
-                padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(right: 10, bottom: 10),
+              child: GestureDetector(
+                onTap: () {},
                 child: Container(
-                  height: 50,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        // context,
-                        // MaterialPageRoute(
-                        //   builder: (context) => MyRegister(),
-                        // ),
-                      );
-                    },
+                  child: Align(
+                    alignment: Alignment.centerRight,
                     child: Text(
-                      'Create Account',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
+                      "Lupa kata sandi ?",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
+                        fontSize: 13,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
-                )),
+                ),
+              ),
+            ),
+            Spacer(),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      print("p");
+                    },
+                    child: Container(
+                      height: 40,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                  height: 50,
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      doLogin();
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 50, left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Tidak punya akun ? "),
+                  GestureDetector(
+                    onTap: () {
+                      print("Buat");
                     },
                     child: Text(
-                      'Sign In',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
+                      "Buat akun sekarang",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                )),
+                ],
+              ),
+            )
           ]),
         ));
   }
