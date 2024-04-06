@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lectio_divina/register.dart';
 
 class MyLogin extends StatelessWidget {
+  const MyLogin({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,7 +12,7 @@ class MyLogin extends StatelessWidget {
         fontFamily: 'Poppins',
         primarySwatch: Colors.blue,
       ),
-      home: Login(),
+      home: const Login(),
     );
   }
 }
@@ -18,6 +20,8 @@ class MyLogin extends StatelessWidget {
 var isObscured;
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _LoginState();
@@ -62,29 +66,31 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text(
-        //     'Lectio Divina',
-        //     style: TextStyle(fontFamily: 'Poppins'),
-        //     textAlign: TextAlign.center,
-        //   ),
-        //   backgroundColor: Colors.cyan,
-        // ),
-        // resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height, //Container harus dikasik fixed size apabila menggunakan singlechildscrollview!!
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Lectio Divina',
+      //     style: TextStyle(fontFamily: 'Poppins'),
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   backgroundColor: Colors.cyan,
+      // ),
+      // resizeToAvoidBottomInset: false,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context)
+              .size
+              .height, //Container harus dikasik fixed size apabila menggunakan singlechildscrollview!!
           child: Column(children: [
             Padding(
               padding:
-                  EdgeInsets.only(top: 50, bottom: 10, left: 10, right: 10),
+                  const EdgeInsets.only(top: 50, bottom: 10, left: 10, right: 10),
               child: Container(
                 color: Colors.grey,
                 width: 128.0,
                 height: 128.0,
               ),
             ), //CONTAINER UNTUK LOGO
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
                 "Lectio Divina",
@@ -95,9 +101,9 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               child: Container(
-                child: Align(
+                child: const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Login",
@@ -110,19 +116,19 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: TextField(
                 onChanged: (value) {
                   _user_id = value;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
                     hintText: 'Masukkan email anda'),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 obscureText: isObscured,
@@ -140,18 +146,18 @@ class _LoginState extends State<Login> {
                             isObscured = !isObscured;
                           });
                         })),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Kata Sandi',
                     hintText: 'Masukkan kata sandi'),
               ),
             ),
             if (error_login != "") Text(error_login),
             Padding(
-              padding: EdgeInsets.only(right: 10, bottom: 10),
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: GestureDetector(
                 onTap: () {},
                 child: Container(
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerRight,
                     child: Text(
                       "Lupa kata sandi ?",
@@ -166,12 +172,12 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: GestureDetector(
                     onTap: () {
                       print("p");
@@ -182,7 +188,7 @@ class _LoginState extends State<Login> {
                       decoration: BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.circular(5)),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Login',
                           style: TextStyle(
@@ -199,21 +205,21 @@ class _LoginState extends State<Login> {
             ),
             Padding(
               padding:
-                  EdgeInsets.only(top: 10, bottom: 50, left: 10, right: 10),
+                  const EdgeInsets.only(top: 10, bottom: 50, left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Tidak punya akun ? "),
+                  const Text("Tidak punya akun ? "),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyRegister(),
+                          builder: (context) => const MyRegister(),
                         ),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       "Buat akun sekarang",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -225,7 +231,7 @@ class _LoginState extends State<Login> {
             )
           ]),
         ),
-        ),
-        );
+      ),
+    );
   }
 }

@@ -1,9 +1,8 @@
+import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
-import 'package:lectio_divina/login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(MyLogin());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,9 +11,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorKey: Get.navigatorKey,
       theme: ThemeData(
         fontFamily: "Poppins",
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), 
+      ),
     );
   }
 }
