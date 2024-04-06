@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lectio_divina/register.dart';
+import 'package:lectio_divina/screen/register.dart';
 
 class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
@@ -82,12 +82,13 @@ class _LoginState extends State<Login> {
               .height, //Container harus dikasik fixed size apabila menggunakan singlechildscrollview!!
           child: Column(children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 50, bottom: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 50, bottom: 10, left: 10, right: 10),
               child: Container(
-                color: Colors.grey,
-                width: 128.0,
-                height: 128.0,
+                child: Image(
+                    width: MediaQuery.of(context).size.width,
+                    image: AssetImage('assets/images/Logo.png'),
+                    fit: BoxFit.fill),
               ),
             ), //CONTAINER UNTUK LOGO
             const Padding(
@@ -101,7 +102,8 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 0, left: 10, right: 10),
               child: Container(
                 child: const Align(
                   alignment: Alignment.centerLeft,
@@ -128,7 +130,8 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 0, left: 10, right: 10),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 obscureText: isObscured,
@@ -204,8 +207,8 @@ class _LoginState extends State<Login> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 10, bottom: 50, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 50, left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

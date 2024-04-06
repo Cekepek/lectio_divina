@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lectio_divina/login.dart';
+import 'package:lectio_divina/screen/login.dart';
 
 class MyRegister extends StatelessWidget {
   const MyRegister({super.key});
@@ -59,12 +59,13 @@ class _RegisterState extends State<Register> {
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 50, bottom: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 50, bottom: 10, left: 10, right: 10),
               child: Container(
-                color: Colors.grey,
-                width: 128.0,
-                height: 128.0,
+                child: Image(
+                    width: MediaQuery.of(context).size.width,
+                    image: AssetImage('assets/images/Logo.png'),
+                    fit: BoxFit.fill),
               ),
             ), //CONTAINER UNTUK LOGO
             const Padding(
@@ -78,7 +79,8 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 0, left: 10, right: 10),
               child: Container(
                 child: const Align(
                   alignment: Alignment.centerLeft,
@@ -117,7 +119,8 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 0, left: 10, right: 10),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 obscureText: isObscuredRegister,
@@ -173,8 +176,8 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 10, bottom: 50, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 50, left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

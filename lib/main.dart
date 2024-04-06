@@ -1,5 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +16,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: Get.navigatorKey,
       theme: ThemeData(
         fontFamily: "Poppins",
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromRGBO(255, 141, 116, 1)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Lectio Divina'),
     );
   }
 }
@@ -43,28 +46,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavBar(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            Image(
+                width: MediaQuery.of(context).size.width / 2,
+                image: AssetImage('assets/images/Logo.png'),
+                fit: BoxFit.fill),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              "Selamat Datang di Aplikasi Lectio Divina",
+              style: TextStyle(
+                fontSize: 24,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
