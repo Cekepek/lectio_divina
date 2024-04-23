@@ -1,6 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/screen/alkitab.dart';
 import 'package:lectio_divina/switch_button.dart';
+
+int _currentIndex = 0;
+final List<Widget> _screens = [
+  MyApp(),
+  Alkitab(),
+];
 
 class NavBar extends StatelessWidget {
   const NavBar({super.key});
@@ -53,7 +61,7 @@ class NavBar extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Joseph Bimanta",
+                              "Christopher Kelvin",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -98,7 +106,12 @@ class NavBar extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                print("Ini Alkitab");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Alkitab(),
+                  ),
+                );
               },
             ),
           ),
