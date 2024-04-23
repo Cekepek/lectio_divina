@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lectio_divina/screen/cariAlkitab.dart';
 
 class Alkitab extends StatefulWidget {
   const Alkitab({super.key});
@@ -234,7 +235,7 @@ class _AlkitabState extends State<Alkitab> {
           ),
           Container(
             height: 56,
-            color: Color.fromRGBO(255, 141, 116, 1),
+            color: Theme.of(context).colorScheme.inversePrimary,
             padding: EdgeInsets.all(12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -274,6 +275,14 @@ class _AlkitabState extends State<Alkitab> {
                     CupertinoIcons.search,
                     color: Colors.white,
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CariAlkitab(),
+                      ),
+                    );
+                  },
                 )
               ],
             ),
