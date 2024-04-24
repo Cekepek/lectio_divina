@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/navbar.dart';
@@ -11,6 +15,7 @@ void main() {
   runApp(const MyApp());
 }
 
+Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 int _currentIndex = 0;
 final List<Widget> _screens = [
@@ -27,8 +32,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: Get.navigatorKey,
       theme: ThemeData(
         fontFamily: "Poppins",
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromRGBO(255, 141, 116, 1)),
+        colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: "Lectio Divina"),
@@ -46,6 +50,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Color color = Color.fromRGBO(255, 141, 116, 1);
+  Widget buildColorPicker() {
+    return ColorPicker(
+      enableAlpha: false,
+      showLabel: false,
+      pickerColor: color,
+      onColorChanged: (color) {
+        setState(() {
+          this.color = color;
+          themeColor = this.color;
+        });
+      },
+    );
+  }
+
+  void pickColor(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Pilih Warna Tema"),
+              content: Column(
+                children: [
+                  buildColorPicker(),
+                  TextButton(
+                    child: Text("Pilih", style: TextStyle(fontSize: 20)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ));
+  }
+
   Widget myDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -53,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: EdgeInsets.all(10),
             child: Container(
+                child: GestureDetector(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -66,7 +105,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-            ),
+              onTap: () {
+                setState(() {
+                  titleHome = "Lectio Divina";
+                  _currentIndex = 0;
+                  Navigator.pop(context);
+                });
+              },
+            )),
           ),
           Padding(
             padding: EdgeInsets.all(10),
@@ -203,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Padding(
             padding: EdgeInsets.all(10),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -213,15 +259,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                CircleAvatar(
-                  backgroundColor: Color.fromRGBO(0, 0, 0, 1),
-                  // minRadius: 50,
-                  radius: 20,
+                GestureDetector(
                   child: CircleAvatar(
-                    backgroundColor: Color.fromRGBO(255, 141, 116, 1),
-                    radius: 18,
+                    backgroundColor: Color.fromRGBO(0, 0, 0, 1),
+                    // minRadius: 50,
+                    radius: 20,
+                    child: CircleAvatar(
+                      backgroundColor: color,
+                      radius: 18,
+                    ),
                   ),
-                ),
+                  onTap: () {
+                    pickColor(context);
+                  },
+                )
               ],
             ),
           ),
@@ -262,12 +313,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         drawer: myDrawer(context),
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: color,
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             titleHome,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
         body: _screens[_currentIndex]);

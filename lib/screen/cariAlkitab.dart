@@ -23,11 +23,14 @@ class _CariAlkitabState extends State<CariAlkitab> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => {Navigator.pop(context)}),
         title: Text(
           'Cari',
-          style: TextStyle(fontFamily: 'Poppins'),
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
           textAlign: TextAlign.center,
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -56,7 +59,9 @@ class _CariAlkitabState extends State<CariAlkitab> {
                   child: TextButton(
                       style: TextButton.styleFrom(
                         textStyle: const TextStyle(
-                            fontSize: 20, fontFamily: "Poppins"),
+                          fontSize: 20,
+                          fontFamily: "Poppins",
+                        ),
                       ),
                       onPressed: () {
                         print("ini button Cari");
