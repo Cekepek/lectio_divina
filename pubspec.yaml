@@ -60,6 +60,7 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/images/User.jpg
+    - assets/json/ayt.json
   fonts:
     - family: Poppins
       fonts:
