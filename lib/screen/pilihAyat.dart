@@ -3,30 +3,32 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lectio_divina/screen/pilihAyat.dart';
+import 'package:lectio_divina/class/ayat.dart';
 
-class PilihBabKitab extends StatefulWidget {
+class PilihAyat extends StatefulWidget {
   final String kitab;
-  PilihBabKitab({Key? key, required this.kitab}) : super(key: key);
+  final String bab;
+  PilihAyat({Key? key, required this.kitab, required this.bab})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
-    return _PilihBabKitabState();
+    return _PilihAyatState();
   }
 }
 
-class _PilihBabKitabState extends State<PilihBabKitab> {
-  List bab = [];
+class _PilihAyatState extends State<PilihAyat> {
+  List ayat = [];
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/json/ayt.json');
     final data = await json.decode(response);
     setState(() {
       for (var i in data) {
-        if ((i["abbr"] == widget.kitab && !bab.contains(i["chapter"]))) {
-          bab.add(i["chapter"]);
+        if ((i["abbr"] == widget.kitab && i["chapter"] == widget.bab)) {
+          ayat.add(i["verse"]);
         }
       }
 
-      debugPrint(bab.length.toString());
+      debugPrint(ayat.length.toString());
     });
   }
 
@@ -46,7 +48,7 @@ class _PilihBabKitabState extends State<PilihBabKitab> {
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => {Navigator.pop(context)}),
         title: Text(
-          'Pilih Bab',
+          'Pilih Ayat',
           style: TextStyle(
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
@@ -61,7 +63,7 @@ class _PilihBabKitabState extends State<PilihBabKitab> {
           child: Column(
             children: [
               GridView.builder(
-                  itemCount: bab.length,
+                  itemCount: ayat.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -69,14 +71,9 @@ class _PilihBabKitabState extends State<PilihBabKitab> {
                   itemBuilder: (context, index) {
                     return TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PilihAyat(
-                                    kitab: widget.kitab, bab: bab[index]),
-                              ));
+                          debugPrint(ayat[index]);
                         },
-                        child: Text(bab[index]));
+                        child: Text(ayat[index]));
                   })
             ],
           ),

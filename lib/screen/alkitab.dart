@@ -37,7 +37,6 @@ class _AlkitabState extends State<Alkitab> {
     // TODO: implement initState
     super.initState();
     readJson();
-    debugPrint(ayat.length.toString());
   }
 
   Widget tampilAlkitab() {

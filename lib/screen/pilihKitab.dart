@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lectio_divina/screen/pilihBabKitab.dart';
 
 class PilihKitab extends StatefulWidget {
   const PilihKitab({super.key});
@@ -11,6 +15,27 @@ class PilihKitab extends StatefulWidget {
 }
 
 class _PilihKitabState extends State<PilihKitab> {
+  List kitab = [];
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/json/ayt.json');
+    final data = await json.decode(response);
+    setState(() {
+      for (var i in data) {
+        if (!kitab.contains(i["abbr"])) {
+          kitab.add(i["abbr"]);
+        }
+      }
+      debugPrint(kitab.length.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    readJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,102 +58,29 @@ class _PilihKitabState extends State<PilihKitab> {
           padding: EdgeInsets.all(12),
           child: Column(
             children: [
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Kejadian");
-                      },
-                      child: Text(
-                        "Kej",
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 0, 58, 157)),
-                      )),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Keluaran");
-                      },
-                      child: Text("Kel",
+              GridView.builder(
+                  itemCount: kitab.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5),
+                  itemBuilder: (context, index) {
+                    return TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PilihBabKitab(
+                                  kitab: kitab[index],
+                                ),
+                              ));
+                        },
+                        child: Text(
+                          kitab[index],
                           style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Imamat");
-                      },
-                      child: Text("Ima",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Bilangan");
-                      },
-                      child: Text("Bil",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Ulangan");
-                      },
-                      child: Text("Ula",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Yosua");
-                      },
-                      child: Text("Yos",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                ],
-              ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Kejadian");
-                      },
-                      child: Text(
-                        "Hak",
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 0, 58, 157)),
-                      )),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Keluaran");
-                      },
-                      child: Text("Rut",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Imamat");
-                      },
-                      child: Text("1Sam",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Bilangan");
-                      },
-                      child: Text("2Sam",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Ulangan");
-                      },
-                      child: Text("1Raj",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                  TextButton(
-                      onPressed: () {
-                        debugPrint("Yosua");
-                      },
-                      child: Text("2Raj",
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)))),
-                ],
-              ),
+                              color: const Color.fromARGB(255, 0, 58, 157)),
+                        ));
+                  })
             ],
           ),
         ),
