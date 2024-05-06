@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +21,47 @@ class Alkitab extends StatefulWidget {
 class _AlkitabState extends State<Alkitab> {
   List ayat = [];
   List selected = [];
+  int book = 66;
+  int chapter = 22;
+
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/json/ayt.json');
     final data = await json.decode(response);
     setState(() {
+      ayat.clear();
+      List test = [];
       for (var i in data) {
-        if ((i["abbr"] == "Kej") && (i["chapter"] == "1")) {
-          ayat.add(i);
+        // if ((i["book"] == book.toString()) &&
+        //     (i["chapter"] == chapter.toString())) {
+        //   ayat.add(i);
+        // }
+        if ((i["book"] == book.toString()) &&
+            (i["chapter"] == chapter.toString())) {
+          test.add(i);
+        }
+      }
+      if (test.isNotEmpty) {
+        ayat = test;
+      } else {
+        book += 1;
+        chapter = 1;
+        for (var i in data) {
+          if ((i["book"] == book.toString()) &&
+              (i["chapter"] == chapter.toString())) {
+            test.add(i);
+          }
+        }
+        if (test.isNotEmpty) {
+          ayat = test;
+        } else {
+          book = 1;
+          chapter = 1;
+          for (var i in data) {
+            if ((i["book"] == book.toString()) &&
+                (i["chapter"] == chapter.toString())) {
+              ayat.add(i);
+            }
+          }
         }
       }
     });
@@ -143,7 +178,7 @@ class _AlkitabState extends State<Alkitab> {
           ),
           Container(
             height: 56,
-            color: themeColor,
+            color: Theme.of(context).colorScheme.inversePrimary,
             padding: EdgeInsets.all(12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -154,11 +189,26 @@ class _AlkitabState extends State<Alkitab> {
                         fontSize: 18,
                         color: Colors.white,
                       )),
+                  onTap: () {
+                    setState(() {
+                      if (chapter - 1 == 0) {
+                        chapter = 1;
+                        if (book - 1 == 0) {
+                          book = 1;
+                        } else {
+                          book -= 1;
+                        }
+                      } else {
+                        chapter -= 1;
+                      }
+                      readJson();
+                    });
+                  },
                 ),
                 GestureDetector(
                   child: Padding(
                     padding: EdgeInsets.only(right: 24, left: 24),
-                    child: Text("Kejadian 1",
+                    child: Text(ayat[1]["abbr"] + " " + ayat[1]["chapter"],
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -185,6 +235,12 @@ class _AlkitabState extends State<Alkitab> {
                           color: Colors.white,
                         )),
                   ),
+                  onTap: () {
+                    setState(() {
+                      chapter += 1;
+                      readJson();
+                    });
+                  },
                 ),
                 GestureDetector(
                   child: Icon(

@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
       navigatorKey: Get.navigatorKey,
       theme: ThemeData(
         fontFamily: "Poppins",
-        colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromRGBO(255, 141, 116, 1)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: "Lectio Divina"),
@@ -313,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         drawer: myDrawer(context),
         appBar: AppBar(
-          backgroundColor: color,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             titleHome,
