@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:lectio_divina/screen/alkitab.dart';
 
 class PilihAyat extends StatefulWidget {
   final int kitab;
@@ -120,8 +121,20 @@ class _PilihAyatState extends State<PilihAyat> {
                           itemBuilder: (context, index) {
                             return TextButton(
                                 onPressed: () {
-                                  debugPrint(globals.kitab[widget.kitab]
-                                      .pasal[widget.bab].ayat[index].nomor);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Alkitab(
+                                            kitab:
+                                                globals.kitab[widget.kitab].id,
+                                            bab: globals.kitab[widget.kitab]
+                                                .pasal[index].id,
+                                            ayat: globals
+                                                .kitab[widget.kitab]
+                                                .pasal[index]
+                                                .ayat[index]
+                                                .nomor),
+                                      ));
                                 },
                                 child: Text(globals.kitab[widget.kitab]
                                     .pasal[widget.bab].ayat[index].nomor));

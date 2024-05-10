@@ -20,7 +20,11 @@ String titleHome = "Lectio Divina";
 int _currentIndex = 0;
 final List<Widget> _screens = [
   Home(),
-  Alkitab(),
+  Alkitab(
+    kitab: 0,
+    bab: 0,
+    ayat: "0",
+  ),
 ];
 
 class MyApp extends StatelessWidget {
