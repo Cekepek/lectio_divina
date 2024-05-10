@@ -1,4 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lectio_divina/class/ayat.dart';
+import 'package:lectio_divina/class/kitab.dart';
+import 'package:lectio_divina/class/pasal.dart';
+
+import 'package:lectio_divina/globals.dart' as globals;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,6 +18,92 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (globals.kitab.isEmpty) {
+      readJson();
+    }
+  }
+
+  Future<void> readJson() async {
+    String kitab = "0";
+    int index_kitab = -1;
+    String pasal = "0";
+    int index_pasal = -1;
+    String ayat = "0";
+    final String response = await rootBundle.loadString('assets/json/ayt.json');
+    final data = await json.decode(response);
+    setState(() {
+      for (var i in data) {
+        if (i["book"] != kitab) {
+          kitab = i["book"];
+          index_kitab += 1;
+          pasal = "0";
+          index_pasal = -1;
+          Kitab temp_kitab = new Kitab(
+              id: index_kitab, singkatan: i["abbr"], nama: "", pasal: []);
+          globals.kitab.add(temp_kitab);
+        }
+        if (i["chapter"] != pasal) {
+          pasal = i["chapter"];
+          index_pasal += 1;
+          Pasal temp_pasal = new Pasal(
+              id: index_pasal, nomor: pasal, id_kitab: index_kitab, ayat: []);
+          globals.kitab[index_kitab].pasal.add(temp_pasal);
+        }
+        if (i["verse"] != ayat) {
+          ayat = i["verse"];
+          Ayat temp_ayat = new Ayat(
+              nomor: i["verse"],
+              id_pasal: index_pasal,
+              text: i["text"],
+              id_kitab: index_kitab,
+              title: i["title"]);
+          globals.kitab[index_kitab].pasal[index_pasal].ayat.add(temp_ayat);
+        }
+      }
+
+      debugPrint(globals.kitab[0].pasal[1].ayat.length.toString());
+      // List test = [];
+      // for (var i in data) {
+      //   // if ((i["book"] == book.toString()) &&
+      //   //     (i["chapter"] == chapter.toString())) {
+      //   //   ayat.add(i);
+      //   // }
+      //   if ((i["book"] == book.toString()) &&
+      //       (i["chapter"] == chapter.toString())) {
+      //     test.add(i);
+      //   }
+      // }
+      // if (test.isNotEmpty) {
+      //   ayat = test;
+      // } else {
+      //   book += 1;
+      //   chapter = 1;
+      //   for (var i in data) {
+      //     if ((i["book"] == book.toString()) &&
+      //         (i["chapter"] == chapter.toString())) {
+      //       test.add(i);
+      //     }
+      //   }
+      //   if (test.isNotEmpty) {
+      //     ayat = test;
+      //   } else {
+      //     book = 1;
+      //     chapter = 1;
+      //     for (var i in data) {
+      //       if ((i["book"] == book.toString()) &&
+      //           (i["chapter"] == chapter.toString())) {
+      //         ayat.add(i);
+      //       }
+      //     }
+      //   }
+      // }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(

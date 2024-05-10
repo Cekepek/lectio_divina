@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
 import 'package:lectio_divina/screen/pilihKitab.dart';
+import 'package:lectio_divina/globals.dart' as globals;
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Alkitab extends StatefulWidget {
   const Alkitab({super.key});
@@ -19,68 +17,70 @@ class Alkitab extends StatefulWidget {
 }
 
 class _AlkitabState extends State<Alkitab> {
-  List ayat = [];
-  List selected = [];
-  int book = 66;
-  int chapter = 22;
+  final itemController = ItemScrollController();
 
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/json/ayt.json');
-    final data = await json.decode(response);
-    setState(() {
-      ayat.clear();
-      List test = [];
-      for (var i in data) {
-        // if ((i["book"] == book.toString()) &&
-        //     (i["chapter"] == chapter.toString())) {
-        //   ayat.add(i);
-        // }
-        if ((i["book"] == book.toString()) &&
-            (i["chapter"] == chapter.toString())) {
-          test.add(i);
-        }
-      }
-      if (test.isNotEmpty) {
-        ayat = test;
-      } else {
-        book += 1;
-        chapter = 1;
-        for (var i in data) {
-          if ((i["book"] == book.toString()) &&
-              (i["chapter"] == chapter.toString())) {
-            test.add(i);
-          }
-        }
-        if (test.isNotEmpty) {
-          ayat = test;
-        } else {
-          book = 1;
-          chapter = 1;
-          for (var i in data) {
-            if ((i["book"] == book.toString()) &&
-                (i["chapter"] == chapter.toString())) {
-              ayat.add(i);
-            }
-          }
-        }
-      }
-    });
-  }
+  void scrollToIndex(int index) => itemController.jumpTo(index: index);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    readJson();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {});
+    // int targetIndex = 6;
+
+    // // Menggunakan ScrollController untuk menavigasi ke indeks tertentu
+    // _scrollControllerListView.jumpTo(
+    //   targetIndex * 100.0,
+    // );
+  }
+
+  final ScrollController _scrollController = ScrollController();
+  // List ayat = [];
+  List selected = [];
+  int book = 0;
+  int chapter = 0;
+// Fungsi untuk mengkonversi kode Unicode menjadi karakter yang sesuai
+  String convertUnicode(String input) {
+    // Membuat daftar kode Unicode menggunakan metode codeUnits
+    List<int> codeUnits = input.runes.toList();
+
+    // Menggunakan StringBuffer untuk menggabungkan karakter yang dikonversi
+    StringBuffer buffer = StringBuffer();
+
+    // Melakukan iterasi pada setiap kode Unicode
+    for (int codeUnit in codeUnits) {
+      // Mengkonversi kode Unicode menjadi karakter dan menambahkannya ke buffer
+      buffer.write(String.fromCharCode(codeUnit));
+    }
+
+    // Mengembalikan string hasil konversi
+    return buffer.toString();
+  }
+
+  String convertSpecialString(String input) {
+    // Membuat peta konversi untuk karakter khusus
+    Map<String, String> conversionMap = {
+      '<t \/>':
+          '', // Ganti 'Teks setelah konversi' dengan string yang diinginkan
+      // Tambahkan entri lain jika diperlukan
+    };
+
+    // Melakukan konversi berdasarkan peta
+    conversionMap.forEach((key, value) {
+      input = input.replaceAll(key, value);
+    });
+
+    return input;
   }
 
   Widget tampilAlkitab() {
     return ListView.builder(
-        itemCount: ayat.length,
+        // itemScrollController: itemController,
+        itemCount: globals.kitab[book].pasal[chapter].ayat.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          if (ayat[index]["title"] != "") {
+          if (globals.kitab[book].pasal[chapter].ayat[index].title != "") {
             return Container(
               child: Column(
                 children: [
@@ -88,7 +88,7 @@ class _AlkitabState extends State<Alkitab> {
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                     child: Container(
                         child: Text(
-                      ayat[index]["title"],
+                      globals.kitab[book].pasal[chapter].ayat[index].title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -103,7 +103,8 @@ class _AlkitabState extends State<Alkitab> {
                         Padding(
                           padding: EdgeInsets.all(12),
                           child: Text(
-                            ayat[index]["verse"],
+                            globals
+                                .kitab[book].pasal[chapter].ayat[index].nomor,
                             style: TextStyle(
                               fontSize: fontSizeAyat,
                             ),
@@ -113,7 +114,8 @@ class _AlkitabState extends State<Alkitab> {
                             child: Padding(
                           padding: EdgeInsets.all(12),
                           child: Text(
-                            ayat[index]["text"],
+                            convertSpecialString(convertUnicode(globals
+                                .kitab[book].pasal[chapter].ayat[index].text)),
                             style: TextStyle(
                               fontSize: fontSizeAyat,
                             ),
@@ -123,9 +125,8 @@ class _AlkitabState extends State<Alkitab> {
                     ),
                     onLongPress: () {
                       setState(() {
-                        selected
-                            .add(ayat[index]["abbr"] + ayat[index]["verse"]);
-                        debugPrint(selected[3]);
+                        selected.add("test");
+                        // debugPrint(selected[3]);
                       });
                     },
                   )
@@ -133,35 +134,38 @@ class _AlkitabState extends State<Alkitab> {
               ),
             );
           } else {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    ayat[index]["verse"],
-                    style: TextStyle(
-                      fontSize: fontSizeAyat,
+            return Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      globals.kitab[book].pasal[chapter].ayat[index].nomor,
+                      style: TextStyle(
+                        fontSize: fontSizeAyat,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text(
-                    ayat[index]["text"],
-                    style: TextStyle(
-                      fontSize: fontSizeAyat,
+                  Expanded(
+                      child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      globals.kitab[book].pasal[chapter].ayat[index].text,
+                      style: TextStyle(
+                        fontSize: fontSizeAyat,
+                      ),
                     ),
-                  ),
-                ))
-              ],
+                  ))
+                ],
+              ),
             );
           }
         });
   }
 
   double? fontSizeAyat = 20;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,6 +173,7 @@ class _AlkitabState extends State<Alkitab> {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 children: [
                   tampilAlkitab(),
@@ -191,24 +196,30 @@ class _AlkitabState extends State<Alkitab> {
                       )),
                   onTap: () {
                     setState(() {
-                      if (chapter - 1 == 0) {
-                        chapter = 1;
-                        if (book - 1 == 0) {
-                          book = 1;
+                      if (chapter - 1 == -1) {
+                        chapter = 0;
+                        if (book - 1 == -1) {
+                          book = 0;
                         } else {
                           book -= 1;
                         }
                       } else {
                         chapter -= 1;
                       }
-                      readJson();
+                      // Menganimasikan ListView ke indeks tertentu
+                      _scrollController.jumpTo(
+                          // Menyesuaikan indeks dengan tinggi item untuk mendapatkan posisi akhir yang tepat
+                          0.0);
                     });
                   },
                 ),
                 GestureDetector(
                   child: Padding(
                     padding: EdgeInsets.only(right: 24, left: 24),
-                    child: Text(ayat[1]["abbr"] + " " + ayat[1]["chapter"],
+                    child: Text(
+                        globals.kitab[book].singkatan +
+                            " " +
+                            globals.kitab[book].pasal[chapter].nomor,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -237,8 +248,21 @@ class _AlkitabState extends State<Alkitab> {
                   ),
                   onTap: () {
                     setState(() {
-                      chapter += 1;
-                      readJson();
+                      if (chapter + 1 > globals.kitab[book].pasal.length - 1) {
+                        if (book + 1 > globals.kitab.length - 1) {
+                          book = 0;
+                          chapter = 0;
+                        } else {
+                          book += 1;
+                          chapter = 0;
+                        }
+                      } else {
+                        chapter += 1;
+                      }
+                      // Menganimasikan ListView ke indeks tertentu
+                      _scrollController.jumpTo(
+                          // Menyesuaikan indeks dengan tinggi item untuk mendapatkan posisi akhir yang tepat
+                          0.0);
                     });
                   },
                 ),

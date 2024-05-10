@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/pilihAyat.dart';
+import 'package:lectio_divina/globals.dart' as globals;
 
 class PilihBabKitab extends StatefulWidget {
-  final String kitab;
+  final int kitab;
   PilihBabKitab({Key? key, required this.kitab}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -15,29 +18,6 @@ class PilihBabKitab extends StatefulWidget {
 }
 
 class _PilihBabKitabState extends State<PilihBabKitab> {
-  List bab = [];
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/json/ayt.json');
-    final data = await json.decode(response);
-    setState(() {
-      for (var i in data) {
-        if ((i["abbr"] == widget.kitab && !bab.contains(i["chapter"]))) {
-          bab.add(i["chapter"]);
-        }
-      }
-
-      debugPrint(bab.length.toString());
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    readJson();
-    debugPrint(widget.kitab);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,32 +35,80 @@ class _PilihBabKitabState extends State<PilihBabKitab> {
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              GridView.builder(
-                  itemCount: bab.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5),
-                  itemBuilder: (context, index) {
-                    return TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PilihAyat(
-                                    kitab: widget.kitab, bab: bab[index]),
-                              ));
-                        },
-                        child: Text(bab[index]));
-                  })
-            ],
+      body: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 5),
+                              child:
+                                  Text(globals.kitab[widget.kitab].singkatan),
+                            ),
+                            GestureDetector(
+                              child: Icon(
+                                Icons.cancel_outlined,
+                                size: 24.0,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ))
+                ],
+              ),
+            ),
           ),
-        ),
+          Expanded(
+            flex: 12,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    GridView.builder(
+                        itemCount: globals.kitab[widget.kitab].pasal.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 5),
+                        itemBuilder: (context, index) {
+                          return TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PilihAyat(
+                                          kitab: globals.kitab[widget.kitab].id,
+                                          bab: globals.kitab[widget.kitab]
+                                              .pasal[index].id),
+                                    ));
+                              },
+                              child: Text(globals
+                                  .kitab[widget.kitab].pasal[index].nomor));
+                        })
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

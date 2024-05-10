@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lectio_divina/screen/pilihBabKitab.dart';
 
+import 'package:lectio_divina/globals.dart' as globals;
+
 class PilihKitab extends StatefulWidget {
   const PilihKitab({super.key});
 
@@ -15,26 +17,7 @@ class PilihKitab extends StatefulWidget {
 }
 
 class _PilihKitabState extends State<PilihKitab> {
-  List kitab = [];
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/json/ayt.json');
-    final data = await json.decode(response);
-    setState(() {
-      for (var i in data) {
-        if (!kitab.contains(i["abbr"])) {
-          kitab.add(i["abbr"]);
-        }
-      }
-      debugPrint(kitab.length.toString());
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    readJson();
-  }
+  Color fontColor = Color.fromARGB(255, 0, 58, 157);
 
   @override
   Widget build(BuildContext context) {
@@ -59,26 +42,28 @@ class _PilihKitabState extends State<PilihKitab> {
           child: Column(
             children: [
               GridView.builder(
-                  itemCount: kitab.length,
+                  itemCount: globals.kitab.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 5),
                   itemBuilder: (context, index) {
+                    if (index >= 39) {
+                      fontColor = Color.fromARGB(255, 255, 0, 0);
+                    }
                     return TextButton(
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PilihBabKitab(
-                                  kitab: kitab[index],
+                                  kitab: globals.kitab[index].id,
                                 ),
                               ));
                         },
                         child: Text(
-                          kitab[index],
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 58, 157)),
+                          globals.kitab[index].singkatan,
+                          style: TextStyle(color: fontColor),
                         ));
                   })
             ],

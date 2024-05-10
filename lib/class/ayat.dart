@@ -1,27 +1,13 @@
 class Ayat {
-  String id;
-  String book;
-  String abbr;
-  String chapter;
-  String verse;
+  String nomor;
+  int id_pasal;
   String text;
-  String title;
+  int id_kitab;
+  String title = "";
   Ayat(
-      {required this.id,
-      required this.book,
-      required this.abbr,
-      required this.chapter,
-      required this.verse,
+      {required this.nomor,
+      required this.id_pasal,
       required this.text,
+      required this.id_kitab,
       required this.title});
-  factory Ayat.fromJson(Map<String, dynamic> json) {
-    return Ayat(
-        id: json['id'],
-        book: json['book'],
-        abbr: json['abbr'],
-        chapter: json['chapter'],
-        verse: json['verse'],
-        text: json['text'],
-        title: json['title']);
-  }
 }
