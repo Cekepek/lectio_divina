@@ -29,17 +29,17 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  late String _user_id;
-  late String _user_password;
-  late String error_login;
+  // late String _user_id;
+  // late String _user_password;
+  // late String error_login;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _user_id = "test";
-    _user_password = "test";
-    error_login = "";
+    // _user_id = "test";
+    // _user_password = "test";
+    // error_login = "";
     isObscured = true;
   }
 
@@ -120,9 +120,9 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                onChanged: (value) {
-                  _user_id = value;
-                },
+                // onChanged: (value) {
+                //   _user_id = value;
+                // },
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -135,9 +135,9 @@ class _LoginState extends State<Login> {
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 obscureText: isObscured,
-                onChanged: (value) {
-                  _user_password = value;
-                },
+                // onChanged: (value) {
+                //   _user_password = value;
+                // },
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
                         padding: const EdgeInsetsDirectional.only(end: 12),
@@ -154,7 +154,7 @@ class _LoginState extends State<Login> {
                     hintText: 'Masukkan kata sandi'),
               ),
             ),
-            if (error_login != "") Text(error_login),
+            // if (error_login != "") Text(error_login),
             Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: GestureDetector(

@@ -7,11 +7,7 @@ import 'package:lectio_divina/switch_button.dart';
 int _currentIndex = 0;
 final List<Widget> _screens = [
   MyApp(),
-  Alkitab(
-    kitab: 0,
-    bab: 0,
-    ayat: "0",
-  ),
+  Alkitab(),
 ];
 
 class NavBar extends StatelessWidget {
@@ -113,11 +109,7 @@ class NavBar extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Alkitab(
-                      kitab: 0,
-                      bab: 0,
-                      ayat: "0",
-                    ),
+                    builder: (context) => const Alkitab(),
                   ),
                 );
               },

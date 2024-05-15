@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/pilihAyat.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 

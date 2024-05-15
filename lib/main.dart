@@ -6,10 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
-import 'package:lectio_divina/navbar.dart';
 import 'package:lectio_divina/screen/alkitab.dart';
 import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/switch_button.dart';
+import 'package:lectio_divina/globals.dart' as globals;
 
 void main() {
   runApp(const MyApp());
@@ -17,14 +17,10 @@ void main() {
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
-int _currentIndex = 0;
+
 final List<Widget> _screens = [
   Home(),
-  Alkitab(
-    kitab: 0,
-    bab: 0,
-    ayat: "0",
-  ),
+  Alkitab(),
 ];
 
 class MyApp extends StatelessWidget {
@@ -46,6 +42,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  // final int kitab;
+  // final int bab;
+  // final String ayat;
+  // final int screenIndex;
+
+  // const MyHomePage({Key? key, required this.title, required this.screenIndex, required this.kitab, required this.bab, required this.ayat}) : super(key: key);
   const MyHomePage({super.key, required this.title});
 
   final String title;
@@ -113,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 setState(() {
                   titleHome = "Lectio Divina";
-                  _currentIndex = 0;
+                  globals.currentIndex = 0;
                   Navigator.pop(context);
                 });
               },
@@ -191,7 +193,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 setState(() {
                   titleHome = "Alkitab";
-                  _currentIndex = 1;
+                  globals.currentIndex = 1;
+                  globals.namaKitab = 0;
+                  globals.bab = 0;
+                  globals.ayat = "0";
                   Navigator.pop(context);
                 });
               },
@@ -325,6 +330,6 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
-        body: _screens[_currentIndex]);
+        body: _screens[globals.currentIndex]);
   }
 }
