@@ -4,15 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/screen/LDKalender.dart';
 import 'package:lectio_divina/screen/alkitab.dart';
 import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id_ID', null).then((_) => runApp(MyApp()));
 }
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
@@ -21,6 +24,7 @@ String titleHome = "Lectio Divina";
 final List<Widget> _screens = [
   Home(),
   Alkitab(),
+  LDKalender(),
 ];
 
 class MyApp extends StatelessWidget {
@@ -212,7 +216,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              print("Ini My LD");
+              setState(() {
+                titleHome = "My LD";
+                globals.currentIndex = 2;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
