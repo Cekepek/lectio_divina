@@ -1,9 +1,11 @@
 library my_prj.globals;
 
 import 'package:lectio_divina/class/kitab.dart';
+import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/screen/alkitab.dart';
 
 List<Kitab> kitab = [];
+List<LD> MyLd = [];
 
 int currentIndex = 0;
 // Alkitab selectKitab = Alkitab(kitab: 0, bab: 0, ayat: "0");

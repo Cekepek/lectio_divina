@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/screen/LDKalender.dart';
@@ -12,8 +13,42 @@ import 'package:lectio_divina/screen/alkitab.dart';
 import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  final String encodedData = LD.encode([
+    LD(
+        id: 1,
+        tanggal: DateTime.now(),
+        judul: "test",
+        ayat: "Kej 1:1",
+        sabda: "test",
+        tanggapan: "test",
+        tindakan: "test",
+        catatan: "test",
+        hashtag: "test",
+        warna: Colors.red),
+    LD(
+        id: 2,
+        tanggal: DateTime.now(),
+        judul: "test",
+        ayat: "Kel 1:1",
+        sabda: "test",
+        tanggapan: "test",
+        tindakan: "test",
+        catatan: "test",
+        hashtag: "test",
+        warna: Colors.green),
+  ]);
+
+  // await prefs.setString('lds_key', encodedData);
+
+  // final String ldsstring = await prefs.getString('lds_key');
+
+  // final List<LD> lds = LD.decode(ldsstring);
+
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null).then((_) => runApp(MyApp()));
 }

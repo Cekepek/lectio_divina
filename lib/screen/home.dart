@@ -64,8 +64,6 @@ class _HomeState extends State<Home> {
           globals.kitab[index_kitab].pasal[index_pasal].ayat.add(temp_ayat);
         }
       }
-
-      debugPrint(globals.kitab[0].pasal[1].ayat.length.toString());
     });
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:table_calendar/table_calendar.dart';
@@ -20,6 +21,8 @@ class LDKalender extends StatefulWidget {
 class _LDKalenderState extends State<LDKalender> {
   bool showLess = false;
   DateTime today = DateTime.now();
+  DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
@@ -31,7 +34,7 @@ class _LDKalenderState extends State<LDKalender> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        // crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           showLess
               ? Padding(
@@ -116,7 +119,72 @@ class _LDKalenderState extends State<LDKalender> {
                       Text("Tampilkan Lebih Sedikit")
                     ],
                   ),
-          )
+          ),
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              //ganti ke list view builder
+              controller: ScrollController(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(format.format(today)),
+                  ),
+                  Card(
+                    color: Colors.white,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Row(
+                        children: [
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                height: 88,
+                                width: 6.0,
+                                color: Colors.blue,
+                              )),
+                          Expanded(
+                              child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Judul/Topik LD",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text("Kejadian 1:1"),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 8, bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        size: 24.0,
+                                      ),
+                                      Text("Pribadi")
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ))
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
