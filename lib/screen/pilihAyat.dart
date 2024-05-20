@@ -1,11 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/alkitab.dart';
+import 'package:lectio_divina/main.dart';
 
 class PilihAyat extends StatefulWidget {
   final int kitab;
@@ -121,20 +121,18 @@ class _PilihAyatState extends State<PilihAyat> {
                           itemBuilder: (context, index) {
                             return TextButton(
                                 onPressed: () {
+                                  globals.namaKitab =
+                                      globals.kitab[widget.kitab].id;
+                                  globals.bab = globals
+                                      .kitab[widget.kitab].pasal[index].id;
+                                  globals.ayat = globals.kitab[widget.kitab]
+                                      .pasal[index].ayat[index].nomor;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Alkitab(
-                                            kitab:
-                                                globals.kitab[widget.kitab].id,
-                                            bab: globals.kitab[widget.kitab]
-                                                .pasal[index].id,
-                                            ayat: globals
-                                                .kitab[widget.kitab]
-                                                .pasal[index]
-                                                .ayat[index]
-                                                .nomor),
-                                      ));
+                                          builder: (context) => MyHomePage(
+                                                title: "Lectio Divina",
+                                              )));
                                 },
                                 child: Text(globals.kitab[widget.kitab]
                                     .pasal[widget.bab].ayat[index].nomor));

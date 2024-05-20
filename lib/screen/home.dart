@@ -66,41 +66,6 @@ class _HomeState extends State<Home> {
       }
 
       debugPrint(globals.kitab[0].pasal[1].ayat.length.toString());
-      // List test = [];
-      // for (var i in data) {
-      //   // if ((i["book"] == book.toString()) &&
-      //   //     (i["chapter"] == chapter.toString())) {
-      //   //   ayat.add(i);
-      //   // }
-      //   if ((i["book"] == book.toString()) &&
-      //       (i["chapter"] == chapter.toString())) {
-      //     test.add(i);
-      //   }
-      // }
-      // if (test.isNotEmpty) {
-      //   ayat = test;
-      // } else {
-      //   book += 1;
-      //   chapter = 1;
-      //   for (var i in data) {
-      //     if ((i["book"] == book.toString()) &&
-      //         (i["chapter"] == chapter.toString())) {
-      //       test.add(i);
-      //     }
-      //   }
-      //   if (test.isNotEmpty) {
-      //     ayat = test;
-      //   } else {
-      //     book = 1;
-      //     chapter = 1;
-      //     for (var i in data) {
-      //       if ((i["book"] == book.toString()) &&
-      //           (i["chapter"] == chapter.toString())) {
-      //         ayat.add(i);
-      //       }
-      //     }
-      //   }
-      // }
     });
   }
 

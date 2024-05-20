@@ -10,13 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class Alkitab extends StatefulWidget {
-  final int kitab;
-  final int bab;
-  final String ayat;
-
-  const Alkitab(
-      {Key? key, required this.kitab, required this.bab, required this.ayat})
-      : super(key: key);
+  const Alkitab({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -35,11 +29,15 @@ class _AlkitabState extends State<Alkitab> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    book = globals.namaKitab;
+    // if (book - 1 < 0) book = 0;
+    chapter = globals.bab;
+    // if (chapter - 1 < 0) chapter = 0;
     controller = AutoScrollController(
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
-    controller.scrollToIndex(int.parse(widget.ayat) - 1,
+    controller.scrollToIndex(int.parse(globals.ayat) - 1,
         preferPosition: AutoScrollPosition.begin);
   }
 
@@ -103,7 +101,7 @@ class _AlkitabState extends State<Alkitab> {
                       "") {
                     return AutoScrollTag(
                       key: ValueKey(index),
-                      highlightColor: Colors.black.withOpacity(0.1),
+                      highlightColor: Colors.blue,
                       controller: controller,
                       index: index,
                       child: Container(
@@ -124,37 +122,43 @@ class _AlkitabState extends State<Alkitab> {
                               )),
                             ),
                             GestureDetector(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: Text(
-                                      globals.kitab[book].pasal[chapter]
-                                          .ayat[index].nomor,
-                                      style: TextStyle(
-                                        fontSize: fontSizeAyat,
+                              child: Container(
+                                color: selected.contains(index)
+                                    ? Colors.blue
+                                    : null,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(12),
+                                      child: Text(
+                                        globals.kitab[book].pasal[chapter]
+                                            .ayat[index].nomor,
+                                        style: TextStyle(
+                                          fontSize: fontSizeAyat,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                      child: Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: Text(
-                                      convertSpecialString(convertUnicode(
-                                          globals.kitab[book].pasal[chapter]
-                                              .ayat[index].text)),
-                                      style: TextStyle(
-                                        fontSize: fontSizeAyat,
+                                    Expanded(
+                                        child: Padding(
+                                      padding: EdgeInsets.all(12),
+                                      child: Text(
+                                        convertSpecialString(convertUnicode(
+                                            globals.kitab[book].pasal[chapter]
+                                                .ayat[index].text)),
+                                        style: TextStyle(
+                                          fontSize: fontSizeAyat,
+                                        ),
                                       ),
-                                    ),
-                                  ))
-                                ],
+                                    ))
+                                  ],
+                                ),
                               ),
                               onLongPress: () {
                                 setState(() {
-                                  selected.add("test");
-                                  // debugPrint(selected[3]);
+                                  selected.contains(index)
+                                      ? selected.remove(index)
+                                      : selected.add(index);
                                 });
                               },
                             )
@@ -165,36 +169,46 @@ class _AlkitabState extends State<Alkitab> {
                   } else {
                     return AutoScrollTag(
                       key: ValueKey(index),
-                      highlightColor: Colors.black.withOpacity(0.1),
+                      highlightColor: Colors.blue,
                       controller: controller,
                       index: index,
-                      child: Container(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text(
-                                globals.kitab[book].pasal[chapter].ayat[index]
-                                    .nomor,
-                                style: TextStyle(
-                                  fontSize: fontSizeAyat,
+                      child: GestureDetector(
+                        child: Container(
+                          color: selected.contains(index) ? Colors.blue : null,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(12),
+                                child: Text(
+                                  globals.kitab[book].pasal[chapter].ayat[index]
+                                      .nomor,
+                                  style: TextStyle(
+                                    fontSize: fontSizeAyat,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                                child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text(
-                                globals.kitab[book].pasal[chapter].ayat[index]
-                                    .text,
-                                style: TextStyle(
-                                  fontSize: fontSizeAyat,
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.all(12),
+                                child: Text(
+                                  globals.kitab[book].pasal[chapter].ayat[index]
+                                      .text,
+                                  style: TextStyle(
+                                    fontSize: fontSizeAyat,
+                                  ),
                                 ),
-                              ),
-                            ))
-                          ],
+                              ))
+                            ],
+                          ),
                         ),
+                        onLongPress: () {
+                          setState(() {
+                            selected.contains(index)
+                                ? selected.remove(index)
+                                : selected.add(index);
+                          });
+                        },
                       ),
                     );
                   }
@@ -274,6 +288,8 @@ class _AlkitabState extends State<Alkitab> {
                       } else {
                         chapter += 1;
                       }
+                      controller.scrollToIndex(15,
+                          preferPosition: AutoScrollPosition.begin);
                     });
                   },
                 ),
