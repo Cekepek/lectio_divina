@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
 import 'package:lectio_divina/screen/pilihKitab.dart';
 import 'package:lectio_divina/globals.dart' as globals;
@@ -275,8 +274,6 @@ class _AlkitabState extends State<Alkitab> {
                       } else {
                         chapter += 1;
                       }
-                      controller.scrollToIndex(15,
-                          preferPosition: AutoScrollPosition.begin);
                     });
                   },
                 ),
