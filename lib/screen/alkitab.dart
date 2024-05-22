@@ -239,6 +239,7 @@ class _AlkitabState extends State<Alkitab> {
                       } else {
                         chapter -= 1;
                       }
+                      controller.jumpTo(0);
                     });
                   },
                 ),
@@ -288,8 +289,7 @@ class _AlkitabState extends State<Alkitab> {
                       } else {
                         chapter += 1;
                       }
-                      controller.scrollToIndex(15,
-                          preferPosition: AutoScrollPosition.begin);
+                      controller.jumpTo(0);
                     });
                   },
                 ),

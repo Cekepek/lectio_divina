@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 class LD {
   int id;
-  DateTime tanggal;
+  String tanggal;
   String judul;
   String ayat;
   String sabda;
@@ -12,7 +12,7 @@ class LD {
   String tindakan;
   String catatan;
   String hashtag;
-  Color warna;
+  String warna;
 
   LD({
     required this.id,
