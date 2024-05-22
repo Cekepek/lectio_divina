@@ -124,9 +124,9 @@ class _PilihAyatState extends State<PilihAyat> {
                                   globals.namaKitab =
                                       globals.kitab[widget.kitab].id;
                                   globals.bab = globals
-                                      .kitab[widget.kitab].pasal[index].id;
+                                      .kitab[widget.kitab].pasal[widget.bab].id;
                                   globals.ayat = globals.kitab[widget.kitab]
-                                      .pasal[index].ayat[index].nomor;
+                                      .pasal[widget.bab].ayat[index].nomor;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
