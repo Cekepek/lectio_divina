@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:lectio_divina/class/ld.dart';
 
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class LDKalender extends StatefulWidget {
@@ -19,13 +21,62 @@ class LDKalender extends StatefulWidget {
 
 class _LDKalenderState extends State<LDKalender> {
   bool showLess = false;
-  DateTime today = DateTime.now();
+  DateTime selectedDay = DateTime.now();
+  DateTime focusedDay = DateTime.now();
+  Map<DateTime, List<LD>> lds = {};
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+  late final ValueNotifier<List<LD>> _selectedLD;
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
-      today = day;
+      selectedDay = day;
+      focusedDay = focusedDay;
+      _selectedLD.value = _getLDForDay(selectedDay);
+      debugPrint(selectedDay.toString());
     });
+  }
+
+  DateTime _removeTime(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
+
+  Future<void> loadLd() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String ldsstring = await prefs.getString('lds_key') ?? "";
+    if (ldsstring != "") {
+      final List<LD> ldList = LD.decode(ldsstring);
+      globals.MyLd = ldList;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedDay = _removeTime(DateTime.now());
+    loadLd();
+    // debugPrint(selectedDay.toString());
+    debugPrint(globals.MyLd.isEmpty.toString());
+    !globals.MyLd.isEmpty
+        ? debugPrint(globals.MyLd[1].tanggal)
+        : debugPrint("");
+    for (LD ld in globals.MyLd) {
+      if (lds[DateTime.parse(ld.tanggal)] != null) {
+        lds[DateTime.parse(ld.tanggal)]!.add(ld);
+      } else {
+        lds[DateTime.parse(ld.tanggal)!] = [ld];
+      }
+      // lds.addAll({
+      //   DateTime.parse(ld.tanggal)!: [ld]
+      // });
+    }
+    debugPrint(lds[selectedDay].toString());
+    debugPrint(lds.isEmpty.toString());
+    _selectedLD = ValueNotifier(_getLDForDay(selectedDay!));
+  }
+
+  List<LD> _getLDForDay(DateTime day) {
+    return lds[day] ?? [];
   }
 
   @override
@@ -35,6 +86,7 @@ class _LDKalenderState extends State<LDKalender> {
         onPressed: () {
           setState(() {
             globals.currentIndex = 3;
+            globals.tanggalTerpilih = _removeTime(selectedDay);
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -87,18 +139,31 @@ class _LDKalenderState extends State<LDKalender> {
                         formatButtonVisible: false, titleCentered: true),
                     daysOfWeekVisible: false,
                     availableGestures: AvailableGestures.all,
-                    selectedDayPredicate: (day) => isSameDay(day, today),
+                    selectedDayPredicate: (day) => isSameDay(day, selectedDay),
                     calendarStyle: CalendarStyle(
-                        todayDecoration: BoxDecoration(
+                      isTodayHighlighted: true,
+                      todayDecoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.inversePrimary,
-                        ),
-                        selectedDecoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(5)),
+                      selectedDecoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
-                        )),
-                    focusedDay: today,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(5)),
+                      weekendDecoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      defaultDecoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    focusedDay: focusedDay,
                     firstDay: DateTime.utc(2020, 5, 15),
                     lastDay: DateTime.utc(2030, 5, 15),
                     onDaySelected: _onDaySelected,
+                    eventLoader: _getLDForDay,
                   ),
             TextButton(
               onPressed: () {
@@ -133,79 +198,93 @@ class _LDKalenderState extends State<LDKalender> {
                   padding: EdgeInsets.all(15),
                   child: SingleChildScrollView(
                     child: Container(
-                      child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          controller: ScrollController(),
-                          itemCount: globals.MyLd.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(format.format(DateTime.parse(
-                                        globals.MyLd[index].tanggal))),
-                                  ),
-                                  Card(
-                                    color: Colors.white,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Row(
-                                        children: [
-                                          Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Container(
-                                                height: 88,
-                                                width: 6.0,
-                                                color: Color(int.parse(
-                                                    globals.MyLd[index].warna
-                                                        .split('(0x')[1]
-                                                        .split(')')[0],
-                                                    radix: 16)),
-                                              )),
-                                          Expanded(
-                                              child: Padding(
-                                            padding: EdgeInsets.all(8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                      child: ValueListenableBuilder<List<LD>>(
+                          valueListenable: _selectedLD,
+                          builder: (context, value, _) {
+                            return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                controller: ScrollController(),
+                                itemCount: value.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          child: Text(format.format(
+                                              DateTime.parse(
+                                                  value[index].tanggal))),
+                                        ),
+                                        Card(
+                                          color: Colors.white,
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  globals.MyLd[index].judul,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(globals.MyLd[index].ayat),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 8, bottom: 8),
-                                                  child: Row(
+                                                Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Container(
+                                                      height: 88,
+                                                      width: 6.0,
+                                                      color: Color(int.parse(
+                                                          value[index]
+                                                              .warna
+                                                              .split('(0x')[1]
+                                                              .split(')')[0],
+                                                          radix: 16)),
+                                                    )),
+                                                Expanded(
+                                                    child: Padding(
+                                                  padding: EdgeInsets.all(8),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Icon(
-                                                        Icons.person,
-                                                        size: 24.0,
+                                                      Text(
+                                                        value[index].judul,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                       ),
-                                                      Text("Pribadi")
+                                                      Text(value[index].ayat),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 8,
+                                                                bottom: 8),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.person,
+                                                              size: 24.0,
+                                                            ),
+                                                            Text("Pribadi")
+                                                          ],
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
-                                                )
+                                                ))
                                               ],
                                             ),
-                                          ))
-                                        ],
-                                      ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            );
+                                  );
+                                });
                           }),
                     ),
                   )),

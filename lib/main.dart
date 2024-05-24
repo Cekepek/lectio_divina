@@ -20,63 +20,62 @@ Future<void> getLD() async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
+  // final prefs = await SharedPreferences.getInstance();
 
-  final String encodedData = LD.encode([
-    LD(
-        id: 1,
-        tanggal: DateTime.now().toString(),
-        judul: "test",
-        ayat: "Kej 1:1",
-        sabda: "test",
-        tanggapan: "test",
-        tindakan: "test",
-        catatan: "test",
-        hashtag: "test",
-        warna: Color.fromRGBO(255, 0, 0, 1).toString()),
-    LD(
-        id: 2,
-        tanggal: DateTime.now().toString(),
-        judul: "test",
-        ayat: "Kel 1:1",
-        sabda: "test",
-        tanggapan: "test",
-        tindakan: "test",
-        catatan: "test",
-        hashtag: "test",
-        warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-    LD(
-        id: 3,
-        tanggal: DateTime.now().toString(),
-        judul: "test",
-        ayat: "Kel 1:1",
-        sabda: "test",
-        tanggapan: "test",
-        tindakan: "test",
-        catatan: "test",
-        hashtag: "test",
-        warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-    LD(
-        id: 4,
-        tanggal: DateTime.now().toString(),
-        judul: "test",
-        ayat: "Kel 1:1",
-        sabda: "test",
-        tanggapan: "test",
-        tindakan: "test",
-        catatan: "test",
-        hashtag: "test",
-        warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-  ]);
+  // final String encodedData = LD.encode([
+  //   LD(
+  //       id: 1,
+  //       tanggal: "2024-05-23 00:00:00.000Z",
+  //       judul: "test",
+  //       ayat: "Kej 1:1",
+  //       sabda: "test",
+  //       tanggapan: "test",
+  //       tindakan: "test",
+  //       catatan: "test",
+  //       hashtag: "test",
+  //       warna: Color.fromRGBO(255, 0, 0, 1).toString()),
+  //   LD(
+  //       id: 2,
+  //       tanggal: "2024-05-23 00:00:00.000Z",
+  //       judul: "test",
+  //       ayat: "Kel 1:1",
+  //       sabda: "test",
+  //       tanggapan: "test",
+  //       tindakan: "test",
+  //       catatan: "test",
+  //       hashtag: "test",
+  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
+  //   LD(
+  //       id: 3,
+  //       tanggal: "2024-05-24 00:00:00.000Z",
+  //       judul: "test",
+  //       ayat: "Kel 1:1",
+  //       sabda: "test",
+  //       tanggapan: "test",
+  //       tindakan: "test",
+  //       catatan: "test",
+  //       hashtag: "test",
+  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
+  //   LD(
+  //       id: 4,
+  //       tanggal: "2024-05-25 00:00:00.000Z",
+  //       judul: "test",
+  //       ayat: "Ams 1:1",
+  //       sabda: "test",
+  //       tanggapan: "test",
+  //       tindakan: "test",
+  //       catatan: "test",
+  //       hashtag: "test",
+  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
+  // ]);
 
-  await prefs.setString('lds_key', encodedData);
+  // await prefs.setString('lds_key', encodedData);
 
-  final String ldsstring = await prefs.getString('lds_key') ?? "";
+  // final String ldsstring = await prefs.getString('lds_key') ?? "";
 
-  final List<LD> lds = LD.decode(ldsstring);
+  // final List<LD> lds = LD.decode(ldsstring);
 
-  globals.MyLd = lds;
-  debugPrint(globals.MyLd[0].warna);
+  // globals.MyLd = lds;
   await initializeDateFormatting('id_ID', null).then((_) => runApp(MyApp()));
 }
 

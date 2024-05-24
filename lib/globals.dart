@@ -2,7 +2,6 @@ library my_prj.globals;
 
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/ld.dart';
-import 'package:lectio_divina/screen/alkitab.dart';
 
 List<Kitab> kitab = [];
 List<LD> MyLd = [];
@@ -13,3 +12,5 @@ int currentIndex = 0;
 int namaKitab = 0;
 int bab = 0;
 String ayat = "0";
+
+DateTime tanggalTerpilih = DateTime.now();
