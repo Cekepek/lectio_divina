@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Poppins",
         colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromRGBO(255, 141, 116, 1)),
+            ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: "Lectio Divina"),
@@ -118,6 +118,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    loadLd();
+  }
+
+  Future<void> loadLd() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String ldsstring = await prefs.getString('lds_key') ?? "";
+    if (ldsstring != "") {
+      final List<LD> ldList = LD.decode(ldsstring);
+      setState(() {
+        globals.MyLd = ldList;
+      });
+    }
+  }
+
   Color color = Color.fromRGBO(255, 141, 116, 1);
   Widget buildColorPicker() {
     return ColorPicker(

@@ -69,25 +69,9 @@ class _TambahLdState extends State<TambahLd> {
   Future<void> TambahLd(LD ld) async {
     final lds = await loadLd();
     lds.add(ld);
+    globals.MyLd.add(ld);
     await saveLd(lds);
   }
-
-  // Future<void> tambahLD() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   LD ldBaru = LD(
-  //       id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
-  //       tanggal: globals.tanggalTerpilih.toString(),
-  //       judul: judul,
-  //       ayat: ayat,
-  //       sabda: sabda,
-  //       tanggapan: tanggapan,
-  //       tindakan: tindakan,
-  //       catatan: catatan,
-  //       hashtag: hashtag,
-  //       warna: warna);
-  //   final String encodedData = LD.encode([ldBaru]);
-  //   await prefs.setString('lds_key', encodedData);
-  // }
 
   @override
   Widget build(BuildContext context) {

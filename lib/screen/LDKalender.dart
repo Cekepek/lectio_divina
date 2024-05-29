@@ -25,14 +25,36 @@ class _LDKalenderState extends State<LDKalender> {
   DateTime focusedDay = DateTime.now();
   Map<DateTime, List<LD>> lds = {};
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+  DateFormat formatMonth = new DateFormat("MMMM yyyy", "id_ID");
   late final ValueNotifier<List<LD>> _selectedLD;
+  List<LD> monthLd = [];
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) {
+  void _onDaySelected(DateTime day, DateTime focusDay) {
     setState(() {
       selectedDay = day;
-      focusedDay = focusedDay;
+      focusedDay = focusDay;
       _selectedLD.value = _getLDForDay(selectedDay);
       debugPrint(selectedDay.toString());
+    });
+  }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month - 1,
+        1,
+      );
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month + 1,
+        1,
+      );
     });
   }
 
@@ -40,26 +62,17 @@ class _LDKalenderState extends State<LDKalender> {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
-  Future<void> loadLd() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String ldsstring = await prefs.getString('lds_key') ?? "";
-    if (ldsstring != "") {
-      final List<LD> ldList = LD.decode(ldsstring);
-      globals.MyLd = ldList;
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     selectedDay = _removeTime(DateTime.now());
-    loadLd();
+    focusedDay = selectedDay;
     // debugPrint(selectedDay.toString());
     debugPrint(globals.MyLd.isEmpty.toString());
-    !globals.MyLd.isEmpty
-        ? debugPrint(globals.MyLd[1].tanggal)
-        : debugPrint("");
+    // !globals.MyLd.isEmpty
+    //     ? debugPrint(globals.MyLd[1].tanggal)
+    //     : debugPrint("");
     for (LD ld in globals.MyLd) {
       if (lds[DateTime.parse(ld.tanggal)] != null) {
         lds[DateTime.parse(ld.tanggal)]!.add(ld);
@@ -70,13 +83,20 @@ class _LDKalenderState extends State<LDKalender> {
       //   DateTime.parse(ld.tanggal)!: [ld]
       // });
     }
+
+    _selectedLD = ValueNotifier(_getLDForDay(selectedDay!));
     debugPrint(lds[selectedDay].toString());
     debugPrint(lds.isEmpty.toString());
-    _selectedLD = ValueNotifier(_getLDForDay(selectedDay!));
   }
 
   List<LD> _getLDForDay(DateTime day) {
-    return lds[day] ?? [];
+    return lds[_removeTime(day)] ?? [];
+  }
+
+  List<LD> _getLDForMonth(int year, int month) {
+    return globals.MyLd.where((ld) =>
+        DateTime.parse(ld.tanggal).year == year &&
+        DateTime.parse(ld.tanggal).month == month).toList();
   }
 
   @override
@@ -113,21 +133,30 @@ class _LDKalenderState extends State<LDKalender> {
                             Icons.keyboard_arrow_left,
                             size: 24.0,
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            _goToPreviousMonth();
+                            selectedDay = focusedDay;
+                            monthLd = _getLDForMonth(
+                                focusedDay.year, focusedDay.month);
+                          },
                         ),
                         GestureDetector(
-                          child: const Text(
-                            "Mei 2024",
+                          child: Text(
+                            formatMonth.format(focusedDay),
                             style: TextStyle(fontSize: 17),
                           ),
-                          onTap: () {},
                         ),
                         GestureDetector(
                           child: const Icon(
                             Icons.keyboard_arrow_right,
                             size: 24.0,
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            _goToNextMonth();
+                            selectedDay = focusedDay;
+                            monthLd = _getLDForMonth(
+                                focusedDay.year, focusedDay.month);
+                          },
                         ),
                       ],
                     ),
@@ -137,17 +166,20 @@ class _LDKalenderState extends State<LDKalender> {
                     headerVisible: true,
                     headerStyle: HeaderStyle(
                         formatButtonVisible: false, titleCentered: true),
-                    daysOfWeekVisible: false,
+                    daysOfWeekVisible: true,
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                        weekendStyle: TextStyle(color: Colors.red)),
                     availableGestures: AvailableGestures.all,
                     selectedDayPredicate: (day) => isSameDay(day, selectedDay),
                     calendarStyle: CalendarStyle(
+                      outsideDaysVisible: false,
                       isTodayHighlighted: true,
                       todayDecoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.inversePrimary,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(5)),
                       selectedDecoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).primaryColor,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(5)),
                       weekendDecoration: BoxDecoration(
@@ -165,127 +197,230 @@ class _LDKalenderState extends State<LDKalender> {
                     onDaySelected: _onDaySelected,
                     eventLoader: _getLDForDay,
                   ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  showLess ? showLess = false : showLess = true;
-                });
-              },
-              child: showLess
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 24.0,
+            Padding(
+              padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+              child: Container(
+                decoration: BoxDecoration(
+                    border:
+                        BorderDirectional(top: BorderSide(color: Colors.grey))),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      focusedDay = selectedDay;
+                      monthLd =
+                          _getLDForMonth(focusedDay.year, focusedDay.month);
+                      showLess ? showLess = false : showLess = true;
+                    });
+                  },
+                  child: showLess
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 24.0,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              "Tampilkan Kalender",
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.keyboard_arrow_up,
+                              size: 24.0,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              "Tampilkan Lebih Sedikit",
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          ],
                         ),
-                        Text("Tampilkan Kalender")
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.keyboard_arrow_up,
-                          size: 24.0,
-                        ),
-                        Text("Tampilkan Lebih Sedikit")
-                      ],
-                    ),
+                ),
+              ),
             ),
             Expanded(
               child: Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ),
                   child: SingleChildScrollView(
                     child: Container(
-                      child: ValueListenableBuilder<List<LD>>(
-                          valueListenable: _selectedLD,
-                          builder: (context, value, _) {
-                            return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                controller: ScrollController(),
-                                itemCount: value.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          child: Text(format.format(
-                                              DateTime.parse(
-                                                  value[index].tanggal))),
-                                        ),
-                                        Card(
-                                          color: Colors.white,
-                                          elevation: 5,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: Row(
-                                              children: [
-                                                Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Container(
-                                                      height: 88,
-                                                      width: 6.0,
-                                                      color: Color(int.parse(
-                                                          value[index]
-                                                              .warna
-                                                              .split('(0x')[1]
-                                                              .split(')')[0],
-                                                          radix: 16)),
-                                                    )),
-                                                Expanded(
-                                                    child: Padding(
-                                                  padding: EdgeInsets.all(8),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                      child: !showLess
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(format.format(selectedDay)),
+                                ),
+                                ValueListenableBuilder<List<LD>>(
+                                    valueListenable: _selectedLD,
+                                    builder: (context, value, _) {
+                                      return ListView.builder(
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          controller: ScrollController(),
+                                          itemCount: value.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Card(
+                                                surfaceTintColor:
+                                                    Colors.transparent,
+                                                elevation: 5,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  child: Row(
                                                     children: [
-                                                      Text(
-                                                        value[index].judul,
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Text(value[index].ayat),
-                                                      Padding(
+                                                      Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Container(
+                                                            height: 100,
+                                                            width: 10.0,
+                                                            color: Color(int.parse(
+                                                                value[index]
+                                                                    .warna
+                                                                    .split('(0x')[
+                                                                        1]
+                                                                    .split(
+                                                                        ')')[0],
+                                                                radix: 16)),
+                                                          )),
+                                                      Expanded(
+                                                          child: Padding(
                                                         padding:
-                                                            EdgeInsets.only(
-                                                                top: 8,
-                                                                bottom: 8),
-                                                        child: Row(
+                                                            EdgeInsets.all(8),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Icon(
-                                                              Icons.person,
-                                                              size: 24.0,
+                                                            Text(
+                                                              value[index]
+                                                                  .judul,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                             ),
-                                                            Text("Pribadi")
+                                                            Text(value[index]
+                                                                .ayat),
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 8,
+                                                                      bottom:
+                                                                          8),
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .person,
+                                                                    size: 24.0,
+                                                                  ),
+                                                                  Text(
+                                                                      "Pribadi")
+                                                                ],
+                                                              ),
+                                                            )
                                                           ],
                                                         ),
-                                                      )
+                                                      ))
                                                     ],
                                                   ),
-                                                ))
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                    }),
+                              ],
+                            )
+                          : ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              controller: ScrollController(),
+                              itemCount: monthLd.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Card(
+                                    // color: Colors.white,
+                                    surfaceTintColor: Colors.transparent,
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Row(
+                                        children: [
+                                          Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Container(
+                                                height: 100,
+                                                width: 10.0,
+                                                color: Color(int.parse(
+                                                    monthLd[index]
+                                                        .warna
+                                                        .split('(0x')[1]
+                                                        .split(')')[0],
+                                                    radix: 16)),
+                                              )),
+                                          Expanded(
+                                              child: Padding(
+                                            padding: EdgeInsets.all(8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  monthLd[index].judul,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(monthLd[index].ayat),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 8, bottom: 8),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.person,
+                                                        size: 24.0,
+                                                      ),
+                                                      Text("Pribadi")
+                                                    ],
+                                                  ),
+                                                )
                                               ],
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          ))
+                                        ],
+                                      ),
                                     ),
-                                  );
-                                });
-                          }),
+                                  ),
+                                );
+                              }),
                     ),
                   )),
             ),
