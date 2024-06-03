@@ -10,6 +10,7 @@ import 'package:lectio_divina/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/screen/LDKalender.dart';
 import 'package:lectio_divina/screen/alkitab.dart';
+import 'package:lectio_divina/screen/detailLd.dart';
 import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
 import 'package:lectio_divina/switch_button.dart';
@@ -82,7 +83,13 @@ Future<void> main() async {
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [Home(), Alkitab(), LDKalender(), TambahLd()];
+final List<Widget> _screens = [
+  Home(),
+  Alkitab(),
+  LDKalender(),
+  TambahLd(),
+  DetailLd()
+];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

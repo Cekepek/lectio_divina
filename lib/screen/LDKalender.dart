@@ -7,6 +7,7 @@ import 'package:lectio_divina/class/ld.dart';
 
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/screen/detailLd.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -111,7 +112,7 @@ class _LDKalenderState extends State<LDKalender> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => MyHomePage(
-                          title: "Lectio Divina",
+                          title: "My LD",
                         )));
           });
         },
@@ -272,25 +273,55 @@ class _LDKalenderState extends State<LDKalender> {
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 8.0),
-                                              child: Card(
-                                                surfaceTintColor:
-                                                    Colors.transparent,
-                                                elevation: 5,
-                                                shape: RoundedRectangleBorder(
+                                              child:
+                                                  // Card(
+                                                  //   surfaceTintColor:
+                                                  //       Colors.transparent,
+                                                  //   elevation: 5,
+                                                  //   shape: RoundedRectangleBorder(
+                                                  //     borderRadius:
+                                                  //         BorderRadius.circular(
+                                                  //             15.0),
+                                                  //   ),
+                                                  //   child:
+                                                  Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          15.0),
+                                                          8.0),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      blurRadius: 4.0,
+                                                      spreadRadius: 2.0,
+                                                    ),
+                                                  ],
                                                 ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  child: Row(
-                                                    children: [
-                                                      Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: IntrinsicHeight(
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .stretch,
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    8.0),
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    8.0),
+                                                          ),
                                                           child: Container(
-                                                            height: 100,
                                                             width: 10.0,
                                                             color: Color(int.parse(
                                                                 value[index]
@@ -300,53 +331,99 @@ class _LDKalenderState extends State<LDKalender> {
                                                                     .split(
                                                                         ')')[0],
                                                                 radix: 16)),
-                                                          )),
-                                                      Expanded(
-                                                          child: Padding(
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              value[index]
-                                                                  .judul,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            Text(value[index]
-                                                                .ayat),
-                                                            Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      top: 8,
-                                                                      bottom:
-                                                                          8),
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .person,
-                                                                    size: 24.0,
-                                                                  ),
-                                                                  Text(
-                                                                      "Pribadi")
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
+                                                          ),
                                                         ),
-                                                      ))
-                                                    ],
+                                                        Expanded(
+                                                            child: Padding(
+                                                          padding:
+                                                              EdgeInsets.all(8),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                value[index]
+                                                                    .judul,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Text(value[index]
+                                                                  .ayat),
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        top: 8,
+                                                                        bottom:
+                                                                            8),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .person,
+                                                                      size:
+                                                                          24.0,
+                                                                    ),
+                                                                    Text(
+                                                                        "Pribadi")
+                                                                  ],
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .topRight,
+                                                          child:
+                                                              PopupMenuButton(
+                                                                  icon: Icon(Icons
+                                                                      .more_horiz),
+                                                                  onSelected:
+                                                                      (result) {
+                                                                    if (result ==
+                                                                        0) {
+                                                                      setState(
+                                                                          () {
+                                                                        globals.currentIndex =
+                                                                            4;
+                                                                      });
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              MyHomePage(
+                                                                            title:
+                                                                                "My LD",
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    }
+                                                                  },
+                                                                  itemBuilder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return [
+                                                                      PopupMenuItem(
+                                                                          value:
+                                                                              0,
+                                                                          child:
+                                                                              Text("Detail"))
+                                                                    ];
+                                                                  }),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
+                                              // ),
                                             );
                                           });
                                     }),
