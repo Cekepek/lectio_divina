@@ -390,6 +390,10 @@ class _LDKalenderState extends State<LDKalender> {
                                                                         0) {
                                                                       setState(
                                                                           () {
+                                                                        globals
+                                                                            .idLdDetail = value[
+                                                                                index]
+                                                                            .id;
                                                                         globals.currentIndex =
                                                                             4;
                                                                       });
@@ -438,21 +442,35 @@ class _LDKalenderState extends State<LDKalender> {
                                 return Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Card(
-                                    // color: Colors.white,
-                                    surfaceTintColor: Colors.transparent,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 4.0,
+                                          spreadRadius: 2.0,
+                                        ),
+                                      ],
                                     ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Row(
-                                        children: [
-                                          Align(
-                                              alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(8.0),
+                                                bottomLeft:
+                                                    Radius.circular(8.0),
+                                              ),
                                               child: Container(
-                                                height: 100,
                                                 width: 10.0,
                                                 color: Color(int.parse(
                                                     monthLd[index]
@@ -460,39 +478,74 @@ class _LDKalenderState extends State<LDKalender> {
                                                         .split('(0x')[1]
                                                         .split(')')[0],
                                                     radix: 16)),
-                                              )),
-                                          Expanded(
-                                              child: Padding(
-                                            padding: EdgeInsets.all(8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  monthLd[index].judul,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(monthLd[index].ayat),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 8, bottom: 8),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.person,
-                                                        size: 24.0,
-                                                      ),
-                                                      Text("Pribadi")
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
+                                              ),
                                             ),
-                                          ))
-                                        ],
+                                            Expanded(
+                                                child: Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    monthLd[index].judul,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(monthLd[index].ayat),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8, bottom: 8),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.person,
+                                                          size: 24.0,
+                                                        ),
+                                                        Text("Pribadi")
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: PopupMenuButton(
+                                                  icon: Icon(Icons.more_horiz),
+                                                  onSelected: (result) {
+                                                    if (result == 0) {
+                                                      setState(() {
+                                                        globals.idLdDetail =
+                                                            monthLd[index].id;
+                                                        globals.currentIndex =
+                                                            4;
+                                                      });
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MyHomePage(
+                                                            title: "My LD",
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  itemBuilder:
+                                                      (BuildContext context) {
+                                                    return [
+                                                      PopupMenuItem(
+                                                          value: 0,
+                                                          child: Text("Detail"))
+                                                    ];
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

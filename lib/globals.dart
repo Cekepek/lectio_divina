@@ -14,3 +14,5 @@ int bab = 0;
 String ayat = "0";
 
 DateTime tanggalTerpilih = DateTime.now();
+
+int idLdDetail = 0;
