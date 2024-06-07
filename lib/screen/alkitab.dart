@@ -156,9 +156,12 @@ class _AlkitabState extends State<Alkitab> {
                               ),
                               onLongPress: () {
                                 setState(() {
-                                  selected.contains(index)
-                                      ? selected.remove(index)
-                                      : selected.add(index);
+                                  selected.contains(globals.kitab[book]
+                                          .pasal[chapter].ayat[index])
+                                      ? selected.remove(globals.kitab[book]
+                                          .pasal[chapter].ayat[index])
+                                      : selected.add(globals.kitab[book]
+                                          .pasal[chapter].ayat[index]);
                                 });
                               },
                             )
@@ -204,9 +207,12 @@ class _AlkitabState extends State<Alkitab> {
                         ),
                         onLongPress: () {
                           setState(() {
-                            selected.contains(index)
-                                ? selected.remove(index)
-                                : selected.add(index);
+                            selected.contains(globals
+                                    .kitab[book].pasal[chapter].ayat[index])
+                                ? selected.remove(globals
+                                    .kitab[book].pasal[chapter].ayat[index])
+                                : selected.add(globals
+                                    .kitab[book].pasal[chapter].ayat[index]);
                           });
                         },
                       ),
