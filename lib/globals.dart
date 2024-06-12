@@ -15,6 +15,8 @@ int namaKitab = 0;
 int bab = 0;
 String ayat = "0";
 
-DateTime tanggalTerpilih = DateTime.now();
+DateTime waktuSaatIni = DateTime.now();
+DateTime tanggalTerpilih =
+    DateTime(waktuSaatIni.year, waktuSaatIni.month, waktuSaatIni.hour);
 
 int idLdDetail = 0;

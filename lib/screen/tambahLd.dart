@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/main.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
@@ -19,11 +20,13 @@ class TambahLd extends StatefulWidget {
   }
 }
 
-class _TambahLdState extends State<TambahLd> {
+class _TambahLdState extends State<TambahLd>
+    with SingleTickerProviderStateMixin {
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
   TextEditingController controller = TextEditingController(text: "");
   TextEditingController controllerSabda = TextEditingController(text: "");
   TextEditingController controllerJudul = TextEditingController(text: "");
+  late AnimationController animationController;
 
   Color _selectedColor = Color.fromRGBO(255, 0, 0, 1);
   late String judul;
@@ -82,6 +85,7 @@ class _TambahLdState extends State<TambahLd> {
             title: Text('Pick Your Color'),
             content: TextButton(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   BlockPicker(
                       pickerColor: _selectedColor,
@@ -115,6 +119,13 @@ class _TambahLdState extends State<TambahLd> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+    animationController.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        Navigator.pop(context);
+      }
+    });
     judul = "";
     ayat = "";
     sabda = "";
@@ -123,8 +134,8 @@ class _TambahLdState extends State<TambahLd> {
       sabda = "";
       judul = "";
     } else {
-      controllerJudul =
-          TextEditingController(text: globals.ayatDipilih[0].titleIncluded);
+      judul = globals.ayatDipilih[0].titleIncluded;
+      controllerJudul = TextEditingController(text: judul);
       for (Ayat ayatTerpilih in globals.ayatDipilih) {
         ayat += ayatTerpilih.kitab +
             " " +
@@ -143,6 +154,12 @@ class _TambahLdState extends State<TambahLd> {
     catatan = "";
     hashtag = "";
     warna = Color.fromRGBO(255, 0, 0, 1).toString();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   Future<void> saveLd(List<LD> lds) async {
@@ -170,6 +187,32 @@ class _TambahLdState extends State<TambahLd> {
     await saveLd(lds);
   }
 
+  void ldTersimpan() => showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset('assets/animations/done.json',
+                    repeat: false,
+                    controller: animationController, onLoaded: (composition) {
+                  animationController.forward();
+                }),
+                Text(
+                  "LD Tersimpan",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                )
+              ],
+            ),
+          ));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,25 +220,29 @@ class _TambahLdState extends State<TambahLd> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
           onPressed: () {
-            LD ldBaru = LD(
-                id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
-                tanggal: globals.tanggalTerpilih.toString(),
-                judul: judul,
-                ayat: ayat,
-                sabda: sabda,
-                tanggapan: tanggapan,
-                tindakan: tindakan,
-                catatan: catatan,
-                hashtag: hashtag,
-                warna: warna);
-            TambahLd(ldBaru);
-            globals.ayatDipilih.clear();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                          title: "Lectio Divina",
-                        )));
+            ldTersimpan();
+            Future.delayed(Duration(seconds: 4), () {
+              LD ldBaru = LD(
+                  id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
+                  tanggal: globals.tanggalTerpilih.toString(),
+                  judul: judul,
+                  ayat: ayat,
+                  sabda: sabda,
+                  tanggapan: tanggapan,
+                  tindakan: tindakan,
+                  catatan: catatan,
+                  hashtag: hashtag,
+                  warna: warna);
+              TambahLd(ldBaru);
+              globals.ayatDipilih.clear();
+              globals.currentIndex = 1;
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                            title: "Lectio Divina",
+                          )));
+            });
           },
           icon: Icon(
             Icons.arrow_back,
@@ -352,7 +399,6 @@ class _TambahLdState extends State<TambahLd> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Warna Tagline"),
-
                         GestureDetector(
                           onTap: () {
                             colorPicker(context);
@@ -378,116 +424,78 @@ class _TambahLdState extends State<TambahLd> {
                             ]),
                           ),
                         )
-                        // BlockPicker(
-                        //     pickerColor: _selectedColor,
-                        //     availableColors: _colors,
-                        //     onColorChanged: (color) => setState(() {
-                        //           _selectedColor = color;
-                        //           warna = _selectedColor.toString();
-                        //         }))
-                        // SizedBox(
-                        //   width: 150,
-                        //   height: 48,
-                        //   child: DropdownButtonFormField<Color>(
-                        //     decoration: InputDecoration(
-                        //       border: OutlineInputBorder(
-                        //           borderRadius: BorderRadius.circular(10)),
-                        //     ),
-                        //     hint: Text('Select a color'),
-                        //     value: _selectedColor,
-                        //     items: _colors.map((Color color) {
-                        //       return DropdownMenuItem<Color>(
-                        //         value: color,
-                        //         child: Center(
-                        //           child: Container(
-                        //             decoration: BoxDecoration(
-                        //                 shape: BoxShape.circle, color: color),
-                        //             width: 32,
-                        //             height: 32,
-                        //           ),
-                        //         ),
-                        //       );
-                        //     }).toList(),
-                        //     onChanged: (Color? newValue) {
-                        //       setState(() {
-                        //         _selectedColor = newValue;
-                        //         warna = _selectedColor.toString();
-                        //       });
-                        //     },
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        LD ldBaru = LD(
-                            id: globals.MyLd.isEmpty
-                                ? 0
-                                : globals.MyLd.length - 1,
-                            tanggal: globals.tanggalTerpilih.toString(),
-                            judul: judul,
-                            ayat: ayat,
-                            sabda: sabda,
-                            tanggapan: tanggapan,
-                            tindakan: tindakan,
-                            catatan: catatan,
-                            hashtag: hashtag,
-                            warna: warna);
-                        TambahLd(ldBaru);
-                        globals.currentIndex = 2;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyHomePage(
-                                      title: "Lectio Divina",
-                                    )));
-                      });
-                    },
-                    child: Container(
-                      height: 40,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Center(
-                        child: Text(
-                          'Simpan LD',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print("p");
-                    },
-                    child: Container(
-                      height: 40,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color:
-                                  Theme.of(context).colorScheme.inversePrimary),
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Center(
-                        child: Text(
-                          'Bagikan LD',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     setState(() {
+                  //       LD ldBaru = LD(
+                  //           id: globals.MyLd.isEmpty
+                  //               ? 0
+                  //               : globals.MyLd.length - 1,
+                  //           tanggal: globals.tanggalTerpilih.toString(),
+                  //           judul: judul,
+                  //           ayat: ayat,
+                  //           sabda: sabda,
+                  //           tanggapan: tanggapan,
+                  //           tindakan: tindakan,
+                  //           catatan: catatan,
+                  //           hashtag: hashtag,
+                  //           warna: warna);
+                  //       TambahLd(ldBaru);
+                  //       globals.currentIndex = 2;
+                  //       Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => MyHomePage(
+                  //                     title: "Lectio Divina",
+                  //                   )));
+                  //     });
+                  //   },
+                  //   child: Container(
+                  //     height: 40,
+                  //     width: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //         color: Theme.of(context).colorScheme.inversePrimary,
+                  //         borderRadius: BorderRadius.circular(5)),
+                  //     child: Center(
+                  //       child: Text(
+                  //         'Simpan LD',
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("p");
+                  //   },
+                  //   child: Container(
+                  //     height: 40,
+                  //     width: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //         border: Border.all(
+                  //             color:
+                  //                 Theme.of(context).colorScheme.inversePrimary),
+                  //         color: Colors.transparent,
+                  //         borderRadius: BorderRadius.circular(5)),
+                  //     child: Center(
+                  //       child: Text(
+                  //         'Bagikan LD',
+                  //         style: TextStyle(
+                  //           color: Theme.of(context).colorScheme.inversePrimary,
+                  //           fontSize: 15,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

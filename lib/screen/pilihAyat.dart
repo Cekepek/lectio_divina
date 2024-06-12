@@ -130,9 +130,7 @@ class _PilihAyatState extends State<PilihAyat> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MyHomePage(
-                                                title: "Lectio Divina",
-                                              )));
+                                          builder: (context) => Alkitab()));
                                 },
                                 child: Text(globals.kitab[widget.kitab]
                                     .pasal[widget.bab].ayat[index].nomor));
