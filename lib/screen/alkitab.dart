@@ -383,6 +383,7 @@ class _AlkitabState extends State<Alkitab> {
                 IconButton(
                     onPressed: () {
                       globals.currentIndex = 1;
+                      globals.tanggalTerpilih = DateTime.now();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => TambahLd()));
                     },

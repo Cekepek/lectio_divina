@@ -33,6 +33,7 @@ class _HomeState extends State<Home> {
     String pasal = "0";
     int index_pasal = -1;
     String ayat = "0";
+    String title = "";
     final String response = await rootBundle.loadString('assets/json/ayt.json');
     final data = await json.decode(response);
     setState(() {
@@ -53,14 +54,20 @@ class _HomeState extends State<Home> {
               id: index_pasal, nomor: pasal, id_kitab: index_kitab, ayat: []);
           globals.kitab[index_kitab].pasal.add(temp_pasal);
         }
+
         if (i["verse"] != ayat) {
           ayat = i["verse"];
+          // COBA SETIAP AYAT NYIMPEN JUDUL
+          if (i["title"] != "") {
+            title = i["title"];
+          }
           Ayat temp_ayat = new Ayat(
               nomor: i["verse"],
               nomorPasal: pasal,
               text: i["text"],
               kitab: globals.kitab[index_kitab].singkatan,
-              title: i["title"]);
+              title: i["title"],
+              titleIncluded: title);
           globals.kitab[index_kitab].pasal[index_pasal].ayat.add(temp_ayat);
         }
       }

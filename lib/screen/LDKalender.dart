@@ -259,8 +259,7 @@ class _LDKalenderState extends State<LDKalender> {
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       vertical: 8.0),
-                                              child:
-                                                  Container(
+                                              child: Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
@@ -484,16 +483,12 @@ class _LDKalenderState extends State<LDKalender> {
                                                       setState(() {
                                                         globals.idLdDetail =
                                                             monthLd[index].id;
-                                                        globals.currentIndex =
-                                                            4;
                                                       });
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                           builder: (context) =>
-                                                              MyHomePage(
-                                                            title: "My LD",
-                                                          ),
+                                                              DetailLd(),
                                                         ),
                                                       );
                                                     }

@@ -23,6 +23,7 @@ class _TambahLdState extends State<TambahLd> {
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
   TextEditingController controller = TextEditingController(text: "");
   TextEditingController controllerSabda = TextEditingController(text: "");
+  TextEditingController controllerJudul = TextEditingController(text: "");
 
   Color _selectedColor = Color.fromRGBO(255, 0, 0, 1);
   late String judul;
@@ -119,7 +120,11 @@ class _TambahLdState extends State<TambahLd> {
     sabda = "";
     if (globals.ayatDipilih.isEmpty) {
       ayat = "";
+      sabda = "";
+      judul = "";
     } else {
+      controllerJudul =
+          TextEditingController(text: globals.ayatDipilih[0].titleIncluded);
       for (Ayat ayatTerpilih in globals.ayatDipilih) {
         ayat += ayatTerpilih.kitab +
             " " +
@@ -184,6 +189,7 @@ class _TambahLdState extends State<TambahLd> {
                 hashtag: hashtag,
                 warna: warna);
             TambahLd(ldBaru);
+            globals.ayatDipilih.clear();
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -223,6 +229,7 @@ class _TambahLdState extends State<TambahLd> {
             Padding(
               padding: EdgeInsets.all(8),
               child: TextField(
+                controller: controllerJudul,
                 onChanged: (value) {
                   judul = value;
                 },
