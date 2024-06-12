@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
@@ -13,6 +14,8 @@ class DetailLd extends StatefulWidget {
 }
 
 class _DetailLdState extends State<DetailLd> {
+  DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+  String tanggalLd = "";
   LD detailLd = LD(
       id: 0,
       tanggal: "",
@@ -38,163 +41,164 @@ class _DetailLdState extends State<DetailLd> {
     // TODO: implement initState
     super.initState();
     _getLdDetail();
+    DateTime dateTimeLd = DateTime.parse(detailLd.tanggal);
+    print(dateTimeLd);
+    tanggalLd = format.format(dateTimeLd);
+
+    debugPrint(tanggalLd);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        // mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Container(
-              height: 80,
-              decoration: BoxDecoration(
-                  border: BorderDirectional(
-                      bottom: BorderSide(color: Colors.grey))),
-              child: Row(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          "Detail LD",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          // mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Container(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/User.jpg'),
-                        // minRadius: 50,
-                        radius: 30,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    detailLd.judul,
+                    style: TextStyle(
+                      fontSize: 21,
+                    ),
+                  ),
+                  Text(
+                    "LD Tanggal : " + tanggalLd + ", By : Christopher Kelvin",
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              )),
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Ayat",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(detailLd.ayat),
+                        ],
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "Christopher Kelvin",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Sabda Tuhan Bagi Saya",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              "Ditulis Pada tanggal 3 Juni 2024",
-                              style: TextStyle(
-                                fontSize: 10,
-                              ),
+                          ),
+                          Text(detailLd.sabda),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tanggapan Saya",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        )),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Judul LD",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        Text(detailLd.judul),
-                      ],
+                          Text(detailLd.tanggapan)
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Sabda Tuhan Bagi Saya",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tindakan Saya",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(detailLd.sabda),
-                      ],
+                          Text(detailLd.tindakan)
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tanggapan Saya",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Catatan",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(detailLd.tanggapan)
-                      ],
+                          Text(detailLd.catatan),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tindakan Saya",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hashtag",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(detailLd.tindakan)
-                      ],
+                          Text(detailLd.hashtag),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Catatan",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.person,
+                            size: 24.0,
                           ),
-                        ),
-                        Text(detailLd.catatan),
-                      ],
+                          Text("Pribadi")
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Hashtag",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(detailLd.hashtag),
-                      ],
-                    ),
-                  ),
-                ],
-              ))
-        ],
+                  ],
+                ))
+          ],
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/detailLd.dart';
+import 'package:lectio_divina/screen/tambahLd.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -35,7 +36,6 @@ class _LDKalenderState extends State<LDKalender> {
       selectedDay = day;
       focusedDay = focusDay;
       _selectedLD.value = _getLDForDay(selectedDay);
-      debugPrint(selectedDay.toString());
     });
   }
 
@@ -69,25 +69,15 @@ class _LDKalenderState extends State<LDKalender> {
     super.initState();
     selectedDay = _removeTime(DateTime.now());
     focusedDay = selectedDay;
-    // debugPrint(selectedDay.toString());
-    debugPrint(globals.MyLd.isEmpty.toString());
-    // !globals.MyLd.isEmpty
-    //     ? debugPrint(globals.MyLd[1].tanggal)
-    //     : debugPrint("");
     for (LD ld in globals.MyLd) {
       if (lds[DateTime.parse(ld.tanggal)] != null) {
         lds[DateTime.parse(ld.tanggal)]!.add(ld);
       } else {
         lds[DateTime.parse(ld.tanggal)!] = [ld];
       }
-      // lds.addAll({
-      //   DateTime.parse(ld.tanggal)!: [ld]
-      // });
     }
 
     _selectedLD = ValueNotifier(_getLDForDay(selectedDay!));
-    debugPrint(lds[selectedDay].toString());
-    debugPrint(lds.isEmpty.toString());
   }
 
   List<LD> _getLDForDay(DateTime day) {
@@ -106,14 +96,10 @@ class _LDKalenderState extends State<LDKalender> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            globals.currentIndex = 3;
+            globals.ayatDipilih.clear();
             globals.tanggalTerpilih = _removeTime(selectedDay);
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                          title: "My LD",
-                        )));
+                context, MaterialPageRoute(builder: (context) => TambahLd()));
           });
         },
         child: Icon(Icons.add),
@@ -274,16 +260,6 @@ class _LDKalenderState extends State<LDKalender> {
                                                   const EdgeInsets.symmetric(
                                                       vertical: 8.0),
                                               child:
-                                                  // Card(
-                                                  //   surfaceTintColor:
-                                                  //       Colors.transparent,
-                                                  //   elevation: 5,
-                                                  //   shape: RoundedRectangleBorder(
-                                                  //     borderRadius:
-                                                  //         BorderRadius.circular(
-                                                  //             15.0),
-                                                  //   ),
-                                                  //   child:
                                                   Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
@@ -388,25 +364,12 @@ class _LDKalenderState extends State<LDKalender> {
                                                                       (result) {
                                                                     if (result ==
                                                                         0) {
-                                                                      setState(
-                                                                          () {
-                                                                        globals
-                                                                            .idLdDetail = value[
-                                                                                index]
-                                                                            .id;
-                                                                        globals.currentIndex =
-                                                                            4;
-                                                                      });
                                                                       Navigator
                                                                           .push(
                                                                         context,
                                                                         MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              MyHomePage(
-                                                                            title:
-                                                                                "My LD",
-                                                                          ),
-                                                                        ),
+                                                                            builder: (context) =>
+                                                                                DetailLd()),
                                                                       );
                                                                     }
                                                                   },

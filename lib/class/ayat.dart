@@ -1,13 +1,13 @@
 class Ayat {
   String nomor;
-  int id_pasal;
+  String nomorPasal;
   String text;
-  int id_kitab;
+  String kitab;
   String title = "";
   Ayat(
       {required this.nomor,
-      required this.id_pasal,
+      required this.nomorPasal,
       required this.text,
-      required this.id_kitab,
+      required this.kitab,
       required this.title});
 }

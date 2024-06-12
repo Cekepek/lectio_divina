@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -21,80 +22,22 @@ Future<void> getLD() async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // final prefs = await SharedPreferences.getInstance();
-
-  // final String encodedData = LD.encode([
-  //   LD(
-  //       id: 1,
-  //       tanggal: "2024-05-23 00:00:00.000Z",
-  //       judul: "test",
-  //       ayat: "Kej 1:1",
-  //       sabda: "test",
-  //       tanggapan: "test",
-  //       tindakan: "test",
-  //       catatan: "test",
-  //       hashtag: "test",
-  //       warna: Color.fromRGBO(255, 0, 0, 1).toString()),
-  //   LD(
-  //       id: 2,
-  //       tanggal: "2024-05-23 00:00:00.000Z",
-  //       judul: "test",
-  //       ayat: "Kel 1:1",
-  //       sabda: "test",
-  //       tanggapan: "test",
-  //       tindakan: "test",
-  //       catatan: "test",
-  //       hashtag: "test",
-  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-  //   LD(
-  //       id: 3,
-  //       tanggal: "2024-05-24 00:00:00.000Z",
-  //       judul: "test",
-  //       ayat: "Kel 1:1",
-  //       sabda: "test",
-  //       tanggapan: "test",
-  //       tindakan: "test",
-  //       catatan: "test",
-  //       hashtag: "test",
-  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-  //   LD(
-  //       id: 4,
-  //       tanggal: "2024-05-25 00:00:00.000Z",
-  //       judul: "test",
-  //       ayat: "Ams 1:1",
-  //       sabda: "test",
-  //       tanggapan: "test",
-  //       tindakan: "test",
-  //       catatan: "test",
-  //       hashtag: "test",
-  //       warna: Color.fromRGBO(0, 255, 0, 1).toString()),
-  // ]);
-
-  // await prefs.setString('lds_key', encodedData);
-
-  // final String ldsstring = await prefs.getString('lds_key') ?? "";
-
-  // final List<LD> lds = LD.decode(ldsstring);
-
-  // globals.MyLd = lds;
   await initializeDateFormatting('id_ID', null).then((_) => runApp(MyApp()));
 }
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [
-  Home(),
-  Alkitab(),
-  LDKalender(),
-  TambahLd(),
-  DetailLd()
-];
+final List<Widget> _screens = [Home(), LDKalender()];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: Get.navigatorKey,
@@ -278,12 +221,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onTap: () {
                 setState(() {
-                  titleHome = "Alkitab";
-                  globals.currentIndex = 1;
+                  // titleHome = "Alkitab";
+                  // globals.currentIndex = 1;
                   globals.namaKitab = 0;
                   globals.bab = 0;
                   globals.ayat = "0";
-                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Alkitab()));
                 });
               },
             ),
@@ -300,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onTap: () {
               setState(() {
                 titleHome = "My LD";
-                globals.currentIndex = 2;
+                globals.currentIndex = 1;
                 Navigator.pop(context);
               });
             },

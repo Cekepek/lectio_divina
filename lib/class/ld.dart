@@ -3,14 +3,14 @@ import 'dart:convert';
 class LD {
   int id;
   String tanggal;
-  String judul;
-  String ayat;
-  String sabda;
-  String tanggapan;
-  String tindakan;
-  String catatan;
-  String hashtag;
-  String warna;
+  String judul = "";
+  String ayat = "";
+  String sabda = "";
+  String tanggapan = "";
+  String tindakan = "";
+  String catatan = "";
+  String hashtag = "";
+  String warna = "";
 
   LD({
     required this.id,

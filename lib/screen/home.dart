@@ -57,9 +57,9 @@ class _HomeState extends State<Home> {
           ayat = i["verse"];
           Ayat temp_ayat = new Ayat(
               nomor: i["verse"],
-              id_pasal: index_pasal,
+              nomorPasal: pasal,
               text: i["text"],
-              id_kitab: index_kitab,
+              kitab: globals.kitab[index_kitab].singkatan,
               title: i["title"]);
           globals.kitab[index_kitab].pasal[index_pasal].ayat.add(temp_ayat);
         }
