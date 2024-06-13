@@ -138,7 +138,27 @@ class _TambahLdState extends State<TambahLd>
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        Navigator.pop(context);
+        LD ldBaru = LD(
+            id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
+            tanggal: globals.tanggalTerpilih.toString(),
+            judul: judul,
+            ayat: ayat,
+            sabda: sabda,
+            tanggapan: tanggapan,
+            tindakan: tindakan,
+            catatan: catatan,
+            hashtag: hashtag,
+            warna: warna,
+            selesai: isCompleted());
+        TambahLd(ldBaru);
+        globals.ayatDipilih.clear();
+        globals.currentIndex = 1;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MyHomePage(
+                      title: "Lectio Divina",
+                    )));
       }
     });
     judul = "";
@@ -203,62 +223,86 @@ class _TambahLdState extends State<TambahLd>
   }
 
   void ldTersimpan() => showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => Dialog(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Lottie.asset('assets/animations/done.json',
-                    repeat: false,
-                    controller: animationController, onLoaded: (composition) {
-                  animationController.forward();
-                }),
-                Text(
-                  "LD Tersimpan",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset('assets/animations/done.json',
+                  repeat: false,
+                  controller: animationController, onLoaded: (composition) {
+                animationController.forward();
+              }),
+              Text(
+                "LD Tersimpan",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(
-                  height: 16,
-                )
-              ],
+              ),
+              const SizedBox(
+                height: 16,
+              )
+            ],
+          ),
+        ),
+      );
+  void backDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Data Belum Tersimpan"),
+          content: Text("Data LD belum tersimpan, apakah Anda ingin keluar ?"),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("BATAL")),
             ),
-          ));
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+                ldTersimpan();
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                  child: Text(
+                    "SIMPAN",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          "Tambah LD",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
           onPressed: () {
-            ldTersimpan();
-            Future.delayed(Duration(seconds: 4), () {
-              LD ldBaru = LD(
-                  id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
-                  tanggal: globals.tanggalTerpilih.toString(),
-                  judul: judul,
-                  ayat: ayat,
-                  sabda: sabda,
-                  tanggapan: tanggapan,
-                  tindakan: tindakan,
-                  catatan: catatan,
-                  hashtag: hashtag,
-                  warna: warna,
-                  selesai: isCompleted());
-              TambahLd(ldBaru);
-              globals.ayatDipilih.clear();
-              globals.currentIndex = 1;
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyHomePage(
-                            title: "Lectio Divina",
-                          )));
-            });
+            backDialog();
           },
           icon: Icon(
             Icons.arrow_back,
