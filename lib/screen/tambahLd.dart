@@ -252,11 +252,19 @@ class _TambahLdState extends State<TambahLd>
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Data Belum Tersimpan"),
-          content: Text("Data LD belum tersimpan, apakah Anda ingin keluar ?"),
+          content:
+              Text("Data LD belum tersimpan, apakah Anda ingin menyimpan LD ?"),
           actions: [
             MaterialButton(
               onPressed: () {
-                Navigator.pop(context);
+                globals.ayatDipilih.clear();
+                globals.currentIndex = 1;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: "Lectio Divina",
+                            )));
               },
               child: Container(
                   padding: EdgeInsets.all(15),
@@ -264,7 +272,7 @@ class _TambahLdState extends State<TambahLd>
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(width: 1, color: Colors.black),
                   ),
-                  child: Text("BATAL")),
+                  child: Text("TIDAK")),
             ),
             MaterialButton(
               onPressed: () {

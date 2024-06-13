@@ -376,6 +376,13 @@ class _LDKalenderState extends State<LDKalender> {
                                                                       (result) {
                                                                     if (result ==
                                                                         0) {
+                                                                      setState(
+                                                                          () {
+                                                                        globals
+                                                                            .idLdDetail = value[
+                                                                                index]
+                                                                            .id;
+                                                                      });
                                                                       Navigator
                                                                           .push(
                                                                         context,

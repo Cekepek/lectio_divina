@@ -380,12 +380,21 @@ class _AlkitabState extends State<Alkitab> {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               iconTheme: IconThemeData(color: Colors.white),
               actions: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TambahLd()));
+                PopupMenuButton(
+                    icon: Icon(Icons.more_vert),
+                    onSelected: (result) {
+                      if (result == 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TambahLd()),
+                        );
+                      }
                     },
-                    icon: Icon(Icons.menu))
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(value: 0, child: Text("Tambah LD"))
+                      ];
+                    }),
               ],
             ),
       body: Column(

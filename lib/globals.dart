@@ -17,6 +17,8 @@ String ayat = "0";
 
 DateTime waktuSaatIni = DateTime.now();
 DateTime tanggalTerpilih =
-    DateTime(waktuSaatIni.year, waktuSaatIni.month, waktuSaatIni.hour);
+    DateTime(waktuSaatIni.year, waktuSaatIni.month, waktuSaatIni.day);
 
 int idLdDetail = 0;
+
+int idLdEdit = 0;
