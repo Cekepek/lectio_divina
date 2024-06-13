@@ -26,7 +26,8 @@ class _DetailLdState extends State<DetailLd> {
       tindakan: "",
       catatan: "",
       hashtag: "",
-      warna: "");
+      warna: "",
+      selesai: false);
 
   void _getLdDetail() {
     for (LD ld in globals.MyLd) {

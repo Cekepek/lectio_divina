@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -113,6 +114,20 @@ class _TambahLdState extends State<TambahLd>
         .then((value) => setState(() {
               globals.tanggalTerpilih = value!;
             }));
+  }
+
+  bool isCompleted() {
+    if (judul != "" &&
+        ayat != "" &&
+        sabda != "" &&
+        tanggapan != "" &&
+        tindakan != "" &&
+        catatan != "" &&
+        hashtag != "") {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -232,7 +247,8 @@ class _TambahLdState extends State<TambahLd>
                   tindakan: tindakan,
                   catatan: catatan,
                   hashtag: hashtag,
-                  warna: warna);
+                  warna: warna,
+                  selesai: isCompleted());
               TambahLd(ldBaru);
               globals.ayatDipilih.clear();
               globals.currentIndex = 1;

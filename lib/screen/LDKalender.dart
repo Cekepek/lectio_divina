@@ -336,18 +336,31 @@ class _LDKalenderState extends State<LDKalender> {
                                                                         top: 8,
                                                                         bottom:
                                                                             8),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .person,
-                                                                      size:
-                                                                          24.0,
-                                                                    ),
-                                                                    Text(
-                                                                        "Pribadi")
-                                                                  ],
-                                                                ),
+                                                                child: value[
+                                                                            index]
+                                                                        .selesai
+                                                                    ? Row(
+                                                                        children: [
+                                                                          Icon(
+                                                                            Icons.check_box,
+                                                                            size:
+                                                                                24.0,
+                                                                          ),
+                                                                          Text(
+                                                                              "Selesai")
+                                                                        ],
+                                                                      )
+                                                                    : Row(
+                                                                        children: [
+                                                                          Icon(
+                                                                            Icons.check_box_outline_blank,
+                                                                            size:
+                                                                                24.0,
+                                                                          ),
+                                                                          Text(
+                                                                              "Belum Selesai")
+                                                                        ],
+                                                                      ),
                                                               )
                                                             ],
                                                           ),
@@ -461,15 +474,28 @@ class _LDKalenderState extends State<LDKalender> {
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         top: 8, bottom: 8),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.person,
-                                                          size: 24.0,
-                                                        ),
-                                                        Text("Pribadi")
-                                                      ],
-                                                    ),
+                                                    child: monthLd[index]
+                                                            .selesai
+                                                        ? Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons.check_box,
+                                                                size: 24.0,
+                                                              ),
+                                                              Text("Selesai")
+                                                            ],
+                                                          )
+                                                        : Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .check_box_outline_blank,
+                                                                size: 24.0,
+                                                              ),
+                                                              Text(
+                                                                  "Belum Selesai")
+                                                            ],
+                                                          ),
                                                   )
                                                 ],
                                               ),

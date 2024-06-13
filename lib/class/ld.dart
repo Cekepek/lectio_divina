@@ -11,6 +11,7 @@ class LD {
   String catatan = "";
   String hashtag = "";
   String warna = "";
+  bool selesai = false;
 
   LD({
     required this.id,
@@ -23,21 +24,22 @@ class LD {
     required this.catatan,
     required this.hashtag,
     required this.warna,
+    required this.selesai,
   });
 
   factory LD.fromJson(Map<String, dynamic> jsonData) {
     return LD(
-      id: jsonData['id'],
-      tanggal: jsonData['tanggal'],
-      judul: jsonData['judul'],
-      ayat: jsonData['ayat'],
-      sabda: jsonData['sabda'],
-      tanggapan: jsonData['tanggapan'],
-      tindakan: jsonData['tindakan'],
-      catatan: jsonData['catatan'],
-      hashtag: jsonData['hashtag'],
-      warna: jsonData['warna'],
-    );
+        id: jsonData['id'],
+        tanggal: jsonData['tanggal'],
+        judul: jsonData['judul'],
+        ayat: jsonData['ayat'],
+        sabda: jsonData['sabda'],
+        tanggapan: jsonData['tanggapan'],
+        tindakan: jsonData['tindakan'],
+        catatan: jsonData['catatan'],
+        hashtag: jsonData['hashtag'],
+        warna: jsonData['warna'],
+        selesai: jsonData['selesai']);
   }
 
   static Map<String, dynamic> toMap(LD ld) => {
@@ -50,7 +52,8 @@ class LD {
         'tindakan': ld.tindakan,
         'catatan': ld.catatan,
         'hashtag': ld.hashtag,
-        'warna': ld.warna
+        'warna': ld.warna,
+        'selesai': ld.selesai
       };
 
   static String encode(List<LD> lds) => json.encode(
