@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/alkitab.dart';
-import 'package:lectio_divina/main.dart';
 
 class PilihAyat extends StatefulWidget {
   final int kitab;

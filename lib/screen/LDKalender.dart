@@ -6,10 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 
 import 'package:lectio_divina/globals.dart' as globals;
-import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/detailLd.dart';
+import 'package:lectio_divina/screen/editLd.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class LDKalender extends StatefulWidget {
@@ -73,11 +72,11 @@ class _LDKalenderState extends State<LDKalender> {
       if (lds[DateTime.parse(ld.tanggal)] != null) {
         lds[DateTime.parse(ld.tanggal)]!.add(ld);
       } else {
-        lds[DateTime.parse(ld.tanggal)!] = [ld];
+        lds[DateTime.parse(ld.tanggal)] = [ld];
       }
     }
 
-    _selectedLD = ValueNotifier(_getLDForDay(selectedDay!));
+    _selectedLD = ValueNotifier(_getLDForDay(selectedDay));
   }
 
   List<LD> _getLDForDay(DateTime day) {
@@ -391,16 +390,40 @@ class _LDKalenderState extends State<LDKalender> {
                                                                                 DetailLd()),
                                                                       );
                                                                     }
+                                                                    if (result ==
+                                                                        1) {
+                                                                      setState(
+                                                                          () {
+                                                                        globals
+                                                                            .idLdEdit = value[
+                                                                                index]
+                                                                            .id;
+                                                                      });
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                EditLd()),
+                                                                      );
+                                                                    }
                                                                   },
                                                                   itemBuilder:
                                                                       (BuildContext
                                                                           context) {
                                                                     return [
                                                                       PopupMenuItem(
-                                                                          value:
-                                                                              0,
-                                                                          child:
-                                                                              Text("Detail"))
+                                                                        value:
+                                                                            0,
+                                                                        child: Text(
+                                                                            "Detail"),
+                                                                      ),
+                                                                      PopupMenuItem(
+                                                                        value:
+                                                                            1,
+                                                                        child: Text(
+                                                                            "Edit"),
+                                                                      )
                                                                     ];
                                                                   }),
                                                         ),
@@ -520,9 +543,22 @@ class _LDKalenderState extends State<LDKalender> {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DetailLd(),
-                                                        ),
+                                                            builder:
+                                                                (context) =>
+                                                                    DetailLd()),
+                                                      );
+                                                    }
+                                                    if (result == 1) {
+                                                      setState(() {
+                                                        globals.idLdEdit =
+                                                            monthLd[index].id;
+                                                      });
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    EditLd()),
                                                       );
                                                     }
                                                   },
@@ -530,8 +566,13 @@ class _LDKalenderState extends State<LDKalender> {
                                                       (BuildContext context) {
                                                     return [
                                                       PopupMenuItem(
-                                                          value: 0,
-                                                          child: Text("Detail"))
+                                                        value: 0,
+                                                        child: Text("Detail"),
+                                                      ),
+                                                      PopupMenuItem(
+                                                        value: 1,
+                                                        child: Text("Edit"),
+                                                      )
                                                     ];
                                                   }),
                                             ),

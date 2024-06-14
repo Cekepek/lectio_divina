@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -251,9 +249,15 @@ class _TambahLdState extends State<TambahLd>
   void backDialog() => showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Data Belum Tersimpan"),
-          content:
-              Text("Data LD belum tersimpan, apakah Anda ingin menyimpan LD ?"),
+          title: Text(
+            "Data Belum Tersimpan",
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            "Data LD belum tersimpan, apakah Anda ingin menyimpan LD ?",
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
             MaterialButton(
               onPressed: () {
