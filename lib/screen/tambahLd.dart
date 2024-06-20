@@ -36,6 +36,7 @@ class _TambahLdState extends State<TambahLd>
   late String catatan;
   late String hashtag;
   late String warna;
+  bool selesai = false;
   late String headerSabda;
   late String tempSabda;
   // Daftar warna yang akan ditampilkan dalam dropdown
@@ -115,20 +116,19 @@ class _TambahLdState extends State<TambahLd>
               globals.tanggalTerpilih = value!;
             }));
   }
-
-  bool isCompleted() {
-    if (judul != "" &&
-        ayat != "" &&
-        sabda != "" &&
-        tanggapan != "" &&
-        tindakan != "" &&
-        catatan != "" &&
-        hashtag != "") {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // bool isCompleted() {
+  //   if (judul != "" &&
+  //       ayat != "" &&
+  //       sabda != "" &&
+  //       tanggapan != "" &&
+  //       tindakan != "" &&
+  //       catatan != "" &&
+  //       hashtag != "") {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   @override
   void initState() {
@@ -149,7 +149,7 @@ class _TambahLdState extends State<TambahLd>
             catatan: catatan,
             hashtag: hashtag,
             warna: warna,
-            selesai: isCompleted());
+            selesai: selesai);
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
@@ -524,51 +524,58 @@ class _TambahLdState extends State<TambahLd>
                         labelText: 'Catatan',
                         hintText: 'Masukkan catatan yang ingin anda sampaikan'),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: TextField(
-                      onChanged: (value) {
-                        hashtag = value;
-                      },
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Hashtag',
-                          hintText: 'Masukkan hashtag'),
-                    ),
+                  TextField(
+                    onChanged: (value) {
+                      hashtag = value;
+                    },
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Hashtag',
+                        hintText: 'Masukkan hashtag'),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Warna Tagline"),
-                        GestureDetector(
-                          onTap: () {
-                            colorPicker(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(width: 1, color: Colors.grey)),
-                            child: Row(children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _selectedColor),
-                                width: 24,
-                                height: 24,
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                size: 24.0,
-                              ),
-                            ]),
-                          ),
-                        )
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Warna Tagline"),
+                      GestureDetector(
+                        onTap: () {
+                          colorPicker(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(width: 1, color: Colors.grey)),
+                          child: Row(children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _selectedColor),
+                              width: 24,
+                              height: 24,
+                            ),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              size: 24.0,
+                            ),
+                          ]),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Sudah Selesai ? "),
+                      Checkbox(
+                        value: selesai,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            selesai = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                   // GestureDetector(
                   //   onTap: () {

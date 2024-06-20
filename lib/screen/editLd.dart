@@ -42,6 +42,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   final TextEditingController catatan = TextEditingController();
   final TextEditingController hashtag = TextEditingController();
   late Color warna;
+  bool selesai = false;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     hashtag.text = editLd.hashtag;
     warna =
         Color(int.parse(editLd.warna.split('(0x')[1].split(')')[0], radix: 16));
+    selesai = editLd.selesai;
 
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
@@ -75,7 +77,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
         //     hashtag: hashtag.text,
         //     warna: warna,
         //     selesai: isCompleted());
-        editLd.selesai = isCompleted();
+        editLd.selesai = selesai;
         EditLd(editLd);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
@@ -95,19 +97,19 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  bool isCompleted() {
-    if (judul.text != "" &&
-        ayat.text != "" &&
-        sabda.text != "" &&
-        tanggapan.text != "" &&
-        tindakan.text != "" &&
-        catatan.text != "" &&
-        hashtag.text != "") {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // bool isCompleted() {
+  //   if (judul.text != "" &&
+  //       ayat.text != "" &&
+  //       sabda.text != "" &&
+  //       tanggapan.text != "" &&
+  //       tindakan.text != "" &&
+  //       catatan.text != "" &&
+  //       hashtag.text != "") {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   void _getLdToEdit() {
     for (LD ld in globals.MyLd) {
@@ -431,52 +433,59 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         labelText: 'Catatan',
                         hintText: 'Masukkan catatan yang ingin anda sampaikan'),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: TextField(
-                      controller: hashtag,
-                      onChanged: (value) {
-                        hashtag.text = value;
-                        editLd.hashtag = value;
-                      },
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Hashtag',
-                          hintText: 'Masukkan hashtag'),
-                    ),
+                  TextField(
+                    controller: hashtag,
+                    onChanged: (value) {
+                      hashtag.text = value;
+                      editLd.hashtag = value;
+                    },
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Hashtag',
+                        hintText: 'Masukkan hashtag'),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Warna Tagline"),
-                        GestureDetector(
-                          onTap: () {
-                            colorPicker(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(width: 1, color: Colors.grey)),
-                            child: Row(children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle, color: warna),
-                                width: 24,
-                                height: 24,
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                size: 24.0,
-                              ),
-                            ]),
-                          ),
-                        )
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Warna Tagline"),
+                      GestureDetector(
+                        onTap: () {
+                          colorPicker(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(width: 1, color: Colors.grey)),
+                          child: Row(children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: warna),
+                              width: 24,
+                              height: 24,
+                            ),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              size: 24.0,
+                            ),
+                          ]),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Sudah Selesai ? "),
+                      Checkbox(
+                        value: selesai,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            selesai = value!;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
