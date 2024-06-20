@@ -221,15 +221,16 @@ class _TambahLdState extends State<TambahLd>
               if (int.parse(ayatTerpilih.nomor) -
                       int.parse(globals.ayatDipilih[index - 1].nomor) ==
                   1) {
-                if ((globals.ayatDipilih[index + 1].kitab ==
-                            ayatTerpilih.kitab &&
-                        globals.ayatDipilih[index + 1].nomorPasal ==
-                            ayatTerpilih.nomorPasal) ||
-                    index == globals.ayatDipilih.length - 1) {
-                  if (int.parse(ayatTerpilih.nomor) + 1 !=
-                      int.parse(globals.ayatDipilih[index + 1].nomor)) {
-                    ayat += "-" + ayatTerpilih.nomor;
-                    headerSabda += "-" + ayatTerpilih.nomor;
+                if (index != globals.ayatDipilih.length - 1) {
+                  if ((globals.ayatDipilih[index + 1].kitab ==
+                          ayatTerpilih.kitab &&
+                      globals.ayatDipilih[index + 1].nomorPasal ==
+                          ayatTerpilih.nomorPasal)) {
+                    if (int.parse(ayatTerpilih.nomor) + 1 !=
+                        int.parse(globals.ayatDipilih[index + 1].nomor)) {
+                      ayat += "-" + ayatTerpilih.nomor;
+                      headerSabda += "-" + ayatTerpilih.nomor;
+                    }
                   }
                 } else {
                   ayat += "-" + ayatTerpilih.nomor;

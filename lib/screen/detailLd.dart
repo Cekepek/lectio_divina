@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:lectio_divina/screen/editLd.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DetailLd extends StatefulWidget {
   const DetailLd({super.key});
@@ -59,6 +61,31 @@ class _DetailLdState extends State<DetailLd> {
           "Detail LD",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
+        actions: [
+          PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              onSelected: (result) {
+                if (result == 0) {
+                  globals.idLdEdit = globals.idLdDetail;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditLd()),
+                  );
+                }
+                if (result == 1) {
+                  Share.share("*" +
+                      detailLd.judul +
+                      "*\n" +
+                      "*" +
+                      detailLd.tanggal +
+                      "*\n" +
+                      "");
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [PopupMenuItem(value: 0, child: Text("Edit LD"))];
+              }),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -80,7 +107,7 @@ class _DetailLdState extends State<DetailLd> {
                     ),
                   ),
                   Text(
-                    "LD Tanggal : " + tanggalLd + ", By : Christopher Kelvin",
+                    "LD Tanggal : " + tanggalLd,
                     style: TextStyle(
                       fontSize: 14,
                     ),
