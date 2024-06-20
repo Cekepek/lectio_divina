@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> readJson() async {
+    int idAyat = 0;
     String kitab = "0";
     int index_kitab = -1;
     String pasal = "0";
@@ -61,7 +62,9 @@ class _HomeState extends State<Home> {
           if (i["title"] != "") {
             title = i["title"];
           }
+          idAyat += 1;
           Ayat temp_ayat = new Ayat(
+              id: idAyat,
               nomor: i["verse"],
               nomorPasal: pasal,
               text: i["text"],

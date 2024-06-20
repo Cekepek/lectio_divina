@@ -36,6 +36,8 @@ class _TambahLdState extends State<TambahLd>
   late String catatan;
   late String hashtag;
   late String warna;
+  late String headerSabda;
+  late String tempSabda;
   // Daftar warna yang akan ditampilkan dalam dropdown
   final List<Color> _colors = [
     Color.fromRGBO(255, 0, 0, 1),
@@ -161,26 +163,95 @@ class _TambahLdState extends State<TambahLd>
     });
     judul = "";
     ayat = "";
+    headerSabda = "";
+    tempSabda = "";
     sabda = "";
     if (globals.ayatDipilih.isEmpty) {
       ayat = "";
       sabda = "";
+      headerSabda = "";
+      tempSabda = "";
       judul = "";
     } else {
       judul = globals.ayatDipilih[0].titleIncluded;
       controllerJudul = TextEditingController(text: judul);
+      int index = 0;
       for (Ayat ayatTerpilih in globals.ayatDipilih) {
-        ayat += ayatTerpilih.kitab +
-            " " +
-            ayatTerpilih.nomorPasal +
-            ":" +
-            ayatTerpilih.nomor;
-        controller = TextEditingController(text: ayat);
-        sabda += ayatTerpilih.nomor +
-            " " +
-            convertUnicode(convertSpecialString(ayatTerpilih.text));
-        controllerSabda = TextEditingController(text: sabda);
+        if (ayat == "") {
+          ayat += ayatTerpilih.kitab +
+              " " +
+              ayatTerpilih.nomorPasal +
+              ":" +
+              ayatTerpilih.nomor;
+          headerSabda = ayat;
+          tempSabda += ayatTerpilih.nomor + "." + ayatTerpilih.text + " ";
+        } else {
+          if (ayatTerpilih.kitab != globals.ayatDipilih[index - 1].kitab) {
+            ayat += "; " +
+                ayatTerpilih.kitab +
+                " " +
+                ayatTerpilih.nomorPasal +
+                ":" +
+                ayatTerpilih.nomor;
+            sabda += headerSabda +
+                "\n\n" +
+                convertUnicode(convertSpecialString(tempSabda)) +
+                "\n\n";
+            headerSabda = ayatTerpilih.kitab +
+                " " +
+                ayatTerpilih.nomorPasal +
+                ":" +
+                ayatTerpilih.nomor;
+            tempSabda = ayatTerpilih.nomor + "." + ayatTerpilih.text + " ";
+          } else {
+            if (ayatTerpilih.nomorPasal !=
+                globals.ayatDipilih[index - 1].nomorPasal) {
+              ayat += "." + ayatTerpilih.nomorPasal + ":" + ayatTerpilih.nomor;
+              sabda += headerSabda +
+                  "\n\n" +
+                  convertUnicode(convertSpecialString(tempSabda)) +
+                  "\n\n";
+              headerSabda = ayatTerpilih.kitab +
+                  " " +
+                  ayatTerpilih.nomorPasal +
+                  ":" +
+                  ayatTerpilih.nomor;
+              tempSabda = ayatTerpilih.nomor + "." + ayatTerpilih.text + " ";
+            } else {
+              if (int.parse(ayatTerpilih.nomor) -
+                      int.parse(globals.ayatDipilih[index - 1].nomor) ==
+                  1) {
+                if ((globals.ayatDipilih[index + 1].kitab ==
+                            ayatTerpilih.kitab &&
+                        globals.ayatDipilih[index + 1].nomorPasal ==
+                            ayatTerpilih.nomorPasal) ||
+                    index == globals.ayatDipilih.length - 1) {
+                  if (int.parse(ayatTerpilih.nomor) + 1 !=
+                      int.parse(globals.ayatDipilih[index + 1].nomor)) {
+                    ayat += "-" + ayatTerpilih.nomor;
+                    headerSabda += "-" + ayatTerpilih.nomor;
+                  }
+                } else {
+                  ayat += "-" + ayatTerpilih.nomor;
+                  headerSabda += "-" + ayatTerpilih.nomor;
+                }
+              } else {
+                ayat += "," + ayatTerpilih.nomor;
+                headerSabda += "," + ayatTerpilih.nomor;
+              }
+              tempSabda += ayatTerpilih.nomor + "." + ayatTerpilih.text + " ";
+            }
+          }
+        }
+        if (index == globals.ayatDipilih.length - 1) {
+          sabda += headerSabda +
+              "\n\n" +
+              convertUnicode(convertSpecialString(tempSabda));
+        }
+        index += 1;
       }
+      controllerSabda = TextEditingController(text: sabda);
+      controller = TextEditingController(text: ayat);
     }
     tanggapan = "";
     tindakan = "";

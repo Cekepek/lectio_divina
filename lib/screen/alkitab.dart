@@ -4,6 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:lectio_divina/class/ayat.dart';
+import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
 import 'package:lectio_divina/screen/pilihKitab.dart';
@@ -479,6 +481,11 @@ class _AlkitabState extends State<Alkitab> {
                                           .kitab[book]
                                           .pasal[chapter]
                                           .ayat[index]);
+                                  globals.ayatDipilih
+                                      .sort((a, b) => a.id.compareTo(b.id));
+                                  for (Ayat ayat in globals.ayatDipilih) {
+                                    debugPrint(ayat.id.toString());
+                                  }
                                 });
                               },
                             )
@@ -533,6 +540,11 @@ class _AlkitabState extends State<Alkitab> {
                                     .kitab[book].pasal[chapter].ayat[index])
                                 : globals.ayatDipilih.add(globals
                                     .kitab[book].pasal[chapter].ayat[index]);
+                            globals.ayatDipilih
+                                .sort((a, b) => a.id.compareTo(b.id));
+                            for (Ayat ayat in globals.ayatDipilih) {
+                              debugPrint(ayat.id.toString());
+                            }
                           });
                         },
                       ),

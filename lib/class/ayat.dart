@@ -1,4 +1,5 @@
 class Ayat {
+  int id;
   String nomor;
   String nomorPasal;
   String text;
@@ -6,7 +7,8 @@ class Ayat {
   String title = "";
   String titleIncluded = "";
   Ayat(
-      {required this.nomor,
+      {required this.id,
+      required this.nomor,
       required this.nomorPasal,
       required this.text,
       required this.kitab,
