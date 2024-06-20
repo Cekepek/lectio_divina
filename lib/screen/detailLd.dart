@@ -83,7 +83,10 @@ class _DetailLdState extends State<DetailLd> {
                 }
               },
               itemBuilder: (BuildContext context) {
-                return [PopupMenuItem(value: 0, child: Text("Edit LD"))];
+                return [
+                  PopupMenuItem(value: 0, child: Text("Edit LD")),
+                  PopupMenuItem(value: 1, child: Text("Bagikan"))
+                ];
               }),
         ],
       ),
