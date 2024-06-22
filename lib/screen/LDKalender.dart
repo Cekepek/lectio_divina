@@ -9,6 +9,7 @@ import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/detailLd.dart';
 import 'package:lectio_divina/screen/editLd.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class LDKalender extends StatefulWidget {
@@ -27,6 +28,7 @@ class _LDKalenderState extends State<LDKalender> {
   Map<DateTime, List<LD>> lds = {};
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
   DateFormat formatMonth = new DateFormat("MMMM yyyy", "id_ID");
+  DateFormat formatBagikan = new DateFormat("EEEE dd MMMM yyyy", "id_ID");
   late final ValueNotifier<List<LD>> _selectedLD;
   List<LD> monthLd = [];
 
@@ -407,6 +409,35 @@ class _LDKalenderState extends State<LDKalender> {
                                                                                 EditLd()),
                                                                       );
                                                                     }
+                                                                    if (result ==
+                                                                        2) {
+                                                                      Share.share("*" +
+                                                                          value[index]
+                                                                              .judul +
+                                                                          "*\n\n" +
+                                                                          "*" +
+                                                                          formatBagikan.format(DateTime.parse(value[index]
+                                                                              .tanggal)) +
+                                                                          "*\n\n" +
+                                                                          "*Ayat : " +
+                                                                          value[index]
+                                                                              .ayat +
+                                                                          "*\n\n" +
+                                                                          value[index]
+                                                                              .sabda +
+                                                                          "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                                                          value[index]
+                                                                              .sabdaBagiSaya +
+                                                                          "\n\n*Tanggapan :*\n" +
+                                                                          value[index]
+                                                                              .tanggapan +
+                                                                          "\n\n*Tindakan :*\n" +
+                                                                          value[index]
+                                                                              .tindakan +
+                                                                          "\n\n*Catatan :*\n" +
+                                                                          value[index]
+                                                                              .catatan);
+                                                                    }
                                                                   },
                                                                   itemBuilder:
                                                                       (BuildContext
@@ -423,6 +454,12 @@ class _LDKalenderState extends State<LDKalender> {
                                                                             1,
                                                                         child: Text(
                                                                             "Edit"),
+                                                                      ),
+                                                                      PopupMenuItem(
+                                                                        value:
+                                                                            2,
+                                                                        child: Text(
+                                                                            "Bagikan"),
                                                                       )
                                                                     ];
                                                                   }),
@@ -561,6 +598,33 @@ class _LDKalenderState extends State<LDKalender> {
                                                                     EditLd()),
                                                       );
                                                     }
+                                                    if (result == 2) {
+                                                      Share.share("*" +
+                                                          monthLd[index].judul +
+                                                          "*\n\n" +
+                                                          "*" +
+                                                          formatBagikan.format(
+                                                              DateTime.parse(
+                                                                  monthLd[index]
+                                                                      .tanggal)) +
+                                                          "*\n\n" +
+                                                          "*Ayat : " +
+                                                          monthLd[index].ayat +
+                                                          "*\n\n" +
+                                                          monthLd[index].sabda +
+                                                          "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                                          monthLd[index]
+                                                              .sabdaBagiSaya +
+                                                          "\n\n*Tanggapan :*\n" +
+                                                          monthLd[index]
+                                                              .tanggapan +
+                                                          "\n\n*Tindakan :*\n" +
+                                                          monthLd[index]
+                                                              .tindakan +
+                                                          "\n\n*Catatan :*\n" +
+                                                          monthLd[index]
+                                                              .catatan);
+                                                    }
                                                   },
                                                   itemBuilder:
                                                       (BuildContext context) {
@@ -572,6 +636,10 @@ class _LDKalenderState extends State<LDKalender> {
                                                       PopupMenuItem(
                                                         value: 1,
                                                         child: Text("Edit"),
+                                                      ),
+                                                      PopupMenuItem(
+                                                        value: 2,
+                                                        child: Text("Bagikan"),
                                                       )
                                                     ];
                                                   }),

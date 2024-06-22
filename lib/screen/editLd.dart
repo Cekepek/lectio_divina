@@ -27,6 +27,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       judul: "",
       ayat: "",
       sabda: "",
+      sabdaBagiSaya: "",
       tanggapan: "",
       tindakan: "",
       catatan: "",
@@ -37,6 +38,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   final TextEditingController judul = TextEditingController();
   final TextEditingController ayat = TextEditingController();
   final TextEditingController sabda = TextEditingController();
+  final TextEditingController sabdaBagiSaya = TextEditingController();
   final TextEditingController tanggapan = TextEditingController();
   final TextEditingController tindakan = TextEditingController();
   final TextEditingController catatan = TextEditingController();
@@ -53,6 +55,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     judul.text = editLd.judul;
     ayat.text = editLd.ayat;
     sabda.text = editLd.sabda;
+    sabdaBagiSaya.text = editLd.sabdaBagiSaya;
     tanggapan.text = editLd.tanggapan;
     tindakan.text = editLd.tindakan;
     catatan.text = editLd.catatan;
@@ -355,6 +358,29 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                     onChanged: (value) {
                       sabda.text = value;
                       editLd.sabda = value;
+                    },
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 4,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Sabda Tuhan',
+                        hintText: 'Masukkan isi sabda Tuhan'),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Wrap(
+                runSpacing: 10,
+                spacing: 10,
+                children: [
+                  TextField(
+                    controller: sabdaBagiSaya,
+                    onChanged: (value) {
+                      sabdaBagiSaya.text = value;
+                      editLd.sabdaBagiSaya = value;
                     },
                     keyboardType: TextInputType.multiline,
                     maxLines: null,

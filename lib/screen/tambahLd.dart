@@ -31,6 +31,7 @@ class _TambahLdState extends State<TambahLd>
   late String judul;
   late String ayat;
   late String sabda;
+  late String sabdaBagiSaya;
   late String tanggapan;
   late String tindakan;
   late String catatan;
@@ -81,30 +82,33 @@ class _TambahLdState extends State<TambahLd>
     return input;
   }
 
-  void colorPicker(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text('Pick Your Color'),
-            content: TextButton(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BlockPicker(
-                      pickerColor: _selectedColor,
-                      availableColors: _colors,
-                      onColorChanged: (color) => setState(() {
-                            _selectedColor = color;
-                            warna = _selectedColor.toString();
-                          })),
-                  Text(
-                    'SELECT',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
+  void colorPicker(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Pick Your Color'),
+              content: TextButton(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BlockPicker(
+                        pickerColor: _selectedColor,
+                        availableColors: _colors,
+                        onColorChanged: (color) => setState(() {
+                              _selectedColor = color;
+                              warna = _selectedColor.toString();
+                            })),
+                    Text(
+                      'SELECT',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+                onPressed: () => Navigator.of(context).pop(),
               ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ));
+            ));
+  }
 
   void _showDatePicker() {
     showDatePicker(
@@ -144,6 +148,7 @@ class _TambahLdState extends State<TambahLd>
             judul: judul,
             ayat: ayat,
             sabda: sabda,
+            sabdaBagiSaya: sabdaBagiSaya,
             tanggapan: tanggapan,
             tindakan: tindakan,
             catatan: catatan,
@@ -254,6 +259,7 @@ class _TambahLdState extends State<TambahLd>
       controllerSabda = TextEditingController(text: sabda);
       controller = TextEditingController(text: ayat);
     }
+    sabdaBagiSaya = "";
     tanggapan = "";
     tindakan = "";
     catatan = "";
@@ -453,6 +459,27 @@ class _TambahLdState extends State<TambahLd>
                     controller: controllerSabda,
                     onChanged: (value) {
                       sabda = value;
+                    },
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 4,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Sabda Tuhan',
+                        hintText: 'Masukkan isi sabda Tuhan'),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Wrap(
+                runSpacing: 10,
+                spacing: 10,
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      sabdaBagiSaya = value;
                     },
                     keyboardType: TextInputType.multiline,
                     maxLines: null,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
@@ -16,7 +17,7 @@ class DetailLd extends StatefulWidget {
 }
 
 class _DetailLdState extends State<DetailLd> {
-  DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+  DateFormat format = new DateFormat("EEEE dd MMMM yyyy", "id_ID");
   String tanggalLd = "";
   LD detailLd = LD(
       id: 0,
@@ -24,6 +25,7 @@ class _DetailLdState extends State<DetailLd> {
       judul: "",
       ayat: "",
       sabda: "",
+      sabdaBagiSaya: "",
       tanggapan: "",
       tindakan: "",
       catatan: "",
@@ -75,11 +77,22 @@ class _DetailLdState extends State<DetailLd> {
                 if (result == 1) {
                   Share.share("*" +
                       detailLd.judul +
-                      "*\n" +
+                      "*\n\n" +
                       "*" +
-                      detailLd.tanggal +
-                      "*\n" +
-                      "");
+                      tanggalLd +
+                      "*\n\n" +
+                      "*Ayat : " +
+                      detailLd.ayat +
+                      "*\n\n" +
+                      detailLd.sabda +
+                      "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                      detailLd.sabdaBagiSaya +
+                      "\n\n*Tanggapan :*\n" +
+                      detailLd.tanggapan +
+                      "\n\n*Tindakan :*\n" +
+                      detailLd.tindakan +
+                      "\n\n*Catatan :*\n" +
+                      detailLd.catatan);
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -97,32 +110,35 @@ class _DetailLdState extends State<DetailLd> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Container(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    detailLd.judul,
-                    style: TextStyle(
-                      fontSize: 21,
-                    ),
-                  ),
-                  Text(
-                    "LD Tanggal : " + tanggalLd,
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              )),
-            ),
-            Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              detailLd.judul,
+                              style: TextStyle(
+                                fontSize: 24,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Tanggal : " + tanggalLd,
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Column(
@@ -144,12 +160,27 @@ class _DetailLdState extends State<DetailLd> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Sabda Tuhan Bagi Saya",
+                            "Sabda Tuhan",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(detailLd.sabda),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Sabda Tuhan Bagi Saya",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(detailLd.sabdaBagiSaya),
                         ],
                       ),
                     ),

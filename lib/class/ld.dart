@@ -6,6 +6,7 @@ class LD {
   String judul = "";
   String ayat = "";
   String sabda = "";
+  String sabdaBagiSaya = "";
   String tanggapan = "";
   String tindakan = "";
   String catatan = "";
@@ -19,6 +20,7 @@ class LD {
     required this.judul,
     required this.ayat,
     required this.sabda,
+    required this.sabdaBagiSaya,
     required this.tanggapan,
     required this.tindakan,
     required this.catatan,
@@ -34,6 +36,7 @@ class LD {
         judul: jsonData['judul'],
         ayat: jsonData['ayat'],
         sabda: jsonData['sabda'],
+        sabdaBagiSaya: jsonData['sabdaBagiSaya'],
         tanggapan: jsonData['tanggapan'],
         tindakan: jsonData['tindakan'],
         catatan: jsonData['catatan'],
@@ -48,6 +51,7 @@ class LD {
         'judul': ld.judul,
         'ayat': ld.ayat,
         'sabda': ld.sabda,
+        'sabdaBagiSaya': ld.sabdaBagiSaya,
         'tanggapan': ld.tanggapan,
         'tindakan': ld.tindakan,
         'catatan': ld.catatan,
