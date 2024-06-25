@@ -273,7 +273,15 @@ class _AlkitabState extends State<Alkitab> {
               ),
             ),
             onTap: () {
-              print("Ini Komunitas");
+              setState(() {
+                globals.currentIndex = 2;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: "Komunitas",
+                            )));
+              });
             },
           ),
           Padding(

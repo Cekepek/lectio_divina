@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lectio_divina/class/komunitas.dart';
+import 'package:lectio_divina/globals.dart' as globals;
+import 'package:lectio_divina/screen/detailKomunitas.dart';
 
 class Komunitas extends StatefulWidget {
   const Komunitas({super.key});
@@ -11,13 +12,6 @@ class Komunitas extends StatefulWidget {
 }
 
 class _KomunitasState extends State<Komunitas> {
-  List<KomunitasClass> listKomunitas = [
-    KomunitasClass(
-        id: 1,
-        nama: "Paroki Santa Maria Tak Bercela",
-        bacaanHariIni: "Kel 24:3-8")
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,30 +24,42 @@ class _KomunitasState extends State<Komunitas> {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   controller: ScrollController(),
-                  itemCount: listKomunitas.length,
+                  itemCount: globals.listKomunitas.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4.0,
-                              spreadRadius: 2.0,
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          globals.komunitasTerpilih = index;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailKomunitas()),
+                          );
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4.0,
+                                spreadRadius: 2.0,
                               ),
-                              child: Text(listKomunitas[index].nama)),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(globals.listKomunitas[index].nama)),
+                          ),
                         ),
                       ),
                     );
