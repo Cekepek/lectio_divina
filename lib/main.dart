@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:lectio_divina/screen/LDKalender.dart';
 import 'package:lectio_divina/screen/alkitab.dart';
 import 'package:lectio_divina/screen/home.dart';
+import 'package:lectio_divina/screen/komunitas.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,7 @@ Future<void> main() async {
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [Home(), LDKalender()];
+final List<Widget> _screens = [Home(), LDKalender(), Komunitas()];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -270,7 +271,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              print("Ini Komunitas");
+              setState(() {
+                titleHome = "Komunitas";
+                globals.currentIndex = 2;
+                Navigator.pop(context);
+              });
             },
           ),
           Padding(
