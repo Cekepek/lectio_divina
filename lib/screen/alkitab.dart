@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lectio_divina/class/ayat.dart';
-import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
 import 'package:lectio_divina/screen/pilihKitab.dart';

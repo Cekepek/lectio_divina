@@ -1,6 +1,8 @@
 library my_prj.globals;
 
+import 'package:flutter/material.dart';
 import 'package:lectio_divina/class/ayat.dart';
+import 'package:lectio_divina/class/bacaan.dart';
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/komunitas.dart';
 import 'package:lectio_divina/class/ld.dart';
@@ -26,14 +28,28 @@ int idLdEdit = 0;
 
 int komunitasTerpilih = 0;
 List<KomunitasClass> listKomunitas = [
-  KomunitasClass(
-      id: 1,
-      nama: "Paroki Santa Maria Tak Bercela",
-      bacaanHariIni: "Kel 24:3-8"),
-  KomunitasClass(
-      id: 2, nama: "Paroki Santo Marinus Yohanes", bacaanHariIni: "2Ptr 1:1-7"),
-  KomunitasClass(
-      id: 3,
-      nama: "Paroki Santo Yohanes Penginjil",
-      bacaanHariIni: "2Tim 2:8-15")
+  KomunitasClass(id: 1, nama: "Paroki Santa Maria Tak Bercela", bacaan: [
+    Bacaan(
+        id: 1,
+        judulBacaan: "Test Bacaan 1",
+        bacaan: "Kel 24:3-8",
+        tanggal: DateTime.now(),
+        warna: Color.fromRGBO(255, 0, 0, 1).toString())
+  ]),
+  KomunitasClass(id: 2, nama: "Paroki Santo Marinus Yohanes", bacaan: [
+    Bacaan(
+        id: 1,
+        judulBacaan: "Test Bacaan 1",
+        bacaan: "2Ptr 1:1-7",
+        tanggal: DateTime.now(),
+        warna: Color.fromRGBO(255, 255, 0, 1).toString())
+  ]),
+  KomunitasClass(id: 3, nama: "Paroki Santo Yohanes Penginjil", bacaan: [
+    Bacaan(
+        id: 1,
+        judulBacaan: "Test Bacaan 1",
+        bacaan: "2Tim 2:8-15",
+        tanggal: DateTime.now(),
+        warna: Color.fromRGBO(0, 0, 255, 1).toString())
+  ])
 ];
