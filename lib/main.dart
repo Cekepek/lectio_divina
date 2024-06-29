@@ -81,8 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
       final List<LD> ldList = LD.decode(ldsstring);
       setState(() {
         globals.MyLd = ldList;
-        globals.MyLd = ldList;
-        globals.MyLd = ldList;
       });
     }
   }
