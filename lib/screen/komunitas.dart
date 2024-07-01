@@ -74,7 +74,8 @@ class _KomunitasState extends State<Komunitas> {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          globals.komunitasTerpilih = index;
+                          globals.komunitasTerpilih =
+                              globals.listKomunitas[index];
                           Navigator.push(
                             context,
                             MaterialPageRoute(

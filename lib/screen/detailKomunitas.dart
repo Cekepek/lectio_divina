@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:lectio_divina/class/bacaan.dart';
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/pasal.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/class/ayat.dart';
+import 'package:lectio_divina/screen/detailBacaan.dart';
+import 'package:lectio_divina/screen/komunitas.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
 
 class DetailKomunitas extends StatefulWidget {
@@ -17,6 +21,11 @@ class DetailKomunitas extends StatefulWidget {
 
 class _DetailKomunitasState extends State<DetailKomunitas> {
   List<Ayat> bacaanTerpilih = [];
+
+  DateFormat formatMonth = new DateFormat("MMMM yyyy", "id_ID");
+  List<Bacaan> monthBacaan = [];
+
+  DateTime focusedDay = DateTime.now();
   List<Ayat> parseReferences(String input) {
     List<Ayat> references = [];
     List<String> parts = input.split(';');
@@ -87,33 +96,59 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
     }
   }
 
-  String getSabda(String ayat) {
-    List<Ayat> bacaanHariIni = parseReferences(ayat);
-    String sabda = "";
-    int indexKitab = 0;
-    int indexPasal = 0;
-    for (Ayat ayatBacaan in bacaanHariIni) {
-      for (Kitab kitab in globals.kitab) {
-        if (ayatBacaan.kitab == kitab.singkatan) {
-          indexKitab = kitab.id;
-          for (Pasal pasal in globals.kitab[indexKitab].pasal) {
-            if (ayatBacaan.nomorPasal == pasal.nomor) {
-              indexPasal = pasal.id;
-              for (Ayat ayatAlkitab
-                  in globals.kitab[indexKitab].pasal[indexPasal].ayat) {
-                if (ayatBacaan.nomor == ayatAlkitab.nomor) {
-                  sabda += ayatAlkitab.nomor + " " + ayatAlkitab.text + " ";
-                  globals.ayatDipilih.add(ayatAlkitab);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    // debugPrint(sabda);
-    return sabda;
+  List<Bacaan> _getLDForMonth(int year, int month) {
+    return globals.komunitasTerpilih.bacaan
+        .where((bacaan) =>
+            bacaan.tanggal.year == year && bacaan.tanggal.month == month)
+        .toList();
   }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month - 1,
+        1,
+      );
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month + 1,
+        1,
+      );
+    });
+  }
+  // String getSabda(String ayat) {
+  //   List<Ayat> bacaanHariIni = parseReferences(ayat);
+  //   String sabda = "";
+  //   int indexKitab = 0;
+  //   int indexPasal = 0;
+  //   for (Ayat ayatBacaan in bacaanHariIni) {
+  //     for (Kitab kitab in globals.kitab) {
+  //       if (ayatBacaan.kitab == kitab.singkatan) {
+  //         indexKitab = kitab.id;
+  //         for (Pasal pasal in globals.kitab[indexKitab].pasal) {
+  //           if (ayatBacaan.nomorPasal == pasal.nomor) {
+  //             indexPasal = pasal.id;
+  //             for (Ayat ayatAlkitab
+  //                 in globals.kitab[indexKitab].pasal[indexPasal].ayat) {
+  //               if (ayatBacaan.nomor == ayatAlkitab.nomor) {
+  //                 sabda += ayatAlkitab.nomor + " " + ayatAlkitab.text + " ";
+  //                 globals.ayatDipilih.add(ayatAlkitab);
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // debugPrint(sabda);
+  //   return sabda;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -137,18 +172,69 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    globals.listKomunitas[globals.komunitasTerpilih].nama,
+                    globals.komunitasTerpilih.nama,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                     textAlign: TextAlign.center,
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Topik Bacaan",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.keyboard_arrow_left,
+                            size: 24.0,
+                          ),
+                          onTap: () {
+                            _goToPreviousMonth();
+                            monthBacaan = _getLDForMonth(
+                                focusedDay.year, focusedDay.month);
+                          },
+                        ),
+                        GestureDetector(
+                          child: Text(
+                            formatMonth.format(focusedDay),
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ),
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.keyboard_arrow_right,
+                            size: 24.0,
+                          ),
+                          onTap: () {
+                            _goToNextMonth();
+                            monthBacaan = _getLDForMonth(
+                                focusedDay.year, focusedDay.month);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   controller: ScrollController(),
-                  itemCount: globals
-                      .listKomunitas[globals.komunitasTerpilih].bacaan.length,
+                  itemCount: globals.komunitasTerpilih.bacaan.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -181,10 +267,7 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                                   child: Container(
                                     width: 10.0,
                                     color: Color(int.parse(
-                                        globals
-                                            .listKomunitas[
-                                                globals.komunitasTerpilih]
-                                            .bacaan[index]
+                                        globals.komunitasTerpilih.bacaan[index]
                                             .warna
                                             .split('(0x')[1]
                                             .split(')')[0],
@@ -199,21 +282,15 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        globals
-                                            .listKomunitas[
-                                                globals.komunitasTerpilih]
-                                            .bacaan[index]
+                                        globals.komunitasTerpilih.bacaan[index]
                                             .judulBacaan,
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(globals
-                                          .listKomunitas[
-                                              globals.komunitasTerpilih]
-                                          .bacaan[index]
-                                          .bacaan),
+                                      Text(globals.komunitasTerpilih
+                                          .bacaan[index].bacaan),
                                     ],
                                   ),
                                 )),
@@ -223,30 +300,18 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                                       icon: Icon(Icons.more_horiz),
                                       onSelected: (result) {
                                         if (result == 0) {
-                                          // setState(() {
-                                          //   globals.idLdDetail =
-                                          //       monthLd[index].id;
-                                          // });
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //       builder: (context) =>
-                                          //           DetailLd()),
-                                          // );
-                                        }
-                                        if (result == 1) {
                                           setState(() {
-                                            getBacaan(globals
-                                                .listKomunitas[
-                                                    globals.komunitasTerpilih]
-                                                .bacaan[index]
-                                                .bacaan);
+                                            globals.bacaanTerpilih = globals
+                                                .komunitasTerpilih
+                                                .bacaan[index];
+                                            getBacaan(globals.komunitasTerpilih
+                                                .bacaan[index].bacaan);
                                           });
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    TambahLd()),
+                                                    DetailBacaan()),
                                           );
                                         }
                                       },
@@ -256,10 +321,6 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                                             value: 0,
                                             child: Text("Detail"),
                                           ),
-                                          PopupMenuItem(
-                                            value: 1,
-                                            child: Text("Tambah LD"),
-                                          )
                                         ];
                                       }),
                                 ),

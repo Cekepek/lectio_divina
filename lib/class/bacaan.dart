@@ -4,11 +4,12 @@ class Bacaan {
   String bacaan = "";
   DateTime tanggal = DateTime.now();
   String warna = "";
-  Bacaan({
-    required this.id,
-    required this.bacaan,
-    required this.judulBacaan,
-    required this.tanggal,
-    required this.warna,
-  });
+  String sabdaTuhanBagiSaya = "";
+  Bacaan(
+      {required this.id,
+      required this.bacaan,
+      required this.judulBacaan,
+      required this.tanggal,
+      required this.warna,
+      required this.sabdaTuhanBagiSaya});
 }
