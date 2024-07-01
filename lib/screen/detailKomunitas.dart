@@ -7,8 +7,6 @@ import 'package:lectio_divina/class/pasal.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/screen/detailBacaan.dart';
-import 'package:lectio_divina/screen/komunitas.dart';
-import 'package:lectio_divina/screen/tambahLd.dart';
 
 class DetailKomunitas extends StatefulWidget {
   const DetailKomunitas({super.key});
@@ -26,75 +24,6 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
   List<Bacaan> monthBacaan = [];
 
   DateTime focusedDay = DateTime.now();
-  List<Ayat> parseReferences(String input) {
-    List<Ayat> references = [];
-    List<String> parts = input.split(';');
-
-    for (String part in parts) {
-      part = part.trim();
-      RegExp regExp =
-          RegExp(r'(\D+)\s(\d+):(\d+(-\d+)?(,\d+(-\d+)?)*)([a-z]*)');
-      Iterable<Match> matches = regExp.allMatches(part);
-
-      for (Match match in matches) {
-        String nama = match.group(1)!.trim();
-        int bab = int.parse(match.group(2)!);
-        List<int> ayat = [];
-
-        String ayatStr = match.group(3)!;
-        List<String> ayatParts = ayatStr.split(',');
-
-        for (String ayatPart in ayatParts) {
-          if (ayatPart.contains('-')) {
-            List<String> range = ayatPart.split('-');
-            int start = int.parse(range[0]);
-            int end = int.parse(range[1]);
-            ayat.addAll(
-                List.generate(end - start + 1, (index) => start + index));
-          } else {
-            ayat.add(int.parse(ayatPart));
-          }
-        }
-        for (int nomorAyat in ayat) {
-          references.add(Ayat(
-            id: 0,
-            nomor: nomorAyat.toString(),
-            nomorPasal: bab.toString(),
-            text: "",
-            kitab: nama,
-            title: "",
-            titleIncluded: "",
-          ));
-        }
-      }
-    }
-
-    return references;
-  }
-
-  void getBacaan(String ayat) {
-    List<Ayat> bacaanHariIni = parseReferences(ayat);
-    int indexKitab = 0;
-    int indexPasal = 0;
-    for (Ayat ayatBacaan in bacaanHariIni) {
-      for (Kitab kitab in globals.kitab) {
-        if (ayatBacaan.kitab == kitab.singkatan) {
-          indexKitab = kitab.id;
-          for (Pasal pasal in globals.kitab[indexKitab].pasal) {
-            if (ayatBacaan.nomorPasal == pasal.nomor) {
-              indexPasal = pasal.id;
-              for (Ayat ayatAlkitab
-                  in globals.kitab[indexKitab].pasal[indexPasal].ayat) {
-                if (ayatBacaan.nomor == ayatAlkitab.nomor) {
-                  globals.ayatDipilih.add(ayatAlkitab);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 
   List<Bacaan> _getLDForMonth(int year, int month) {
     return globals.komunitasTerpilih.bacaan
@@ -122,33 +51,6 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
       );
     });
   }
-  // String getSabda(String ayat) {
-  //   List<Ayat> bacaanHariIni = parseReferences(ayat);
-  //   String sabda = "";
-  //   int indexKitab = 0;
-  //   int indexPasal = 0;
-  //   for (Ayat ayatBacaan in bacaanHariIni) {
-  //     for (Kitab kitab in globals.kitab) {
-  //       if (ayatBacaan.kitab == kitab.singkatan) {
-  //         indexKitab = kitab.id;
-  //         for (Pasal pasal in globals.kitab[indexKitab].pasal) {
-  //           if (ayatBacaan.nomorPasal == pasal.nomor) {
-  //             indexPasal = pasal.id;
-  //             for (Ayat ayatAlkitab
-  //                 in globals.kitab[indexKitab].pasal[indexPasal].ayat) {
-  //               if (ayatBacaan.nomor == ayatAlkitab.nomor) {
-  //                 sabda += ayatAlkitab.nomor + " " + ayatAlkitab.text + " ";
-  //                 globals.ayatDipilih.add(ayatAlkitab);
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   // debugPrint(sabda);
-  //   return sabda;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -304,8 +206,6 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                                             globals.bacaanTerpilih = globals
                                                 .komunitasTerpilih
                                                 .bacaan[index];
-                                            getBacaan(globals.komunitasTerpilih
-                                                .bacaan[index].bacaan);
                                           });
                                           Navigator.push(
                                             context,

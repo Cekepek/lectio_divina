@@ -6,7 +6,6 @@ import 'package:lectio_divina/class/bacaan.dart';
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/komunitas.dart';
 import 'package:lectio_divina/class/ld.dart';
-import 'package:lectio_divina/screen/komunitas.dart';
 
 List<Kitab> kitab = [];
 List<LD> MyLd = [];
