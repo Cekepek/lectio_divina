@@ -512,19 +512,6 @@ class _DetailBacaan extends State<DetailBacaan> {
                             );
                           }),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(top: 20, right: 8, left: 8),
-                      child: Text(
-                        "Sabda Tuhan Bagi Saya : ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(globals.bacaanTerpilih.sabdaTuhanBagiSaya),
-                    )
                   ],
                 ),
               )

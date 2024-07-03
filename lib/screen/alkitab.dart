@@ -400,9 +400,7 @@ class _AlkitabState extends State<Alkitab> {
                       }
                     },
                     itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(value: 0, child: Text("Tambah LD"))
-                      ];
+                      return [PopupMenuItem(value: 0, child: Text("Buat LD"))];
                     }),
               ],
             ),
