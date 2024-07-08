@@ -30,6 +30,7 @@ KomunitasClass komunitasTerpilih = KomunitasClass(id: 0, nama: "", bacaan: [
   Bacaan(
     id: 0,
     judulBacaan: "",
+    tipeBacaan: "",
     bacaan: "",
     tanggal: DateTime.now(),
     warna: Color.fromRGBO(255, 0, 0, 1).toString(),
@@ -38,6 +39,7 @@ KomunitasClass komunitasTerpilih = KomunitasClass(id: 0, nama: "", bacaan: [
 Bacaan bacaanTerpilih = Bacaan(
     id: 1,
     judulBacaan: "",
+    tipeBacaan: "",
     bacaan: "",
     tanggal: DateTime.now(),
     warna: Color.fromRGBO(255, 0, 0, 1).toString());
@@ -46,7 +48,15 @@ List<KomunitasClass> listKomunitas = [
     Bacaan(
         id: 1,
         judulBacaan: "Test Bacaan 1",
+        tipeBacaan: "Bacaan Harian",
         bacaan: "Kel 24:3-8",
+        tanggal: DateTime.now(),
+        warna: Color.fromRGBO(255, 0, 0, 1).toString()),
+    Bacaan(
+        id: 2,
+        judulBacaan: "Bacaan Liturgi",
+        tipeBacaan: "Bacaan I",
+        bacaan: "Hos 2:13-15,18-19",
         tanggal: DateTime.now(),
         warna: Color.fromRGBO(255, 0, 0, 1).toString())
   ]),
@@ -54,6 +64,7 @@ List<KomunitasClass> listKomunitas = [
     Bacaan(
       id: 1,
       judulBacaan: "Test Bacaan 1",
+      tipeBacaan: "Bacaan Harian",
       bacaan: "2Ptr 1:1-7",
       tanggal: DateTime.now(),
       warna: Color.fromRGBO(255, 255, 0, 1).toString(),
@@ -63,6 +74,7 @@ List<KomunitasClass> listKomunitas = [
     Bacaan(
       id: 1,
       judulBacaan: "Test Bacaan 1",
+      tipeBacaan: "Bacaan Harian",
       bacaan: "2Tim 2:8-15",
       tanggal: DateTime.now(),
       warna: Color.fromRGBO(0, 0, 255, 1).toString(),
