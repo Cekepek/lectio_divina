@@ -57,7 +57,7 @@ List<KomunitasClass> listKomunitas = [
         judulBacaan: "Bacaan Liturgi",
         tipeBacaan: "Bacaan I",
         bacaan: "Hos 2:13-15,18-19",
-        tanggal: DateTime.now(),
+        tanggal: DateTime.utc(2024, 7, 7),
         warna: Color.fromRGBO(255, 0, 0, 1).toString())
   ]),
   KomunitasClass(id: 2, nama: "Paroki Santo Marinus Yohanes", bacaan: [
