@@ -66,7 +66,15 @@ List<KomunitasClass> listKomunitas = [
       judulBacaan: "Test Bacaan 1",
       tipeBacaan: "Bacaan Harian",
       bacaan: "2Ptr 1:1-7",
-      tanggal: DateTime.now(),
+      tanggal: DateTime.utc(2024, 8, 7),
+      warna: Color.fromRGBO(255, 255, 0, 1).toString(),
+    ),
+    Bacaan(
+      id: 2,
+      judulBacaan: "Test Bacaan 2",
+      tipeBacaan: "Bacaan Harian",
+      bacaan: "2Ptr 1:1-7",
+      tanggal: DateTime.utc(2024, 8, 7),
       warna: Color.fromRGBO(255, 255, 0, 1).toString(),
     )
   ]),

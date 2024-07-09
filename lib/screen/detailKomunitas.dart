@@ -25,10 +25,8 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
 
   DateFormat formatMonth = new DateFormat("MMMM yyyy", "id_ID");
   DateFormat formatDay = new DateFormat("dd MMMM yyyy", "id_ID");
-  List<Ayat> ayatBacaan = [];
 
   List<Bacaan> monthBacaan = [];
-  List<Bacaan> dayBacaan = [];
 
   DateTime focusedDay = DateTime.now();
 
@@ -41,15 +39,12 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
 
   List<Bacaan> _getBacaanForDay(int year, int month, int day) {
     List<Bacaan> bacaanHari = [];
-    setState(() {
-      bacaanHari = globals.komunitasTerpilih.bacaan
-          .where((bacaan) =>
-              bacaan.tanggal.year == year &&
-              bacaan.tanggal.month == month &&
-              bacaan.tanggal.day == day)
-          .toList();
-      dayBacaan = bacaanHari;
-    });
+    bacaanHari = globals.komunitasTerpilih.bacaan
+        .where((bacaan) =>
+            bacaan.tanggal.year == year &&
+            bacaan.tanggal.month == month &&
+            bacaan.tanggal.day == day)
+        .toList();
     return bacaanHari;
   }
 
@@ -71,6 +66,157 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
     listTanggalBacaan = getTanggalBacaan(monthBacaan);
   }
 
+  void _goToPreviousMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month - 1,
+        1,
+      );
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      focusedDay = DateTime(
+        focusedDay.year,
+        focusedDay.month + 1,
+        1,
+      );
+    });
+    debugPrint(focusedDay.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          "Komunitas",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    globals.komunitasTerpilih.nama,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Topik Bacaan",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.keyboard_arrow_left,
+                            size: 24.0,
+                          ),
+                          onTap: () {
+                            _goToPreviousMonth();
+                            monthBacaan = _getBacaanForMonth(
+                                focusedDay.year, focusedDay.month);
+                            listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                          },
+                        ),
+                        GestureDetector(
+                          child: Text(
+                            formatMonth.format(focusedDay),
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ),
+                        GestureDetector(
+                          child: const Icon(
+                            Icons.keyboard_arrow_right,
+                            size: 24.0,
+                          ),
+                          onTap: () {
+                            _goToNextMonth();
+                            monthBacaan = _getBacaanForMonth(
+                                focusedDay.year, focusedDay.month);
+                            listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  controller: ScrollController(),
+                  itemCount: listTanggalBacaan.length,
+                  itemBuilder: (context, index) {
+                    // setState(() {
+                    //   dayBacaan = _getBacaanForDay(
+                    //       listTanggalBacaan[index].year,
+                    //       listTanggalBacaan[index].month,
+                    //       listTanggalBacaan[index].day);
+                    // });
+                    return Column(
+                      children: [
+                        Text(formatDay.format(listTanggalBacaan[index])),
+                        ListViewBacaan(
+                            bacaanHariIni: _getBacaanForDay(
+                                listTanggalBacaan[index].year,
+                                listTanggalBacaan[index].month,
+                                listTanggalBacaan[index].day)),
+                      ],
+                    );
+                  }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ListViewBacaan extends StatefulWidget {
+  final List<Bacaan> bacaanHariIni;
+
+  const ListViewBacaan({required this.bacaanHariIni});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ListViewBacaanState();
+  }
+}
+
+class _ListViewBacaanState extends State<ListViewBacaan> {
+  int bacaanTerpilih = -1;
+  late List<Bacaan> bacaanHariIni = widget.bacaanHariIni;
+
+  List<Ayat> ayatBacaan = [];
+
   List<Ayat> parseReferences(String input) {
     List<Ayat> references = [];
     List<String> parts = input.split(';');
@@ -78,7 +224,7 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
     for (String part in parts) {
       part = part.trim();
       RegExp regExp =
-          RegExp(r'(\D+)\s(\d+):(\d+(-\d+)?(,\d+(-\d+)?)*)([a-z]*)');
+          RegExp(r'(\S+)\s(\d+):(\d+(-\d+)?(,\d+(-\d+)?)*)([a-z]*)');
       Iterable<Match> matches = regExp.allMatches(part);
 
       for (Match match in matches) {
@@ -140,429 +286,216 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
         }
       }
     }
+    debugPrint(indexKitab.toString());
     return isiBacaan;
   }
 
-  void _goToPreviousMonth() {
-    setState(() {
-      focusedDay = DateTime(
-        focusedDay.year,
-        focusedDay.month - 1,
-        1,
-      );
-    });
+  String convertUnicode(String input) {
+    // Membuat daftar kode Unicode menggunakan metode codeUnits
+    List<int> codeUnits = input.runes.toList();
+
+    // Menggunakan StringBuffer untuk menggabungkan karakter yang dikonversi
+    StringBuffer buffer = StringBuffer();
+
+    // Melakukan iterasi pada setiap kode Unicode
+    for (int codeUnit in codeUnits) {
+      // Mengkonversi kode Unicode menjadi karakter dan menambahkannya ke buffer
+      buffer.write(String.fromCharCode(codeUnit));
+    }
+
+    // Mengembalikan string hasil konversi
+    return buffer.toString();
   }
 
-  void _goToNextMonth() {
-    setState(() {
-      focusedDay = DateTime(
-        focusedDay.year,
-        focusedDay.month + 1,
-        1,
-      );
+  String convertSpecialString(String input) {
+    // Membuat peta konversi untuk karakter khusus
+    Map<String, String> conversionMap = {
+      '<t \/>':
+          '', // Ganti 'Teks setelah konversi' dengan string yang diinginkan
+      // Tambahkan entri lain jika diperlukan
+    };
+
+    // Melakukan konversi berdasarkan peta
+    conversionMap.forEach((key, value) {
+      input = input.replaceAll(key, value);
     });
+
+    return input;
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Komunitas",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    globals.komunitasTerpilih.nama,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                    textAlign: TextAlign.center,
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        controller: ScrollController(),
+        itemCount: bacaanHariIni.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Topik Bacaan",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color:
-                                Theme.of(context).colorScheme.inversePrimary),
-                        textAlign: TextAlign.center,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        ayatBacaan = getBacaan(bacaanHariIni[index].bacaan);
+                        bacaanTerpilih == bacaanHariIni[index].id
+                            ? bacaanTerpilih = -1
+                            : bacaanTerpilih = bacaanHariIni[index].id;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8.0),
+                                bottomLeft: Radius.circular(8.0),
+                              ),
+                              child: Container(
+                                width: 10.0,
+                                color: Color(int.parse(
+                                    bacaanHariIni[index]
+                                        .warna
+                                        .split('(0x')[1]
+                                        .split(')')[0],
+                                    radix: 16)),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      bacaanHariIni[index].judulBacaan,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      bacaanHariIni[index].tipeBacaan,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(bacaanHariIni[index].bacaan),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: bacaanTerpilih == bacaanHariIni[index].id
+                                  ? Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 24.0,
+                                    )
+                                  : Icon(
+                                      Icons.arrow_drop_up,
+                                      size: 24.0,
+                                    ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.keyboard_arrow_left,
-                            size: 24.0,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _goToPreviousMonth();
-                              monthBacaan = _getBacaanForMonth(
-                                  focusedDay.year, focusedDay.month);
-                            });
-                          },
-                        ),
-                        GestureDetector(
-                          child: Text(
-                            formatMonth.format(focusedDay),
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ),
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 24.0,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              _goToNextMonth();
-                              monthBacaan = _getBacaanForMonth(
-                                  focusedDay.year, focusedDay.month);
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  controller: ScrollController(),
-                  itemCount: listTanggalBacaan.length,
-                  itemBuilder: (context, index) {
-                    // setState(() {
-                    //   dayBacaan = _getBacaanForDay(
-                    //       listTanggalBacaan[index].year,
-                    //       listTanggalBacaan[index].month,
-                    //       listTanggalBacaan[index].day);
-                    // });
-                    return Column(
-                      children: [
-                        Text(formatDay.format(listTanggalBacaan[index])),
-                        ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            controller: ScrollController(),
-                            itemCount: _getBacaanForDay(
-                                    listTanggalBacaan[index].year,
-                                    listTanggalBacaan[index].month,
-                                    listTanggalBacaan[index].day)
-                                .length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 4.0,
-                                            spreadRadius: 2.0,
-                                          ),
-                                        ],
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            ayatBacaan = getBacaan(
-                                                _getBacaanForDay(
-                                                        listTanggalBacaan[index]
-                                                            .year,
-                                                        listTanggalBacaan[index]
-                                                            .month,
-                                                        listTanggalBacaan[index]
-                                                            .day)[index]
-                                                    .bacaan);
-                                            bacaanTerpilih ==
-                                                    _getBacaanForDay(
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .year,
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .month,
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .day)[index]
-                                                        .id
-                                                ? bacaanTerpilih = -1
-                                                : bacaanTerpilih =
-                                                    _getBacaanForDay(
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .year,
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .month,
-                                                            listTanggalBacaan[
-                                                                    index]
-                                                                .day)[index]
-                                                        .id;
-                                          });
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: IntrinsicHeight(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(8.0),
-                                                    bottomLeft:
-                                                        Radius.circular(8.0),
-                                                  ),
-                                                  child: Container(
-                                                    width: 10.0,
-                                                    color: Color(int.parse(
-                                                        _getBacaanForDay(
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .year,
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .month,
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .day)[index]
-                                                            .warna
-                                                            .split('(0x')[1]
-                                                            .split(')')[0],
-                                                        radix: 16)),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(8),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          _getBacaanForDay(
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .year,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .month,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .day)[index]
-                                                              .judulBacaan,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          _getBacaanForDay(
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .year,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .month,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .day)[index]
-                                                              .tipeBacaan,
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        Text(_getBacaanForDay(
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .year,
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .month,
-                                                                listTanggalBacaan[
-                                                                        index]
-                                                                    .day)[index]
-                                                            .bacaan),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: bacaanTerpilih ==
-                                                          _getBacaanForDay(
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .year,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .month,
-                                                                  listTanggalBacaan[
-                                                                          index]
-                                                                      .day)[index]
-                                                              .id
-                                                      ? Icon(
-                                                          Icons.arrow_drop_down,
-                                                          size: 24.0,
-                                                        )
-                                                      : Icon(
-                                                          Icons.arrow_drop_up,
-                                                          size: 24.0,
-                                                        ),
-                                                ),
-                                                // Align(
-                                                //   alignment: Alignment.topRight,
-                                                //   child: PopupMenuButton(
-                                                //       icon: Icon(Icons.more_horiz),
-                                                //       onSelected: (result) {
-                                                //         if (result == 0) {
-                                                //           setState(() {
-                                                // globals.bacaanTerpilih = globals
-                                                //                 .komunitasTerpilih
-                                                //                 .bacaan[index];
-                                                //           });
-                                                //           Navigator.push(
-                                                //             context,
-                                                //             MaterialPageRoute(
-                                                //                 builder: (context) =>
-                                                //                     DetailBacaan()),
-                                                //           );
-                                                //         }
-                                                //       },
-                                                //       itemBuilder: (BuildContext context) {
-                                                //         return [
-                                                //           PopupMenuItem(
-                                                //             value: 0,
-                                                //             child: Text("Detail"),
-                                                //           ),
-                                                //         ];
-                                                //       }),
-                                                // ),
-                                              ],
+                bacaanTerpilih == bacaanHariIni[index].id
+                    ? Container(
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              controller: ScrollController(),
+                              itemCount: ayatBacaan.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onLongPress: () {
+                                    setState(() {
+                                      globals.ayatDipilih
+                                              .contains(ayatBacaan[index])
+                                          ? globals.ayatDipilih
+                                              .remove(ayatBacaan[index])
+                                          : globals.ayatDipilih
+                                              .add(ayatBacaan[index]);
+                                      globals.ayatDipilih
+                                          .sort((a, b) => a.id.compareTo(b.id));
+                                    });
+                                  },
+                                  onTap: () {
+                                    setState(() {
+                                      globals.ayatDipilih
+                                          .remove(ayatBacaan[index]);
+                                    });
+                                  },
+                                  child: Container(
+                                    color: globals.ayatDipilih
+                                            .contains(ayatBacaan[index])
+                                        ? Colors.blue
+                                        : null,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8),
+                                          child: Text(
+                                            ayatBacaan[index].nomor,
+                                            style: TextStyle(
+                                              fontSize: 14,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    bacaanTerpilih ==
-                                            _getBacaanForDay(
-                                                    listTanggalBacaan[index]
-                                                        .year,
-                                                    listTanggalBacaan[index]
-                                                        .month,
-                                                    listTanggalBacaan[index]
-                                                        .day)[index]
-                                                .id
-                                        ? Container(
-                                            child: Padding(
-                                              padding: EdgeInsets.all(8),
-                                              child: ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  controller:
-                                                      ScrollController(),
-                                                  itemCount: ayatBacaan.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return GestureDetector(
-                                                      child: Container(
-                                                        color: globals
-                                                                .ayatDipilih
-                                                                .contains(
-                                                                    ayatBacaan[
-                                                                        index])
-                                                            ? Colors.blue
-                                                            : null,
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      right: 8),
-                                                              child: Text(
-                                                                ayatBacaan[
-                                                                        index]
-                                                                    .nomor,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 14,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                ayatBacaan[
-                                                                        index]
-                                                                    .text,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 14,
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }),
+                                        Expanded(
+                                          child: Text(
+                                            convertSpecialString(convertUnicode(
+                                                ayatBacaan[index].text)),
+                                            style: TextStyle(
+                                              fontSize: 14,
                                             ),
-                                          )
-                                        : Container()
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    );
-                  }),
-            ],
-          ),
-        ),
-      ),
-    );
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      )
+                    : Container()
+              ],
+            ),
+          );
+        });
   }
 }

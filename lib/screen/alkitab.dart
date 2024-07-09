@@ -472,6 +472,12 @@ class _AlkitabState extends State<Alkitab> {
                                   ],
                                 ),
                               ),
+                              onTap: () {
+                                setState(() {
+                                  globals.ayatDipilih.remove(globals
+                                      .kitab[book].pasal[chapter].ayat[index]);
+                                });
+                              },
                               onLongPress: () {
                                 setState(() {
                                   globals.ayatDipilih.contains(globals
@@ -537,6 +543,12 @@ class _AlkitabState extends State<Alkitab> {
                             ],
                           ),
                         ),
+                        onTap: () {
+                          setState(() {
+                            globals.ayatDipilih.remove(
+                                globals.kitab[book].pasal[chapter].ayat[index]);
+                          });
+                        },
                         onLongPress: () {
                           setState(() {
                             globals.ayatDipilih.contains(globals
