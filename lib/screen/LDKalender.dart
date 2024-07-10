@@ -31,6 +31,7 @@ class _LDKalenderState extends State<LDKalender> {
   DateFormat formatBagikan = new DateFormat("EEEE dd MMMM yyyy", "id_ID");
   late final ValueNotifier<List<LD>> _selectedLD;
   List<LD> monthLd = [];
+  List<DateTime> listTanggalLd = [];
 
   void _onDaySelected(DateTime day, DateTime focusDay) {
     setState(() {
@@ -91,6 +92,17 @@ class _LDKalenderState extends State<LDKalender> {
         DateTime.parse(ld.tanggal).month == month).toList();
   }
 
+  List<DateTime> getTanggalLd(List<LD> listLd) {
+    List<DateTime> listTanggal = [];
+    for (LD ld in listLd) {
+      if (!listTanggal.contains(DateTime.parse(ld.tanggal))) {
+        listTanggal.add(DateTime.parse(ld.tanggal));
+      }
+    }
+    listTanggal.sort((a, b) => b.compareTo(a));
+    return listTanggal;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +138,7 @@ class _LDKalenderState extends State<LDKalender> {
                             selectedDay = focusedDay;
                             monthLd = _getLDForMonth(
                                 focusedDay.year, focusedDay.month);
+                            listTanggalLd = getTanggalLd(monthLd);
                           },
                         ),
                         GestureDetector(
@@ -144,6 +157,7 @@ class _LDKalenderState extends State<LDKalender> {
                             selectedDay = focusedDay;
                             monthLd = _getLDForMonth(
                                 focusedDay.year, focusedDay.month);
+                            listTanggalLd = getTanggalLd(monthLd);
                           },
                         ),
                       ],
@@ -197,6 +211,7 @@ class _LDKalenderState extends State<LDKalender> {
                       focusedDay = selectedDay;
                       monthLd =
                           _getLDForMonth(focusedDay.year, focusedDay.month);
+                      listTanggalLd = getTanggalLd(monthLd);
                       showLess ? showLess = false : showLess = true;
                     });
                   },
@@ -239,424 +254,433 @@ class _LDKalenderState extends State<LDKalender> {
                   ),
                   child: SingleChildScrollView(
                     child: Container(
-                      child: !showLess
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: Text(format.format(selectedDay)),
-                                ),
-                                ValueListenableBuilder<List<LD>>(
-                                    valueListenable: _selectedLD,
-                                    builder: (context, value, _) {
-                                      return ListView.builder(
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          controller: ScrollController(),
-                                          itemCount: value.length,
-                                          itemBuilder: (context, index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black12,
-                                                      blurRadius: 4.0,
-                                                      spreadRadius: 2.0,
-                                                    ),
-                                                  ],
-                                                ),
+                        child: !showLess
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Text(format.format(selectedDay)),
+                                  ),
+                                  ValueListenableBuilder<List<LD>>(
+                                      valueListenable: _selectedLD,
+                                      builder: (context, value, _) {
+                                        return ListView.builder(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            controller: ScrollController(),
+                                            itemCount: value.length,
+                                            itemBuilder: (context, index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            15),
+                                                            8.0),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black12,
+                                                        blurRadius: 4.0,
+                                                        spreadRadius: 2.0,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  child: IntrinsicHeight(
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .stretch,
-                                                      children: [
-                                                        ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    8.0),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    8.0),
-                                                          ),
-                                                          child: Container(
-                                                            width: 10.0,
-                                                            color: Color(int.parse(
-                                                                value[index]
-                                                                    .warna
-                                                                    .split('(0x')[
-                                                                        1]
-                                                                    .split(
-                                                                        ')')[0],
-                                                                radix: 16)),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                            child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(8),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                value[index]
-                                                                    .judul,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                              Text(value[index]
-                                                                  .ayat),
-                                                              Padding(
-                                                                padding: EdgeInsets
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                    ),
+                                                    child: IntrinsicHeight(
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .stretch,
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
                                                                     .only(
-                                                                        top: 8,
-                                                                        bottom:
-                                                                            8),
-                                                                child: value[
-                                                                            index]
-                                                                        .selesai
-                                                                    ? Row(
-                                                                        children: [
-                                                                          Icon(
-                                                                            Icons.check_box,
-                                                                            size:
-                                                                                24.0,
-                                                                          ),
-                                                                          Text(
-                                                                              "Selesai")
-                                                                        ],
-                                                                      )
-                                                                    : Row(
-                                                                        children: [
-                                                                          Icon(
-                                                                            Icons.check_box_outline_blank,
-                                                                            size:
-                                                                                24.0,
-                                                                          ),
-                                                                          Text(
-                                                                              "Belum Selesai")
-                                                                        ],
-                                                                      ),
-                                                              )
-                                                            ],
+                                                              topLeft: Radius
+                                                                  .circular(
+                                                                      8.0),
+                                                              bottomLeft: Radius
+                                                                  .circular(
+                                                                      8.0),
+                                                            ),
+                                                            child: Container(
+                                                              width: 10.0,
+                                                              color: Color(int.parse(
+                                                                  value[index]
+                                                                      .warna
+                                                                      .split('(0x')[
+                                                                          1]
+                                                                      .split(
+                                                                          ')')[0],
+                                                                  radix: 16)),
+                                                            ),
                                                           ),
-                                                        )),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .topRight,
-                                                          child:
-                                                              PopupMenuButton(
-                                                                  icon: Icon(Icons
-                                                                      .more_horiz),
-                                                                  onSelected:
-                                                                      (result) {
-                                                                    if (result ==
-                                                                        0) {
-                                                                      setState(
-                                                                          () {
-                                                                        globals
-                                                                            .idLdDetail = value[
-                                                                                index]
-                                                                            .id;
-                                                                      });
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                DetailLd()),
-                                                                      );
-                                                                    }
-                                                                    if (result ==
-                                                                        1) {
-                                                                      setState(
-                                                                          () {
-                                                                        globals
-                                                                            .idLdEdit = value[
-                                                                                index]
-                                                                            .id;
-                                                                      });
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                EditLd()),
-                                                                      );
-                                                                    }
-                                                                    if (result ==
-                                                                        2) {
-                                                                      Share.share("*" +
-                                                                          value[index]
-                                                                              .judul +
-                                                                          "*\n\n" +
-                                                                          "*" +
-                                                                          formatBagikan.format(DateTime.parse(value[index]
-                                                                              .tanggal)) +
-                                                                          "*\n\n" +
-                                                                          "*Ayat : " +
-                                                                          value[index]
-                                                                              .ayat +
-                                                                          "*\n\n" +
-                                                                          value[index]
-                                                                              .sabda +
-                                                                          "\n\n*Sabda Tuhan Bagi Saya :*\n" +
-                                                                          value[index]
-                                                                              .sabdaBagiSaya +
-                                                                          "\n\n*Tanggapan :*\n" +
-                                                                          value[index]
-                                                                              .tanggapan +
-                                                                          "\n\n*Tindakan :*\n" +
-                                                                          value[index]
-                                                                              .tindakan +
-                                                                          "\n\n*Catatan :*\n" +
-                                                                          value[index]
-                                                                              .catatan);
-                                                                    }
-                                                                  },
-                                                                  itemBuilder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return [
-                                                                      PopupMenuItem(
-                                                                        value:
-                                                                            0,
-                                                                        child: Text(
-                                                                            "Detail"),
-                                                                      ),
-                                                                      PopupMenuItem(
-                                                                        value:
-                                                                            1,
-                                                                        child: Text(
-                                                                            "Edit"),
-                                                                      ),
-                                                                      PopupMenuItem(
-                                                                        value:
-                                                                            2,
-                                                                        child: Text(
-                                                                            "Bagikan"),
-                                                                      )
-                                                                    ];
-                                                                  }),
-                                                        ),
-                                                      ],
+                                                          Expanded(
+                                                              child: Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  value[index]
+                                                                      .judul,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                    value[index]
+                                                                        .ayat),
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          top:
+                                                                              8,
+                                                                          bottom:
+                                                                              8),
+                                                                  child: value[
+                                                                              index]
+                                                                          .selesai
+                                                                      ? Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.check_box,
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            Text("Selesai")
+                                                                          ],
+                                                                        )
+                                                                      : Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.check_box_outline_blank,
+                                                                              size: 24.0,
+                                                                            ),
+                                                                            Text("Belum Selesai")
+                                                                          ],
+                                                                        ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .topRight,
+                                                            child:
+                                                                PopupMenuButton(
+                                                                    icon: Icon(Icons
+                                                                        .more_horiz),
+                                                                    onSelected:
+                                                                        (result) {
+                                                                      if (result ==
+                                                                          0) {
+                                                                        setState(
+                                                                            () {
+                                                                          globals.idLdDetail =
+                                                                              value[index].id;
+                                                                        });
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => DetailLd()),
+                                                                        );
+                                                                      }
+                                                                      if (result ==
+                                                                          1) {
+                                                                        setState(
+                                                                            () {
+                                                                          globals.idLdEdit =
+                                                                              value[index].id;
+                                                                        });
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => EditLd()),
+                                                                        );
+                                                                      }
+                                                                      if (result ==
+                                                                          2) {
+                                                                        Share.share("*" +
+                                                                            value[index].judul +
+                                                                            "*\n\n" +
+                                                                            "*" +
+                                                                            formatBagikan.format(DateTime.parse(value[index].tanggal)) +
+                                                                            "*\n\n" +
+                                                                            "*Ayat : " +
+                                                                            value[index].ayat +
+                                                                            "*\n\n" +
+                                                                            value[index].sabda +
+                                                                            "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                                                            value[index].sabdaBagiSaya +
+                                                                            "\n\n*Tanggapan :*\n" +
+                                                                            value[index].tanggapan +
+                                                                            "\n\n*Tindakan :*\n" +
+                                                                            value[index].tindakan +
+                                                                            "\n\n*Catatan :*\n" +
+                                                                            value[index].catatan);
+                                                                      }
+                                                                    },
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return [
+                                                                        PopupMenuItem(
+                                                                          value:
+                                                                              0,
+                                                                          child:
+                                                                              Text("Detail"),
+                                                                        ),
+                                                                        PopupMenuItem(
+                                                                          value:
+                                                                              1,
+                                                                          child:
+                                                                              Text("Edit"),
+                                                                        ),
+                                                                        PopupMenuItem(
+                                                                          value:
+                                                                              2,
+                                                                          child:
+                                                                              Text("Bagikan"),
+                                                                        )
+                                                                      ];
+                                                                    }),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              // ),
-                                            );
-                                          });
-                                    }),
-                              ],
-                            )
-                          : ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              controller: ScrollController(),
-                              itemCount: monthLd.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 4.0,
-                                          spreadRadius: 2.0,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: IntrinsicHeight(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(8.0),
-                                                bottomLeft:
-                                                    Radius.circular(8.0),
-                                              ),
-                                              child: Container(
-                                                width: 10.0,
-                                                color: Color(int.parse(
-                                                    monthLd[index]
-                                                        .warna
-                                                        .split('(0x')[1]
-                                                        .split(')')[0],
-                                                    radix: 16)),
-                                              ),
-                                            ),
-                                            Expanded(
-                                                child: Padding(
-                                              padding: EdgeInsets.all(8),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    monthLd[index].judul,
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(monthLd[index].ayat),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 8, bottom: 8),
-                                                    child: monthLd[index]
-                                                            .selesai
-                                                        ? Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.check_box,
-                                                                size: 24.0,
-                                                              ),
-                                                              Text("Selesai")
-                                                            ],
-                                                          )
-                                                        : Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .check_box_outline_blank,
-                                                                size: 24.0,
-                                                              ),
-                                                              Text(
-                                                                  "Belum Selesai")
-                                                            ],
-                                                          ),
-                                                  )
-                                                ],
-                                              ),
-                                            )),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: PopupMenuButton(
-                                                  icon: Icon(Icons.more_horiz),
-                                                  onSelected: (result) {
-                                                    if (result == 0) {
-                                                      setState(() {
-                                                        globals.idLdDetail =
-                                                            monthLd[index].id;
-                                                      });
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    DetailLd()),
-                                                      );
-                                                    }
-                                                    if (result == 1) {
-                                                      setState(() {
-                                                        globals.idLdEdit =
-                                                            monthLd[index].id;
-                                                      });
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    EditLd()),
-                                                      );
-                                                    }
-                                                    if (result == 2) {
-                                                      Share.share("*" +
-                                                          monthLd[index].judul +
-                                                          "*\n\n" +
-                                                          "*" +
-                                                          formatBagikan.format(
-                                                              DateTime.parse(
-                                                                  monthLd[index]
-                                                                      .tanggal)) +
-                                                          "*\n\n" +
-                                                          "*Ayat : " +
-                                                          monthLd[index].ayat +
-                                                          "*\n\n" +
-                                                          monthLd[index].sabda +
-                                                          "\n\n*Sabda Tuhan Bagi Saya :*\n" +
-                                                          monthLd[index]
-                                                              .sabdaBagiSaya +
-                                                          "\n\n*Tanggapan :*\n" +
-                                                          monthLd[index]
-                                                              .tanggapan +
-                                                          "\n\n*Tindakan :*\n" +
-                                                          monthLd[index]
-                                                              .tindakan +
-                                                          "\n\n*Catatan :*\n" +
-                                                          monthLd[index]
-                                                              .catatan);
-                                                    }
-                                                  },
-                                                  itemBuilder:
-                                                      (BuildContext context) {
-                                                    return [
-                                                      PopupMenuItem(
-                                                        value: 0,
-                                                        child: Text("Detail"),
-                                                      ),
-                                                      PopupMenuItem(
-                                                        value: 1,
-                                                        child: Text("Edit"),
-                                                      ),
-                                                      PopupMenuItem(
-                                                        value: 2,
-                                                        child: Text("Bagikan"),
-                                                      )
-                                                    ];
-                                                  }),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                    ),
+                                                // ),
+                                              );
+                                            });
+                                      }),
+                                ],
+                              )
+                            : ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                controller: ScrollController(),
+                                itemCount: listTanggalLd.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(format.format(listTanggalLd[index])),
+                                      ListViewLdBulanan(
+                                          ldHariIni: _getLDForDay(
+                                              listTanggalLd[index])),
+                                    ],
+                                  );
+                                })),
                   )),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class ListViewLdBulanan extends StatefulWidget {
+  final List<LD> ldHariIni;
+
+  const ListViewLdBulanan({required this.ldHariIni});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ListViewLdBulananState();
+  }
+}
+
+class _ListViewLdBulananState extends State<ListViewLdBulanan> {
+  late List<LD> ldHariIni;
+  DateFormat formatBagikan = new DateFormat("EEEE dd MMMM yyyy", "id_ID");
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ldHariIni = widget.ldHariIni;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        controller: ScrollController(),
+        itemCount: ldHariIni.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          bottomLeft: Radius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 10.0,
+                          color: Color(int.parse(
+                              ldHariIni[index]
+                                  .warna
+                                  .split('(0x')[1]
+                                  .split(')')[0],
+                              radix: 16)),
+                        ),
+                      ),
+                      Expanded(
+                          child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ldHariIni[index].judul,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(ldHariIni[index].ayat),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8, bottom: 8),
+                              child: ldHariIni[index].selesai
+                                  ? Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_box,
+                                          size: 24.0,
+                                        ),
+                                        Text("Selesai")
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_box_outline_blank,
+                                          size: 24.0,
+                                        ),
+                                        Text("Belum Selesai")
+                                      ],
+                                    ),
+                            )
+                          ],
+                        ),
+                      )),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: PopupMenuButton(
+                            icon: Icon(Icons.more_horiz),
+                            onSelected: (result) {
+                              if (result == 0) {
+                                setState(() {
+                                  globals.idLdDetail = ldHariIni[index].id;
+                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailLd()),
+                                );
+                              }
+                              if (result == 1) {
+                                setState(() {
+                                  globals.idLdEdit = ldHariIni[index].id;
+                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditLd()),
+                                );
+                              }
+                              if (result == 2) {
+                                Share.share("*" +
+                                    ldHariIni[index].judul +
+                                    "*\n\n" +
+                                    "*" +
+                                    formatBagikan.format(DateTime.parse(
+                                        ldHariIni[index].tanggal)) +
+                                    "*\n\n" +
+                                    "*Ayat : " +
+                                    ldHariIni[index].ayat +
+                                    "*\n\n" +
+                                    ldHariIni[index].sabda +
+                                    "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                    ldHariIni[index].sabdaBagiSaya +
+                                    "\n\n*Tanggapan :*\n" +
+                                    ldHariIni[index].tanggapan +
+                                    "\n\n*Tindakan :*\n" +
+                                    ldHariIni[index].tindakan +
+                                    "\n\n*Catatan :*\n" +
+                                    ldHariIni[index].catatan);
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem(
+                                  value: 0,
+                                  child: Text("Detail"),
+                                ),
+                                PopupMenuItem(
+                                  value: 1,
+                                  child: Text("Edit"),
+                                ),
+                                PopupMenuItem(
+                                  value: 2,
+                                  child: Text("Bagikan"),
+                                )
+                              ];
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

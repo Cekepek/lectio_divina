@@ -47,10 +47,7 @@ class _DetailLdState extends State<DetailLd> {
     super.initState();
     _getLdDetail();
     DateTime dateTimeLd = DateTime.parse(detailLd.tanggal);
-    print(dateTimeLd);
     tanggalLd = format.format(dateTimeLd);
-
-    debugPrint(tanggalLd);
   }
 
   @override

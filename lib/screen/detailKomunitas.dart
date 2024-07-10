@@ -37,13 +37,10 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
         .toList();
   }
 
-  List<Bacaan> _getBacaanForDay(int year, int month, int day) {
+  List<Bacaan> _getBacaanForDay(DateTime tanggal) {
     List<Bacaan> bacaanHari = [];
     bacaanHari = globals.komunitasTerpilih.bacaan
-        .where((bacaan) =>
-            bacaan.tanggal.year == year &&
-            bacaan.tanggal.month == month &&
-            bacaan.tanggal.day == day)
+        .where((bacaan) => bacaan.tanggal == tanggal)
         .toList();
     return bacaanHari;
   }
@@ -175,20 +172,13 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                   controller: ScrollController(),
                   itemCount: listTanggalBacaan.length,
                   itemBuilder: (context, index) {
-                    // setState(() {
-                    //   dayBacaan = _getBacaanForDay(
-                    //       listTanggalBacaan[index].year,
-                    //       listTanggalBacaan[index].month,
-                    //       listTanggalBacaan[index].day);
-                    // });
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(formatDay.format(listTanggalBacaan[index])),
                         ListViewBacaan(
-                            bacaanHariIni: _getBacaanForDay(
-                                listTanggalBacaan[index].year,
-                                listTanggalBacaan[index].month,
-                                listTanggalBacaan[index].day)),
+                            bacaanHariIni:
+                                _getBacaanForDay(listTanggalBacaan[index])),
                       ],
                     );
                   }),
@@ -213,7 +203,7 @@ class ListViewBacaan extends StatefulWidget {
 
 class _ListViewBacaanState extends State<ListViewBacaan> {
   int bacaanTerpilih = -1;
-  late List<Bacaan> bacaanHariIni = widget.bacaanHariIni;
+  late List<Bacaan> bacaanHariIni;
 
   List<Ayat> ayatBacaan = [];
 
@@ -286,7 +276,6 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
         }
       }
     }
-    debugPrint(indexKitab.toString());
     return isiBacaan;
   }
 
@@ -326,6 +315,7 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
   @override
   void initState() {
     super.initState();
+    bacaanHariIni = widget.bacaanHariIni;
   }
 
   @override
