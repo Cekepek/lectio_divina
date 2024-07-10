@@ -9,6 +9,7 @@ import 'package:lectio_divina/class/pasal.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/screen/detailBacaan.dart';
+import 'package:lectio_divina/screen/tambahLd.dart';
 
 class DetailKomunitas extends StatefulWidget {
   const DetailKomunitas({super.key});
@@ -59,6 +60,7 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
   @override
   void initState() {
     super.initState();
+    globals.ayatDipilih.clear();
     monthBacaan = _getBacaanForMonth(focusedDay.year, focusedDay.month);
     listTanggalBacaan = getTanggalBacaan(monthBacaan);
   }
@@ -204,8 +206,8 @@ class ListViewBacaan extends StatefulWidget {
 class _ListViewBacaanState extends State<ListViewBacaan> {
   int bacaanTerpilih = -1;
   late List<Bacaan> bacaanHariIni;
-
   List<Ayat> ayatBacaan = [];
+  Offset tapPositionOffset = Offset.zero;
 
   List<Ayat> parseReferences(String input) {
     List<Ayat> references = [];
@@ -310,6 +312,36 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
     });
 
     return input;
+  }
+
+  void getTapPosition(TapDownDetails tapPosition) {
+    setState(() {
+      tapPositionOffset = tapPosition.globalPosition;
+      print(tapPositionOffset);
+    });
+  }
+
+  void showContextMenu(context) async {
+    final RenderObject? overlay =
+        Overlay.of(context)?.context.findRenderObject();
+    final result = await showMenu(
+        context: context,
+        position: RelativeRect.fromRect(
+            Rect.fromLTWH(tapPositionOffset.dx, tapPositionOffset.dy, 10, 10),
+            Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
+                overlay!.paintBounds.size.height)),
+        items: [
+          PopupMenuItem(
+            child: Text("Buat LD"),
+            value: "buatld",
+          )
+        ]);
+    switch (result) {
+      case "buatld":
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TambahLd()));
+        break;
+    }
   }
 
   @override
@@ -429,7 +461,11 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
                               itemCount: ayatBacaan.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
+                                  onTapDown: (position) {
+                                    getTapPosition(position);
+                                  },
                                   onLongPress: () {
+                                    showContextMenu(context);
                                     setState(() {
                                       globals.ayatDipilih
                                               .contains(ayatBacaan[index])
