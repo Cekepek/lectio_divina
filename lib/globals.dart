@@ -10,6 +10,7 @@ import 'package:lectio_divina/class/ld.dart';
 List<Kitab> kitab = [];
 List<LD> MyLd = [];
 List<Ayat> ayatDipilih = [];
+int bacaanDipilih = -1;
 
 int currentIndex = 0;
 // Alkitab selectKitab = Alkitab(kitab: 0, bab: 0, ayat: "0");
@@ -50,7 +51,8 @@ List<KomunitasClass> listKomunitas = [
         judulBacaan: "Test Bacaan 1",
         tipeBacaan: "Bacaan Harian",
         bacaan: "Kel 24:3-8",
-        tanggal: DateTime.now(),
+        tanggal: DateTime.utc(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day),
         warna: Color.fromRGBO(255, 0, 0, 1).toString()),
     Bacaan(
         id: 2,
@@ -58,7 +60,15 @@ List<KomunitasClass> listKomunitas = [
         tipeBacaan: "Bacaan I",
         bacaan: "Hos 2:13-15,18-19",
         tanggal: DateTime.utc(2024, 7, 7),
-        warna: Color.fromRGBO(255, 0, 0, 1).toString())
+        warna: Color.fromRGBO(255, 0, 0, 1).toString()),
+    Bacaan(
+        id: 3,
+        judulBacaan: "Test Bacaan 1",
+        tipeBacaan: "Bacaan Harian",
+        bacaan: "Kel 24:3-8",
+        tanggal: DateTime.utc(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        warna: Color.fromRGBO(255, 0, 0, 1).toString()),
   ]),
   KomunitasClass(id: 2, nama: "Paroki Santo Marinus Yohanes", bacaan: [
     Bacaan(

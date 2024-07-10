@@ -21,7 +21,6 @@ class DetailKomunitas extends StatefulWidget {
 }
 
 class _DetailKomunitasState extends State<DetailKomunitas> {
-  int bacaanTerpilih = -1;
   List<DateTime> listTanggalBacaan = [];
 
   DateFormat formatMonth = new DateFormat("MMMM yyyy", "id_ID");
@@ -317,7 +316,6 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
   void getTapPosition(TapDownDetails tapPosition) {
     setState(() {
       tapPositionOffset = tapPosition.globalPosition;
-      print(tapPositionOffset);
     });
   }
 
@@ -386,17 +384,25 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: bacaanTerpilih == bacaanHariIni[index].id
+                            ? BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15))
+                            : BorderRadius.circular(15),
                       ),
                       child: IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                bottomLeft: Radius.circular(8.0),
-                              ),
+                              borderRadius:
+                                  bacaanTerpilih == bacaanHariIni[index].id
+                                      ? BorderRadius.only(
+                                          topLeft: Radius.circular(8.0))
+                                      : BorderRadius.only(
+                                          topLeft: Radius.circular(8.0),
+                                          bottomLeft: Radius.circular(8.0),
+                                        ),
                               child: Container(
                                 width: 10.0,
                                 color: Color(int.parse(
@@ -452,6 +458,11 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
                 ),
                 bacaanTerpilih == bacaanHariIni[index].id
                     ? Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.25),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15))),
                         child: Padding(
                           padding: EdgeInsets.all(8),
                           child: ListView.builder(
@@ -468,11 +479,7 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
                                     showContextMenu(context);
                                     setState(() {
                                       globals.ayatDipilih
-                                              .contains(ayatBacaan[index])
-                                          ? globals.ayatDipilih
-                                              .remove(ayatBacaan[index])
-                                          : globals.ayatDipilih
-                                              .add(ayatBacaan[index]);
+                                          .add(ayatBacaan[index]);
                                       globals.ayatDipilih
                                           .sort((a, b) => a.id.compareTo(b.id));
                                     });
