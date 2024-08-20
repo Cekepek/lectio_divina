@@ -138,10 +138,13 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                             size: 24.0,
                           ),
                           onTap: () {
-                            _goToPreviousMonth();
-                            monthBacaan = _getBacaanForMonth(
-                                focusedDay.year, focusedDay.month);
-                            listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                            //Kurang setState ?
+                            setState(() {
+                              _goToPreviousMonth();
+                              monthBacaan = _getBacaanForMonth(
+                                  focusedDay.year, focusedDay.month);
+                              listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                            });
                           },
                         ),
                         GestureDetector(
@@ -156,10 +159,13 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                             size: 24.0,
                           ),
                           onTap: () {
-                            _goToNextMonth();
-                            monthBacaan = _getBacaanForMonth(
-                                focusedDay.year, focusedDay.month);
-                            listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                            //Kurang setState ?
+                            setState(() {
+                              _goToNextMonth();
+                              monthBacaan = _getBacaanForMonth(
+                                  focusedDay.year, focusedDay.month);
+                              listTanggalBacaan = getTanggalBacaan(monthBacaan);
+                            });
                           },
                         ),
                       ],

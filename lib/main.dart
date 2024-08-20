@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
 
@@ -16,7 +18,9 @@ import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/screen/komunitas.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
 
 Future<void> getLD() async {}
 
@@ -73,6 +77,35 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     loadLd();
+  }
+
+  Future<void> pickFilePath() async {
+    String text;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      try {
+        String? filePath = result.files.single.path;
+        final File file = File(filePath!);
+        text = await file.readAsString();
+        print(text);
+      } catch (e) {
+        print("Couldn't read file");
+      }
+    } else {
+      // Pengguna membatalkan pemilihan file
+    }
+  }
+
+  Future<void> pickDirectoryPath() async {
+    String? directoryPath = await FilePicker.platform.getDirectoryPath();
+
+    if (directoryPath != null) {
+      print("Path direktori yang dipilih: $directoryPath");
+      final File file = File('$directoryPath/LD.txt');
+      await file.writeAsString("test");
+    } else {
+      // Pengguna membatalkan pemilihan direktori
+    }
   }
 
   Future<void> loadLd() async {
@@ -277,6 +310,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 globals.currentIndex = 2;
                 Navigator.pop(context);
               });
+            },
+          ),
+          ListTile(
+            leading:
+                Icon(CupertinoIcons.cloud_download_fill, color: Colors.black),
+            title: Text(
+              "Export LD",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              pickDirectoryPath();
+            },
+          ),
+          ListTile(
+            leading:
+                Icon(CupertinoIcons.cloud_download_fill, color: Colors.black),
+            title: Text(
+              "Import LD",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              pickFilePath();
             },
           ),
           Padding(
