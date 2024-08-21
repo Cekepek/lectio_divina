@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
 
@@ -72,6 +73,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String namaFile = "";
+  String? directoryPath;
+
   @override
   void initState() {
     super.initState();
@@ -79,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     loadLd();
   }
 
-  Future<void> pickFilePath() async {
+  Future<void> importLd() async {
     String text;
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
@@ -87,25 +91,33 @@ class _MyHomePageState extends State<MyHomePage> {
         String? filePath = result.files.single.path;
         final File file = File(filePath!);
         text = await file.readAsString();
-        print(text);
+        final List<LD> importedLd = LD.decode(text);
+        globals.MyLd.addAll(importedLd);
+        final prefs = await SharedPreferences.getInstance();
+        final String encodedData = LD.encode(globals.MyLd);
+        await prefs.setString('lds_key', encodedData);
+        print(encodedData);
       } catch (e) {
         print("Couldn't read file");
       }
-    } else {
-      // Pengguna membatalkan pemilihan file
-    }
+    } else {}
   }
 
   Future<void> pickDirectoryPath() async {
-    String? directoryPath = await FilePicker.platform.getDirectoryPath();
+    directoryPath = await FilePicker.platform.getDirectoryPath();
 
     if (directoryPath != null) {
       print("Path direktori yang dipilih: $directoryPath");
-      final File file = File('$directoryPath/LD.txt');
-      await file.writeAsString("test");
-    } else {
-      // Pengguna membatalkan pemilihan direktori
-    }
+      namaFileDialog();
+    } else {}
+  }
+
+  Future<void> exportFile(String namaFile) async {
+    final File file = File('$directoryPath/$namaFile.txt');
+    String text = LD.encode(globals.MyLd);
+    print(text);
+    await file.writeAsString(text);
+    toastExportLD();
   }
 
   Future<void> loadLd() async {
@@ -119,6 +131,107 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void toastExportLD() {
+    Fluttertoast.showToast(
+      msg: "File LD berhasil export",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  void namaFileDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("Masukkan Nama File Anda", textAlign: TextAlign.center),
+            content: TextField(
+              onChanged: (value) {
+                namaFile = value;
+              },
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nama File',
+                  hintText: 'FileLD'),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(width: 1, color: Colors.black),
+                    ),
+                    child: Text("BATALKAN")),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  exportFile(namaFile);
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(width: 1, color: Colors.grey),
+                        color: Theme.of(context).colorScheme.inversePrimary),
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ),
+            ],
+          ));
+
+  void exportDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Apakah Anda ingin melakukan export data ? tekan "Ya" kemudian pilihlah folder yang ingin Anda gunakan untuk menyimpan!',
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("TIDAK")),
+            ),
+            MaterialButton(
+              onPressed: () {
+                pickDirectoryPath();
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                  child: Text(
+                    "YA",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
   Color color = Color.fromRGBO(255, 141, 116, 1);
   Widget buildColorPicker() {
     return ColorPicker(
@@ -323,7 +436,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () async {
-              pickDirectoryPath();
+              exportDialog();
             },
           ),
           ListTile(
@@ -337,7 +450,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () async {
-              pickFilePath();
+              importLd();
             },
           ),
           Padding(
