@@ -11,6 +11,7 @@ import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailBacaan extends StatefulWidget {
   const DetailBacaan({super.key});
@@ -23,7 +24,6 @@ class DetailBacaan extends StatefulWidget {
 
 class _DetailBacaan extends State<DetailBacaan> {
   List<Ayat> ayatBacaan = [];
-  Color color = Color.fromRGBO(255, 141, 116, 1);
 
   List<Ayat> parseReferences(String input) {
     List<Ayat> references = [];
@@ -71,15 +71,21 @@ class _DetailBacaan extends State<DetailBacaan> {
     return references;
   }
 
+  Future<void> saveTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('color', globals.colorTheme.value);
+  }
+
   Widget buildColorPicker() {
     return ColorPicker(
       enableAlpha: false,
       showLabel: false,
-      pickerColor: color,
+      pickerColor: themeColor,
       onColorChanged: (color) {
         setState(() {
-          this.color = color;
-          themeColor = this.color;
+          themeColor = color;
+          globals.colorTheme = color;
+          saveTheme();
         });
       },
     );
@@ -328,7 +334,7 @@ class _DetailBacaan extends State<DetailBacaan> {
                     // minRadius: 50,
                     radius: 20,
                     child: CircleAvatar(
-                      backgroundColor: color,
+                      backgroundColor: globals.colorTheme,
                       radius: 18,
                     ),
                   ),

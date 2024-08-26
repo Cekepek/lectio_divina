@@ -15,6 +15,7 @@ import 'package:lectio_divina/switch_button.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Alkitab extends StatefulWidget {
   const Alkitab({super.key});
@@ -88,16 +89,21 @@ class _AlkitabState extends State<Alkitab> {
   // Widget tampilAlkitab() {
   //   return
   // }
-  Color color = Color.fromRGBO(255, 141, 116, 1);
+  Future<void> saveTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('color', globals.colorTheme.value);
+  }
+
   Widget buildColorPicker() {
     return ColorPicker(
       enableAlpha: false,
       showLabel: false,
-      pickerColor: color,
+      pickerColor: themeColor,
       onColorChanged: (color) {
         setState(() {
-          this.color = color;
-          themeColor = this.color;
+          themeColor = color;
+          globals.colorTheme = color;
+          saveTheme();
         });
       },
     );
@@ -321,7 +327,7 @@ class _AlkitabState extends State<Alkitab> {
                     // minRadius: 50,
                     radius: 20,
                     child: CircleAvatar(
-                      backgroundColor: color,
+                      backgroundColor: globals.colorTheme,
                       radius: 18,
                     ),
                   ),
