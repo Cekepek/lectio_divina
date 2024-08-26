@@ -7,8 +7,10 @@ import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/pasal.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
 import 'package:lectio_divina/switch_button.dart';
+import 'package:provider/provider.dart';
 
 class DetailBacaan extends StatefulWidget {
   const DetailBacaan({super.key});
@@ -83,25 +85,6 @@ class _DetailBacaan extends State<DetailBacaan> {
     );
   }
 
-  void pickColor(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Pilih Warna Tema"),
-              content: Column(
-                children: [
-                  buildColorPicker(),
-                  TextButton(
-                    child: Text("Pilih", style: TextStyle(fontSize: 20)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ));
-  }
-
   List<Ayat> getBacaan(String ayat) {
     List<Ayat> bacaanHariIni = parseReferences(ayat);
     List<Ayat> isiBacaan = [];
@@ -126,6 +109,27 @@ class _DetailBacaan extends State<DetailBacaan> {
       }
     }
     return isiBacaan;
+  }
+
+  void pickColor(BuildContext context) {
+    final theme = Provider.of<ThemeModel>(context, listen: false);
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Pilih Warna Tema"),
+              content: Column(
+                children: [
+                  buildColorPicker(),
+                  TextButton(
+                    child: Text("Pilih", style: TextStyle(fontSize: 20)),
+                    onPressed: () {
+                      theme.updateTheme(themeColor);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ));
   }
 
   Widget myDrawer(BuildContext context) {
@@ -380,7 +384,7 @@ class _DetailBacaan extends State<DetailBacaan> {
       drawer: globals.ayatDipilih.isEmpty ? myDrawer(context) : Container(),
       appBar: globals.ayatDipilih.isEmpty
           ? AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Theme.of(context).primaryColor,
               iconTheme: IconThemeData(color: Colors.white),
               title: Text(
                 titleHome,
@@ -400,7 +404,7 @@ class _DetailBacaan extends State<DetailBacaan> {
                   color: Colors.white,
                 ),
               ),
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Theme.of(context).primaryColor,
               iconTheme: IconThemeData(color: Colors.white),
               actions: [
                 PopupMenuButton(

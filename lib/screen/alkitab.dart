@@ -6,11 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
 import 'package:lectio_divina/screen/pilihKitab.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/tambahLd.dart';
 import 'package:lectio_divina/switch_button.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -101,7 +103,9 @@ class _AlkitabState extends State<Alkitab> {
     );
   }
 
+  double? fontSizeAyat = 20;
   void pickColor(BuildContext context) {
+    final theme = Provider.of<ThemeModel>(context, listen: false);
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -112,6 +116,7 @@ class _AlkitabState extends State<Alkitab> {
                   TextButton(
                     child: Text("Pilih", style: TextStyle(fontSize: 20)),
                     onPressed: () {
+                      theme.updateTheme(themeColor);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -120,7 +125,6 @@ class _AlkitabState extends State<Alkitab> {
             ));
   }
 
-  double? fontSizeAyat = 20;
   Widget myDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -366,7 +370,7 @@ class _AlkitabState extends State<Alkitab> {
       drawer: globals.ayatDipilih.isEmpty ? myDrawer(context) : Container(),
       appBar: globals.ayatDipilih.isEmpty
           ? AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Theme.of(context).primaryColor,
               iconTheme: IconThemeData(color: Colors.white),
               title: Text(
                 titleHome,
@@ -386,7 +390,7 @@ class _AlkitabState extends State<Alkitab> {
                   color: Colors.white,
                 ),
               ),
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Theme.of(context).primaryColor,
               iconTheme: IconThemeData(color: Colors.white),
               actions: [
                 PopupMenuButton(
@@ -571,7 +575,7 @@ class _AlkitabState extends State<Alkitab> {
           ),
           Container(
             height: 56,
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: Theme.of(context).primaryColor,
             padding: EdgeInsets.all(12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

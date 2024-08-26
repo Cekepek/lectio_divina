@@ -89,7 +89,7 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           "Komunitas",
@@ -124,8 +124,7 @@ class _DetailKomunitasState extends State<DetailKomunitas> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color:
-                                Theme.of(context).colorScheme.inversePrimary),
+                            color: Theme.of(context).primaryColor),
                         textAlign: TextAlign.center,
                       ),
                     ),

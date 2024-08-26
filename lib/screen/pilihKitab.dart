@@ -32,7 +32,7 @@ class _PilihKitabState extends State<PilihKitab> {
               color: Colors.white),
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: Container(

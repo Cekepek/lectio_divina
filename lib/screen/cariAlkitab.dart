@@ -33,7 +33,7 @@ class _CariAlkitabState extends State<CariAlkitab> {
               color: Colors.white),
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(

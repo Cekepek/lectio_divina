@@ -30,7 +30,7 @@ class _PilihBabKitabState extends State<PilihBabKitab> {
               color: Colors.white),
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
         children: [

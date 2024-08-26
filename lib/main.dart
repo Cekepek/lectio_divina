@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
 
@@ -20,6 +21,7 @@ import 'package:lectio_divina/screen/komunitas.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -27,7 +29,12 @@ Future<void> getLD() async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('id_ID', null).then((_) => runApp(MyApp()));
+  await initializeDateFormatting('id_ID', null).then((_) => runApp(
+        ChangeNotifierProvider(
+          create: (_) => ThemeModel(),
+          child: MyApp(),
+        ),
+      ));
 }
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
@@ -37,8 +44,10 @@ final List<Widget> _screens = [Home(), LDKalender(), Komunitas()];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeModel>(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -46,12 +55,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: Get.navigatorKey,
-      theme: ThemeData(
-        fontFamily: "Poppins",
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
-        useMaterial3: true,
-      ),
+      // theme: ThemeData(
+      //   fontFamily: "Poppins",
+      //   colorScheme:
+      //       ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
+      //   useMaterial3: true,
+      // ),
+      theme: theme.currentTheme,
       home: const MyHomePage(title: "Lectio Divina"),
     );
   }
@@ -179,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // border: Border.all(width: 1, color: Colors.grey),
-                        color: Theme.of(context).colorScheme.inversePrimary),
+                        color: Theme.of(context).primaryColor),
                     child: Text(
                       "OK",
                       style: TextStyle(
@@ -221,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       // border: Border.all(width: 1, color: Colors.grey),
-                      color: Theme.of(context).colorScheme.inversePrimary),
+                      color: Theme.of(context).primaryColor),
                   child: Text(
                     "YA",
                     style: TextStyle(
@@ -248,6 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void pickColor(BuildContext context) {
+    final theme = Provider.of<ThemeModel>(context, listen: false);
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -258,6 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   TextButton(
                     child: Text("Pilih", style: TextStyle(fontSize: 20)),
                     onPressed: () {
+                      theme.updateTheme(themeColor);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -475,7 +487,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Change Color",
+                  "Change Background Color",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -535,7 +547,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         drawer: myDrawer(context),
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Theme.of(context).primaryColor,
           iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             titleHome,

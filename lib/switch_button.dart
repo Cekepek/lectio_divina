@@ -13,6 +13,7 @@ class _SwitchExampleState extends State<SwitchButton> {
   @override
   Widget build(BuildContext context) {
     return Switch(
+      inactiveTrackColor: Colors.white,
       // This bool value toggles the switch.
       value: light,
       activeColor: Colors.green,

@@ -366,7 +366,7 @@ class _TambahLdState extends State<TambahLd>
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       // border: Border.all(width: 1, color: Colors.grey),
-                      color: Theme.of(context).colorScheme.inversePrimary),
+                      color: Theme.of(context).primaryColor),
                   child: Text(
                     "SIMPAN",
                     style: TextStyle(
@@ -389,7 +389,7 @@ class _TambahLdState extends State<TambahLd>
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           onPressed: () {
             backDialog();
