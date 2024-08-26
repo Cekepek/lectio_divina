@@ -12,6 +12,8 @@ List<LD> MyLd = [];
 List<Ayat> ayatDipilih = [];
 int bacaanDipilih = -1;
 
+Color colorTheme = Color.fromRGBO(255, 141, 116, 1);
+
 int currentIndex = 0;
 // Alkitab selectKitab = Alkitab(kitab: 0, bab: 0, ayat: "0");
 

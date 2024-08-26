@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,7 +21,6 @@ import 'package:lectio_divina/screen/home.dart';
 import 'package:lectio_divina/screen/komunitas.dart';
 import 'package:lectio_divina/switch_button.dart';
 import 'package:lectio_divina/globals.dart' as globals;
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
@@ -86,10 +86,17 @@ class _MyHomePageState extends State<MyHomePage> {
   String namaFile = "";
   String? directoryPath;
 
+  Future<void> getTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    globals.colorTheme = Color(prefs.getInt('color') ?? themeColor.value);
+  }
+
   @override
   void initState() {
     super.initState();
 
+    print(themeColor);
+    getTheme();
     loadLd();
   }
 
@@ -242,16 +249,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       );
-  Color color = Color.fromRGBO(255, 141, 116, 1);
+
+  Future<void> saveTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('color', globals.colorTheme.value);
+  }
+
   Widget buildColorPicker() {
     return ColorPicker(
       enableAlpha: false,
       showLabel: false,
-      pickerColor: color,
+      pickerColor: themeColor,
       onColorChanged: (color) {
         setState(() {
-          this.color = color;
-          themeColor = this.color;
+          themeColor = color;
+          globals.colorTheme = color;
+          saveTheme();
         });
       },
     );
@@ -499,7 +512,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // minRadius: 50,
                     radius: 20,
                     child: CircleAvatar(
-                      backgroundColor: color,
+                      backgroundColor: Theme.of(context).primaryColor,
                       radius: 18,
                     ),
                   ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeModel extends ChangeNotifier {
   bool _isDark = false;
@@ -11,11 +13,28 @@ class ThemeModel extends ChangeNotifier {
   // );
   ThemeData _currentTheme = ThemeData(
     fontFamily: "Poppins",
-    primaryColor: Color.fromRGBO(245, 141, 116, 1),
-    colorScheme:
-        ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
+    primaryColor: globals.colorTheme,
+    colorScheme: ColorScheme.fromSeed(seedColor: globals.colorTheme),
     useMaterial3: true,
   );
+
+  ThemeModel() {
+    _loadFromPrefs();
+  }
+
+  void _loadFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _currentTheme = ThemeData(
+      fontFamily: "Poppins",
+      primaryColor:
+          Color(prefs.getInt('primaryColor') ?? globals.colorTheme.value),
+      colorScheme: ColorScheme.fromSeed(
+          seedColor:
+              Color(prefs.getInt('primaryColor') ?? globals.colorTheme.value)),
+      useMaterial3: true,
+    );
+    notifyListeners();
+  }
 
   bool get isDark => _isDark;
   ThemeData get currentTheme => _currentTheme;
