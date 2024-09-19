@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/model/themeModel.dart';
+import 'package:lectio_divina/screen/settings.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
 
@@ -40,7 +41,7 @@ Future<void> main() async {
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [Home(), LDKalender(), Komunitas()];
+final List<Widget> _screens = [Home(), LDKalender(), Komunitas(), Settings()];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -531,7 +532,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              print("Ini Settings");
+              setState(() {
+                titleHome = "Settings";
+                globals.currentIndex = 3;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
