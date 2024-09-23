@@ -1,6 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -13,6 +13,12 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool showExportSetting = false;
+
+  Future<void> changeSettings(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -28,7 +34,15 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(fontSize: 16),
                 ),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      globals.backgroundMusic
+                          ? globals.backgroundMusic = false
+                          : globals.backgroundMusic = true;
+                      changeSettings(
+                          "backgroundMusic", globals.backgroundMusic);
+                    });
+                  },
                   child: Container(
                       width: 150,
                       padding: EdgeInsets.all(15),
@@ -37,7 +51,7 @@ class _SettingsState extends State<Settings> {
                         color: Theme.of(context).primaryColor,
                       ),
                       child: Text(
-                        "OFF",
+                        globals.backgroundMusic ? "ON" : "OFF",
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -57,7 +71,14 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(fontSize: 16),
                 ),
                 MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      globals.autoJudul
+                          ? globals.autoJudul = false
+                          : globals.autoJudul = true;
+                      changeSettings("autoJudul", globals.autoJudul);
+                    });
+                  },
                   child: Container(
                       width: 150,
                       padding: EdgeInsets.all(15),
@@ -66,7 +87,7 @@ class _SettingsState extends State<Settings> {
                         color: Theme.of(context).primaryColor,
                       ),
                       child: Text(
-                        "OFF",
+                        globals.autoJudul ? "ON" : "OFF",
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -126,7 +147,15 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.header
+                                                  ? globals.header = false
+                                                  : globals.header = true;
+                                              changeSettings(
+                                                  "header", globals.header);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -137,7 +166,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Bold",
+                                                globals.header
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -158,7 +189,16 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.ayatBacaan
+                                                  ? globals.ayatBacaan = false
+                                                  : globals.ayatBacaan = true;
+
+                                              changeSettings("ayatBacaan",
+                                                  globals.ayatBacaan);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -169,7 +209,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Normal",
+                                                globals.ayatBacaan
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -190,7 +232,15 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.isiAyat
+                                                  ? globals.isiAyat = false
+                                                  : globals.isiAyat = true;
+                                              changeSettings(
+                                                  "isiAyat", globals.isiAyat);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -201,7 +251,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Normal",
+                                                globals.isiAyat
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -222,7 +274,15 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.isiSabda
+                                                  ? globals.isiSabda = false
+                                                  : globals.isiSabda = true;
+                                              changeSettings(
+                                                  "isiSabda", globals.isiSabda);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -233,7 +293,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Normal",
+                                                globals.isiSabda
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -254,7 +316,15 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.isiTanggapan
+                                                  ? globals.isiTanggapan = false
+                                                  : globals.isiTanggapan = true;
+                                              changeSettings("isiTanggapan",
+                                                  globals.isiTanggapan);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -265,7 +335,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Normal",
+                                                globals.isiTanggapan
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),
@@ -287,7 +359,15 @@ class _SettingsState extends State<Settings> {
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         MaterialButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              globals.isiTindakan
+                                                  ? globals.isiTindakan = false
+                                                  : globals.isiTindakan = true;
+                                              changeSettings("isiTindakan",
+                                                  globals.isiTindakan);
+                                            });
+                                          },
                                           child: Container(
                                               width: 120,
                                               padding: EdgeInsets.all(15),
@@ -298,7 +378,9 @@ class _SettingsState extends State<Settings> {
                                                     .primaryColor,
                                               ),
                                               child: Text(
-                                                "Normal",
+                                                globals.isiTindakan
+                                                    ? "Bold"
+                                                    : "Normal",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                 ),

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +6,6 @@ import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/pasal.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/class/ayat.dart';
-import 'package:lectio_divina/screen/detailBacaan.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
 
 class DetailKomunitas extends StatefulWidget {
@@ -326,13 +323,13 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
 
   void showContextMenu(context) async {
     final RenderObject? overlay =
-        Overlay.of(context)?.context.findRenderObject();
+        Overlay.of(context).context.findRenderObject();
     final result = await showMenu(
         context: context,
         position: RelativeRect.fromRect(
             Rect.fromLTWH(tapPositionOffset.dx, tapPositionOffset.dy, 10, 10),
             Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
-                overlay!.paintBounds.size.height)),
+                overlay.paintBounds.size.height)),
         items: [
           PopupMenuItem(
             child: Text("Buat LD"),

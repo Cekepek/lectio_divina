@@ -13,6 +13,15 @@ List<Ayat> ayatDipilih = [];
 int bacaanDipilih = -1;
 
 Color colorTheme = Color.fromRGBO(255, 141, 116, 1);
+bool backgroundMusic = true;
+bool autoJudul = true;
+//kalau true -> bold, kalau false-> normal
+bool header = true;
+bool ayatBacaan = false;
+bool isiAyat = false;
+bool isiSabda = false;
+bool isiTanggapan = false;
+bool isiTindakan = false;
 
 int currentIndex = 0;
 // Alkitab selectKitab = Alkitab(kitab: 0, bab: 0, ayat: "0");

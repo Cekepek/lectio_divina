@@ -87,15 +87,23 @@ class _MyHomePageState extends State<MyHomePage> {
   String namaFile = "";
   String? directoryPath;
 
-  Future<void> getTheme() async {
+  Future<void> getSettings() async {
     final prefs = await SharedPreferences.getInstance();
     globals.colorTheme = Color(prefs.getInt('color') ?? themeColor.value);
+    globals.backgroundMusic = prefs.getBool('backgroundMusic') ?? false;
+    globals.autoJudul = prefs.getBool("autoJudul") ?? false;
+    globals.header = prefs.getBool("header") ?? true;
+    globals.ayatBacaan = prefs.getBool("ayatBacaan") ?? false;
+    globals.isiAyat = prefs.getBool("isiAyat") ?? false;
+    globals.isiSabda = prefs.getBool("isiSabda") ?? false;
+    globals.isiTanggapan = prefs.getBool("isiTanggapan") ?? false;
+    globals.isiTindakan = prefs.getBool("isiTindakan") ?? false;
   }
 
   @override
   void initState() {
     super.initState();
-    getTheme();
+    getSettings();
     loadLd();
   }
 
@@ -258,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return ColorPicker(
       enableAlpha: false,
       showLabel: false,
-      pickerColor: themeColor,
+      pickerColor: globals.colorTheme,
       onColorChanged: (color) {
         setState(() {
           themeColor = color;

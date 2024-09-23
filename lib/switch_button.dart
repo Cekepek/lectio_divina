@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SwitchButton extends StatefulWidget {
   const SwitchButton({super.key});
@@ -10,17 +12,21 @@ class SwitchButton extends StatefulWidget {
 class _SwitchExampleState extends State<SwitchButton> {
   bool light = false;
 
+  Future<void> changeSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("backgroundMusic", globals.backgroundMusic);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Switch(
       inactiveTrackColor: Colors.white,
-      // This bool value toggles the switch.
-      value: light,
+      value: globals.backgroundMusic,
       activeColor: Colors.green,
       onChanged: (bool value) {
-        // This is called when the user toggles the switch.
         setState(() {
-          light = value;
+          globals.backgroundMusic = value;
+          changeSettings();
         });
       },
     );
