@@ -32,6 +32,12 @@ class _LDKalenderState extends State<LDKalender> {
   late final ValueNotifier<List<LD>> _selectedLD;
   List<LD> monthLd = [];
   List<DateTime> listTanggalLd = [];
+  String header = "";
+  String ayat = "";
+  String isiAyat = "";
+  String isiSabda = "";
+  String isiTanggapan = "";
+  String isiTindakan = "";
 
   void _onDaySelected(DateTime day, DateTime focusDay) {
     setState(() {
@@ -421,22 +427,42 @@ class _LDKalenderState extends State<LDKalender> {
                                                                       }
                                                                       if (result ==
                                                                           2) {
-                                                                        Share.share("*" +
-                                                                            value[index].judul +
-                                                                            "*\n\n" +
+                                                                        setState(
+                                                                            () {
+                                                                          header = globals.header
+                                                                              ? "*" + value[index].judul + "*"
+                                                                              : value[index].judul;
+                                                                          ayat = globals.ayatBacaan
+                                                                              ? "*" + value[index].ayat + "*"
+                                                                              : value[index].ayat;
+                                                                          isiAyat = globals.isiAyat
+                                                                              ? "*" + value[index].sabda + "*"
+                                                                              : value[index].sabda;
+                                                                          isiSabda = globals.isiSabda
+                                                                              ? "*" + value[index].sabdaBagiSaya + "*"
+                                                                              : value[index].sabdaBagiSaya;
+                                                                          isiTanggapan = globals.isiTanggapan
+                                                                              ? "*" + value[index].tanggapan + "*"
+                                                                              : value[index].tanggapan;
+                                                                          isiTindakan = globals.isiTindakan
+                                                                              ? "*" + value[index].tindakan + "*"
+                                                                              : value[index].tindakan;
+                                                                        });
+                                                                        Share.share(header +
+                                                                            "\n\n" +
                                                                             "*" +
                                                                             formatBagikan.format(DateTime.parse(value[index].tanggal)) +
                                                                             "*\n\n" +
-                                                                            "*Ayat : " +
-                                                                            value[index].ayat +
-                                                                            "*\n\n" +
-                                                                            value[index].sabda +
+                                                                            "*Ayat :*\n" +
+                                                                            ayat +
+                                                                            "\n\n*Isi Ayat :*\n" +
+                                                                            isiAyat +
                                                                             "\n\n*Sabda Tuhan Bagi Saya :*\n" +
-                                                                            value[index].sabdaBagiSaya +
+                                                                            isiSabda +
                                                                             "\n\n*Tanggapan :*\n" +
-                                                                            value[index].tanggapan +
+                                                                            isiTanggapan +
                                                                             "\n\n*Tindakan :*\n" +
-                                                                            value[index].tindakan +
+                                                                            isiTindakan +
                                                                             "\n\n*Catatan :*\n" +
                                                                             value[index].catatan);
                                                                       }
@@ -517,6 +543,12 @@ class ListViewLdBulanan extends StatefulWidget {
 class _ListViewLdBulananState extends State<ListViewLdBulanan> {
   late List<LD> ldHariIni;
   DateFormat formatBagikan = new DateFormat("EEEE dd MMMM yyyy", "id_ID");
+  String header = "";
+  String ayat = "";
+  String isiAyat = "";
+  String isiSabda = "";
+  String isiTanggapan = "";
+  String isiTindakan = "";
 
   @override
   void initState() {
@@ -637,23 +669,44 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                                 );
                               }
                               if (result == 2) {
-                                Share.share("*" +
-                                    ldHariIni[index].judul +
-                                    "*\n\n" +
+                                setState(() {
+                                  header = globals.header
+                                      ? "*" + ldHariIni[index].judul + "*"
+                                      : ldHariIni[index].judul;
+                                  ayat = globals.ayatBacaan
+                                      ? "*" + ldHariIni[index].ayat + "*"
+                                      : ldHariIni[index].ayat;
+                                  isiAyat = globals.isiAyat
+                                      ? "*" + ldHariIni[index].sabda + "*"
+                                      : ldHariIni[index].sabda;
+                                  isiSabda = globals.isiSabda
+                                      ? "*" +
+                                          ldHariIni[index].sabdaBagiSaya +
+                                          "*"
+                                      : ldHariIni[index].sabdaBagiSaya;
+                                  isiTanggapan = globals.isiTanggapan
+                                      ? "*" + ldHariIni[index].tanggapan + "*"
+                                      : ldHariIni[index].tanggapan;
+                                  isiTindakan = globals.isiTindakan
+                                      ? "*" + ldHariIni[index].tindakan + "*"
+                                      : ldHariIni[index].tindakan;
+                                });
+                                Share.share(header +
+                                    "\n\n" +
                                     "*" +
                                     formatBagikan.format(DateTime.parse(
                                         ldHariIni[index].tanggal)) +
                                     "*\n\n" +
-                                    "*Ayat : " +
-                                    ldHariIni[index].ayat +
-                                    "*\n\n" +
-                                    ldHariIni[index].sabda +
+                                    "*Ayat :*\n" +
+                                    ayat +
+                                    "\n\n*Isi Ayat :*\n" +
+                                    isiAyat +
                                     "\n\n*Sabda Tuhan Bagi Saya :*\n" +
-                                    ldHariIni[index].sabdaBagiSaya +
+                                    isiSabda +
                                     "\n\n*Tanggapan :*\n" +
-                                    ldHariIni[index].tanggapan +
+                                    isiTanggapan +
                                     "\n\n*Tindakan :*\n" +
-                                    ldHariIni[index].tindakan +
+                                    isiTindakan +
                                     "\n\n*Catatan :*\n" +
                                     ldHariIni[index].catatan);
                               }
