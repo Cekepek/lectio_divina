@@ -145,7 +145,7 @@ class _TambahLdState extends State<TambahLd>
         LD ldBaru = LD(
             id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
             tanggal: globals.tanggalTerpilih.toString(),
-            judul: judul,
+            judul: globals.autoJudul ? judul : "",
             ayat: ayat,
             sabda: sabda,
             sabdaBagiSaya: sabdaBagiSaya,
