@@ -40,6 +40,7 @@ class _TambahLdState extends State<TambahLd>
   bool selesai = false;
   late String headerSabda;
   late String tempSabda;
+  bool simpanClicked = false;
   // Daftar warna yang akan ditampilkan dalam dropdown
   final List<Color> _colors = [
     Color.fromRGBO(255, 0, 0, 1),
@@ -604,6 +605,37 @@ class _TambahLdState extends State<TambahLd>
                         },
                       ),
                     ],
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: GestureDetector(
+                          onTap: () {
+                            simpanClicked == true;
+                            ldTersimpan();
+                          },
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const Center(
+                              child: Text(
+                                'Simpan',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   // GestureDetector(
                   //   onTap: () {

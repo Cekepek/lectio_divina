@@ -45,6 +45,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   final TextEditingController hashtag = TextEditingController();
   late Color warna;
   bool selesai = false;
+  bool simpanClicked = false;
 
   @override
   void initState() {
@@ -512,6 +513,37 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         },
                       ),
                     ],
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: GestureDetector(
+                          onTap: () {
+                            simpanClicked == true;
+                            ldTersimpan();
+                          },
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const Center(
+                              child: Text(
+                                'Simpan',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
