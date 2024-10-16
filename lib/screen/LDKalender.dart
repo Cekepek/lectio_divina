@@ -453,15 +453,15 @@ class _LDKalenderState extends State<LDKalender> {
                                                                             "*" +
                                                                             formatBagikan.format(DateTime.parse(value[index].tanggal)) +
                                                                             "*\n\n" +
-                                                                            "*Ayat :*\n" +
+                                                                            "*Ayat yang berkesan,*\n" +
                                                                             ayat +
                                                                             "\n\n*Isi Ayat :*\n" +
                                                                             isiAyat +
-                                                                            "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                                                            "\n\n*Sabda Tuhan Bagi Saya,*\n" +
                                                                             isiSabda +
-                                                                            "\n\n*Tanggapan :*\n" +
+                                                                            "\n\n*Tanggapan Saya,*\n" +
                                                                             isiTanggapan +
-                                                                            "\n\n*Tindakan :*\n" +
+                                                                            "\n\n*Tindakan Nyata,*\n" +
                                                                             isiTindakan +
                                                                             "\n\n*Catatan :*\n" +
                                                                             value[index].catatan);
