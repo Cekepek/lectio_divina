@@ -6,11 +6,15 @@ import 'package:lectio_divina/class/bacaan.dart';
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/komunitas.dart';
 import 'package:lectio_divina/class/ld.dart';
+import 'package:lectio_divina/class/user.dart';
 
 List<Kitab> kitab = [];
 List<LD> MyLd = [];
 List<Ayat> ayatDipilih = [];
 int bacaanDipilih = -1;
+int userid = -1;
+String tesUsername = "tes";
+String tesPassword = "tes";
 
 Color colorTheme = Color.fromRGBO(255, 141, 116, 1);
 bool backgroundMusic = true;

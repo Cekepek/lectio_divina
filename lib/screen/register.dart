@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/screen/login.dart';
+import 'package:http/http.dart' as http;
 
 class MyRegister extends StatelessWidget {
   const MyRegister({super.key});
@@ -29,7 +32,7 @@ class Register extends StatefulWidget {
 var isObscuredRegister;
 
 class _RegisterState extends State<Register> {
-  late String email;
+  late String username;
   late String password;
   late String name;
   late String error_register;
@@ -38,11 +41,34 @@ class _RegisterState extends State<Register> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    email = "";
+    username = "";
     password = "";
     name = "";
     error_register = "";
     isObscuredRegister = true;
+  }
+
+  void createAccount() async {
+    final body = jsonEncode(
+        {'username': username, 'password': password, 'nama': name, 'foto': ""});
+    final response = await http
+        .post(Uri.parse("http://sw.crossnet.co.id:5868/user"), body: body);
+    if (response.statusCode == 200) {
+      print("MASUK");
+      setState(() {
+        MyLogin();
+      });
+      Map json = jsonDecode(response.body);
+      if (json['message'] == 'berhasil') {
+        setState(() {});
+      } else {
+        setState(() {
+          error_register = "Akun gagal Dibuat";
+        });
+      }
+    } else {
+      throw Exception('Failed to read API');
+    }
   }
 
   @override
@@ -98,7 +124,7 @@ class _RegisterState extends State<Register> {
               padding: const EdgeInsets.all(10),
               child: TextField(
                 onChanged: (value) {
-                  email = value;
+                  name = value;
                 },
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -110,12 +136,12 @@ class _RegisterState extends State<Register> {
               padding: const EdgeInsets.all(10),
               child: TextField(
                 onChanged: (value) {
-                  email = value;
+                  username = value;
                 },
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Masukkan email anda'),
+                    labelText: 'username',
+                    hintText: 'Masukkan username anda'),
               ),
             ),
             Padding(
@@ -152,7 +178,7 @@ class _RegisterState extends State<Register> {
                   padding: const EdgeInsets.all(10),
                   child: GestureDetector(
                     onTap: () {
-                      print("p");
+                      createAccount();
                     },
                     child: Container(
                       height: 40,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/model/themeModel.dart';
+import 'package:lectio_divina/screen/login.dart';
 import 'package:lectio_divina/screen/settings.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
@@ -30,12 +31,16 @@ Future<void> getLD() async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('id_ID', null).then((_) => runApp(
-        ChangeNotifierProvider(
-          create: (_) => ThemeModel(),
-          child: MyApp(),
-        ),
-      ));
+  if (globals.userid == -1) {
+    runApp(MyLogin());
+  } else {
+    await initializeDateFormatting('id_ID', null).then((_) => runApp(
+          ChangeNotifierProvider(
+            create: (_) => ThemeModel(),
+            child: MyApp(),
+          ),
+        ));
+  }
 }
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);

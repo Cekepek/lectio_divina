@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/register.dart';
+import 'package:lectio_divina/globals.dart' as globals;
 
 class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
@@ -12,7 +15,7 @@ class MyLogin extends StatelessWidget {
         fontFamily: 'Poppins',
         primarySwatch: Colors.blue,
       ),
-      home: const Login(),
+      home: Login(),
     );
   }
 }
@@ -29,20 +32,32 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // late String _user_id;
-  // late String _user_password;
-  // late String error_login;
+  late String _user_id;
+  late String _user_password;
+  late String error_login;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // _user_id = "test";
-    // _user_password = "test";
-    // error_login = "";
+    _user_id = "";
+    _user_password = "";
+    error_login = "";
+
     isObscured = true;
   }
 
+  void doLogin() {
+    if (globals.tesUsername == _user_id &&
+        globals.tesPassword == _user_password) {
+      globals.userid = 1;
+      main();
+    } else {
+      setState(() {
+        error_login = "Password/Username Salah";
+      });
+    }
+  }
   // void doLogin() async {
   //   final response = await http.post(
   //       Uri.parse("https://ubaya.fun/flutter/160420021/meme/login.php"),
@@ -66,15 +81,18 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     'Lectio Divina',
-      //     style: TextStyle(fontFamily: 'Poppins'),
-      //     textAlign: TextAlign.center,
-      //   ),
-      //   backgroundColor: Colors.cyan,
-      // ),
-      // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          'Lectio Divina',
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.cyan,
+      ),
+      resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context)
@@ -120,9 +138,9 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                // onChanged: (value) {
-                //   _user_id = value;
-                // },
+                onChanged: (value) {
+                  _user_id = value;
+                },
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -135,9 +153,9 @@ class _LoginState extends State<Login> {
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
                 obscureText: isObscured,
-                // onChanged: (value) {
-                //   _user_password = value;
-                // },
+                onChanged: (value) {
+                  _user_password = value;
+                },
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
                         padding: const EdgeInsetsDirectional.only(end: 12),
@@ -154,7 +172,11 @@ class _LoginState extends State<Login> {
                     hintText: 'Masukkan kata sandi'),
               ),
             ),
-            // if (error_login != "") Text(error_login),
+            if (error_login != "")
+              Text(
+                error_login,
+                style: TextStyle(color: Colors.red),
+              ),
             Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: GestureDetector(
@@ -183,7 +205,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.all(10),
                   child: GestureDetector(
                     onTap: () {
-                      print("p");
+                      doLogin();
                     },
                     child: Container(
                       height: 40,
