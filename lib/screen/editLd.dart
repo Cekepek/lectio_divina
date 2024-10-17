@@ -52,8 +52,12 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     _getLdToEdit();
+
+    print(editLd.id);
     tanggalLd = DateTime.parse(editLd.tanggal);
+    print(editLd.judul);
     judul.text = editLd.judul;
+    print(judul.text);
     ayat.text = editLd.ayat;
     sabda.text = editLd.sabda;
     sabdaBagiSaya.text = editLd.sabdaBagiSaya;
@@ -144,13 +148,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     int indexLd = 0;
     for (LD savedLd in lds) {
       if (savedLd.id == globals.idLdEdit) {
+        lds[indexLd] = ld;
+        globals.MyLd[indexLd] = ld;
+        await saveLd(lds);
         break;
       }
       indexLd += 1;
     }
-    lds[indexLd] = ld;
-    globals.MyLd[indexLd] = ld;
-    await saveLd(lds);
   }
 
   void ldTersimpan() => showDialog(

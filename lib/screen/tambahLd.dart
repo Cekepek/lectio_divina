@@ -144,9 +144,9 @@ class _TambahLdState extends State<TambahLd>
     animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         LD ldBaru = LD(
-            id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length - 1,
+            id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length,
             tanggal: globals.tanggalTerpilih.toString(),
-            judul: globals.autoJudul ? judul : "",
+            judul: judul,
             ayat: ayat,
             sabda: sabda,
             sabdaBagiSaya: sabdaBagiSaya,
@@ -179,7 +179,7 @@ class _TambahLdState extends State<TambahLd>
       tempSabda = "";
       judul = "";
     } else {
-      judul = globals.ayatDipilih[0].titleIncluded;
+      judul = globals.autoJudul ? globals.ayatDipilih[0].titleIncluded : "";
       controllerJudul = TextEditingController(text: judul);
       int index = 0;
       for (Ayat ayatTerpilih in globals.ayatDipilih) {
