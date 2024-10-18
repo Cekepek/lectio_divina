@@ -1,14 +1,18 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
+import 'package:lectio_divina/core.dart';
 
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/detailLd.dart';
 import 'package:lectio_divina/screen/editLd.dart';
 import 'package:lectio_divina/screen/tambahLd.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -370,41 +374,19 @@ class _LDKalenderState extends State<LDKalender> {
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
-                                                                          14,
+                                                                          18,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold,
                                                                     ),
                                                                   ),
-                                                                  Text(value[
-                                                                          index]
-                                                                      .ayat),
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(
-                                                                        top: 8,
-                                                                        bottom:
-                                                                            8),
-                                                                    child: value[index]
-                                                                            .selesai
-                                                                        ? Row(
-                                                                            children: [
-                                                                              Icon(
-                                                                                Icons.check_box,
-                                                                                size: 24.0,
-                                                                              ),
-                                                                              Text("Selesai")
-                                                                            ],
-                                                                          )
-                                                                        : Row(
-                                                                            children: [
-                                                                              Icon(
-                                                                                Icons.check_box_outline_blank,
-                                                                                size: 24.0,
-                                                                              ),
-                                                                              Text("Belum Selesai")
-                                                                            ],
-                                                                          ),
-                                                                  )
+                                                                  Text(
+                                                                    value[index]
+                                                                        .ayat,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             )),
@@ -412,105 +394,107 @@ class _LDKalenderState extends State<LDKalender> {
                                                               alignment:
                                                                   Alignment
                                                                       .topRight,
-                                                              child:
-                                                                  PopupMenuButton(
-                                                                      icon: Icon(
-                                                                          Icons
-                                                                              .more_horiz),
-                                                                      onSelected:
-                                                                          (result) {
-                                                                        if (result ==
-                                                                            0) {
-                                                                          setState(
-                                                                              () {
-                                                                            globals.idLdDetail =
-                                                                                value[index].id;
-                                                                          });
-                                                                          Navigator
-                                                                              .push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => DetailLd()),
-                                                                          );
-                                                                        }
-                                                                        if (result ==
-                                                                            1) {
-                                                                          setState(
-                                                                              () {
-                                                                            globals.idLdEdit =
-                                                                                value[index].id;
-                                                                          });
-                                                                          Navigator
-                                                                              .push(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => EditLd()),
-                                                                          );
-                                                                        }
-                                                                        if (result ==
-                                                                            2) {
-                                                                          setState(
-                                                                              () {
-                                                                            header = globals.header
-                                                                                ? "*" + value[index].judul + "*"
-                                                                                : value[index].judul;
-                                                                            ayat = globals.ayatBacaan
-                                                                                ? "*" + value[index].ayat + "*"
-                                                                                : value[index].ayat;
-                                                                            isiAyat = globals.isiAyat
-                                                                                ? "*" + value[index].sabda + "*"
-                                                                                : value[index].sabda;
-                                                                            isiSabda = globals.isiSabda
-                                                                                ? "*" + value[index].sabdaBagiSaya + "*"
-                                                                                : value[index].sabdaBagiSaya;
-                                                                            isiTanggapan = globals.isiTanggapan
-                                                                                ? "*" + value[index].tanggapan + "*"
-                                                                                : value[index].tanggapan;
-                                                                            isiTindakan = globals.isiTindakan
-                                                                                ? "*" + value[index].tindakan + "*"
-                                                                                : value[index].tindakan;
-                                                                          });
-                                                                          Share.share(header +
-                                                                              "\n\n" +
-                                                                              "*" +
-                                                                              formatBagikan.format(DateTime.parse(value[index].tanggal)) +
-                                                                              "*\n\n" +
-                                                                              "*Ayat yang berkesan,*\n" +
-                                                                              ayat +
-                                                                              "\n\n*Isi Ayat :*\n" +
-                                                                              isiAyat +
-                                                                              "\n\n*Sabda Tuhan Bagi Saya,*\n" +
-                                                                              isiSabda +
-                                                                              "\n\n*Tanggapan Saya,*\n" +
-                                                                              isiTanggapan +
-                                                                              "\n\n*Tindakan Nyata,*\n" +
-                                                                              isiTindakan +
-                                                                              "\n\n*Catatan :*\n" +
-                                                                              value[index].catatan);
-                                                                        }
-                                                                      },
-                                                                      itemBuilder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return [
-                                                                          PopupMenuItem(
-                                                                            value:
-                                                                                0,
-                                                                            child:
-                                                                                Text("Detail"),
-                                                                          ),
-                                                                          PopupMenuItem(
-                                                                            value:
-                                                                                1,
-                                                                            child:
-                                                                                Text("Edit"),
-                                                                          ),
-                                                                          PopupMenuItem(
-                                                                            value:
-                                                                                2,
-                                                                            child:
-                                                                                Text("Bagikan"),
-                                                                          )
-                                                                        ];
-                                                                      }),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        bottom:
+                                                                            10),
+                                                                child: Column(
+                                                                  children: [
+                                                                    PopupMenuButton(
+                                                                        icon: Icon(Icons
+                                                                            .more_horiz),
+                                                                        onSelected:
+                                                                            (result) {
+                                                                          if (result ==
+                                                                              0) {
+                                                                            setState(() {
+                                                                              globals.idLdDetail = value[index].id;
+                                                                            });
+                                                                            Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => DetailLd()),
+                                                                            );
+                                                                          }
+                                                                          if (result ==
+                                                                              1) {
+                                                                            setState(() {
+                                                                              globals.idLdEdit = value[index].id;
+                                                                            });
+                                                                            Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => EditLd()),
+                                                                            );
+                                                                          }
+                                                                          if (result ==
+                                                                              2) {
+                                                                            setState(() {
+                                                                              header = globals.header ? "*" + value[index].judul + "*" : value[index].judul;
+                                                                              ayat = globals.ayatBacaan ? "*" + value[index].ayat + "*" : value[index].ayat;
+                                                                              isiAyat = globals.isiAyat ? "*" + value[index].sabda + "*" : value[index].sabda;
+                                                                              isiSabda = globals.isiSabda ? "*" + value[index].sabdaBagiSaya + "*" : value[index].sabdaBagiSaya;
+                                                                              isiTanggapan = globals.isiTanggapan ? "*" + value[index].tanggapan + "*" : value[index].tanggapan;
+                                                                              isiTindakan = globals.isiTindakan ? "*" + value[index].tindakan + "*" : value[index].tindakan;
+                                                                            });
+                                                                            Share.share(header +
+                                                                                "\n\n" +
+                                                                                "*" +
+                                                                                formatBagikan.format(DateTime.parse(value[index].tanggal)) +
+                                                                                "*\n\n" +
+                                                                                "*Ayat yang berkesan,*\n" +
+                                                                                ayat +
+                                                                                "\n\n*Isi Ayat :*\n" +
+                                                                                isiAyat +
+                                                                                "\n\n*Sabda Tuhan Bagi Saya,*\n" +
+                                                                                isiSabda +
+                                                                                "\n\n*Tanggapan Saya,*\n" +
+                                                                                isiTanggapan +
+                                                                                "\n\n*Tindakan Nyata,*\n" +
+                                                                                isiTindakan +
+                                                                                "\n\n*Catatan :*\n" +
+                                                                                value[index].catatan);
+                                                                          }
+                                                                        },
+                                                                        itemBuilder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return [
+                                                                            PopupMenuItem(
+                                                                              value: 0,
+                                                                              child: Text("Detail"),
+                                                                            ),
+                                                                            PopupMenuItem(
+                                                                              value: 1,
+                                                                              child: Text("Edit"),
+                                                                            ),
+                                                                            PopupMenuItem(
+                                                                              value: 2,
+                                                                              child: Text("Bagikan"),
+                                                                            )
+                                                                          ];
+                                                                        }),
+                                                                    Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .center,
+                                                                      child:
+                                                                          Container(
+                                                                        width:
+                                                                            10.0,
+                                                                        height:
+                                                                            10.0,
+                                                                        decoration: BoxDecoration(
+                                                                            shape: BoxShape
+                                                                                .circle,
+                                                                            color: value[index].selesai
+                                                                                ? Colors.green
+                                                                                : Colors.red),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -587,169 +571,201 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
         controller: ScrollController(),
         itemCount: ldHariIni.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4.0,
-                    spreadRadius: 2.0,
-                  ),
-                ],
-              ),
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                globals.idLdDetail = ldHariIni[index].id;
+                globals.idLdEdit = ldHariIni[index].id;
+              });
+              ldHariIni[index].selesai
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailLd(),
+                      ))
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditLd(),
+                      ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4.0,
+                      spreadRadius: 2.0,
+                    ),
+                  ],
                 ),
-                child: IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8.0),
-                          bottomLeft: Radius.circular(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8.0),
+                            bottomLeft: Radius.circular(8.0),
+                          ),
+                          child: Container(
+                            width: 10.0,
+                            color: Color(int.parse(
+                                ldHariIni[index]
+                                    .warna
+                                    .split('(0x')[1]
+                                    .split(')')[0],
+                                radix: 16)),
+                          ),
                         ),
-                        child: Container(
-                          width: 10.0,
-                          color: Color(int.parse(
-                              ldHariIni[index]
-                                  .warna
-                                  .split('(0x')[1]
-                                  .split(')')[0],
-                              radix: 16)),
-                        ),
-                      ),
-                      Expanded(
-                          child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              ldHariIni[index].judul,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                        Expanded(
+                            child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ldHariIni[index].judul,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(ldHariIni[index].ayat),
-                            Padding(
-                              padding: EdgeInsets.only(top: 8, bottom: 8),
-                              child: ldHariIni[index].selesai
-                                  ? Row(
-                                      children: [
-                                        Icon(
-                                          Icons.check_box,
-                                          size: 24.0,
+                              Text(
+                                ldHariIni[index].ayat,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Column(
+                              children: [
+                                PopupMenuButton(
+                                    icon: Icon(Icons.more_horiz),
+                                    onSelected: (result) {
+                                      if (result == 0) {
+                                        setState(() {
+                                          globals.idLdDetail =
+                                              ldHariIni[index].id;
+                                        });
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => DetailLd()),
+                                        );
+                                      }
+                                      if (result == 1) {
+                                        setState(() {
+                                          globals.idLdEdit =
+                                              ldHariIni[index].id;
+                                        });
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => EditLd()),
+                                        );
+                                      }
+                                      if (result == 2) {
+                                        setState(() {
+                                          header = globals.header
+                                              ? "*" +
+                                                  ldHariIni[index].judul +
+                                                  "*"
+                                              : ldHariIni[index].judul;
+                                          ayat = globals.ayatBacaan
+                                              ? "*" +
+                                                  ldHariIni[index].ayat +
+                                                  "*"
+                                              : ldHariIni[index].ayat;
+                                          isiAyat = globals.isiAyat
+                                              ? "*" +
+                                                  ldHariIni[index].sabda +
+                                                  "*"
+                                              : ldHariIni[index].sabda;
+                                          isiSabda = globals.isiSabda
+                                              ? "*" +
+                                                  ldHariIni[index]
+                                                      .sabdaBagiSaya +
+                                                  "*"
+                                              : ldHariIni[index].sabdaBagiSaya;
+                                          isiTanggapan = globals.isiTanggapan
+                                              ? "*" +
+                                                  ldHariIni[index].tanggapan +
+                                                  "*"
+                                              : ldHariIni[index].tanggapan;
+                                          isiTindakan = globals.isiTindakan
+                                              ? "*" +
+                                                  ldHariIni[index].tindakan +
+                                                  "*"
+                                              : ldHariIni[index].tindakan;
+                                        });
+                                        Share.share(header +
+                                            "\n\n" +
+                                            "*" +
+                                            formatBagikan.format(DateTime.parse(
+                                                ldHariIni[index].tanggal)) +
+                                            "*\n\n" +
+                                            "*Ayat :*\n" +
+                                            ayat +
+                                            "\n\n*Isi Ayat :*\n" +
+                                            isiAyat +
+                                            "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                            isiSabda +
+                                            "\n\n*Tanggapan :*\n" +
+                                            isiTanggapan +
+                                            "\n\n*Tindakan :*\n" +
+                                            isiTindakan +
+                                            "\n\n*Catatan :*\n" +
+                                            ldHariIni[index].catatan);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        PopupMenuItem(
+                                          value: 0,
+                                          child: Text("Detail"),
                                         ),
-                                        Text("Selesai")
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        Icon(
-                                          Icons.check_box_outline_blank,
-                                          size: 24.0,
+                                        PopupMenuItem(
+                                          value: 1,
+                                          child: Text("Edit"),
                                         ),
-                                        Text("Belum Selesai")
-                                      ],
-                                    ),
-                            )
-                          ],
-                        ),
-                      )),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: PopupMenuButton(
-                            icon: Icon(Icons.more_horiz),
-                            onSelected: (result) {
-                              if (result == 0) {
-                                setState(() {
-                                  globals.idLdDetail = ldHariIni[index].id;
-                                });
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailLd()),
-                                );
-                              }
-                              if (result == 1) {
-                                setState(() {
-                                  globals.idLdEdit = ldHariIni[index].id;
-                                });
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditLd()),
-                                );
-                              }
-                              if (result == 2) {
-                                setState(() {
-                                  header = globals.header
-                                      ? "*" + ldHariIni[index].judul + "*"
-                                      : ldHariIni[index].judul;
-                                  ayat = globals.ayatBacaan
-                                      ? "*" + ldHariIni[index].ayat + "*"
-                                      : ldHariIni[index].ayat;
-                                  isiAyat = globals.isiAyat
-                                      ? "*" + ldHariIni[index].sabda + "*"
-                                      : ldHariIni[index].sabda;
-                                  isiSabda = globals.isiSabda
-                                      ? "*" +
-                                          ldHariIni[index].sabdaBagiSaya +
-                                          "*"
-                                      : ldHariIni[index].sabdaBagiSaya;
-                                  isiTanggapan = globals.isiTanggapan
-                                      ? "*" + ldHariIni[index].tanggapan + "*"
-                                      : ldHariIni[index].tanggapan;
-                                  isiTindakan = globals.isiTindakan
-                                      ? "*" + ldHariIni[index].tindakan + "*"
-                                      : ldHariIni[index].tindakan;
-                                });
-                                Share.share(header +
-                                    "\n\n" +
-                                    "*" +
-                                    formatBagikan.format(DateTime.parse(
-                                        ldHariIni[index].tanggal)) +
-                                    "*\n\n" +
-                                    "*Ayat :*\n" +
-                                    ayat +
-                                    "\n\n*Isi Ayat :*\n" +
-                                    isiAyat +
-                                    "\n\n*Sabda Tuhan Bagi Saya :*\n" +
-                                    isiSabda +
-                                    "\n\n*Tanggapan :*\n" +
-                                    isiTanggapan +
-                                    "\n\n*Tindakan :*\n" +
-                                    isiTindakan +
-                                    "\n\n*Catatan :*\n" +
-                                    ldHariIni[index].catatan);
-                              }
-                            },
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem(
-                                  value: 0,
-                                  child: Text("Detail"),
-                                ),
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: Text("Edit"),
-                                ),
-                                PopupMenuItem(
-                                  value: 2,
-                                  child: Text("Bagikan"),
+                                        PopupMenuItem(
+                                          value: 2,
+                                          child: Text("Bagikan"),
+                                        )
+                                      ];
+                                    }),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    width: 10.0,
+                                    height: 10.0,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: ldHariIni[index].selesai
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
                                 )
-                              ];
-                            }),
-                      ),
-                    ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

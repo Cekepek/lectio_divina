@@ -12,10 +12,9 @@ List<Kitab> kitab = [];
 List<LD> MyLd = [];
 List<Ayat> ayatDipilih = [];
 int bacaanDipilih = -1;
-int userid = -1;
 String tesUsername = "tes";
 String tesPassword = "tes";
-
+User userLogin = User(id: 0, username: "", password: "", name: "", foto: "");
 Color colorTheme = Color.fromRGBO(255, 141, 116, 1);
 bool backgroundMusic = true;
 bool autoJudul = true;

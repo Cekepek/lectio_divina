@@ -42,7 +42,6 @@ Future<void> main() async {
     if (result == 0) {
       runApp(MyLogin());
     } else {
-      print(result);
       await initializeDateFormatting('id_ID', null).then((_) => runApp(
             ChangeNotifierProvider(
               create: (_) => ThemeModel(),

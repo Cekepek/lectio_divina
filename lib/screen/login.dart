@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lectio_divina/class/user.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
@@ -71,6 +72,12 @@ class _LoginState extends State<Login> {
       if (json['message'] == 'berhasil') {
         final prefs = await SharedPreferences.getInstance();
         prefs.setInt("user_id", json['data']['id']);
+        globals.userLogin = User(
+            id: json['data']['id'],
+            username: json['data']['username'],
+            password: json['data']['password'],
+            name: json['data']['nama'],
+            foto: json['data']['foto']);
         main();
       } else {
         setState(() {
