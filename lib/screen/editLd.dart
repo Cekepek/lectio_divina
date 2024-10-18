@@ -73,18 +73,6 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        // LD ldBaru = LD(
-        //     id: editLd.id,
-        //     tanggal: tanggalLd.toString(),
-        //     judul: judul.text,
-        //     ayat: ayat.text,
-        //     sabda: sabda.text,
-        //     tanggapan: tanggapan.text,
-        //     tindakan: tindakan.text,
-        //     catatan: catatan.text,
-        //     hashtag: hashtag.text,
-        //     warna: warna,
-        //     selesai: isCompleted());
         editLd.selesai = selesai;
         EditLd(editLd);
         globals.ayatDipilih.clear();
@@ -105,23 +93,10 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  // bool isCompleted() {
-  //   if (judul.text != "" &&
-  //       ayat.text != "" &&
-  //       sabda.text != "" &&
-  //       tanggapan.text != "" &&
-  //       tindakan.text != "" &&
-  //       catatan.text != "" &&
-  //       hashtag.text != "") {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   void _getLdToEdit() {
     for (LD ld in globals.MyLd) {
       if (ld.id == globals.idLdEdit) {
+        print(globals.idLdEdit);
         editLd = ld;
       }
     }
@@ -148,6 +123,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     int indexLd = 0;
     for (LD savedLd in lds) {
       if (savedLd.id == globals.idLdEdit) {
+        print(savedLd.id);
         lds[indexLd] = ld;
         globals.MyLd[indexLd] = ld;
         await saveLd(lds);

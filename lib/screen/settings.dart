@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,12 @@ class _SettingsState extends State<Settings> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    FlameAudio.bgm.initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
@@ -39,6 +46,11 @@ class _SettingsState extends State<Settings> {
                       globals.backgroundMusic
                           ? globals.backgroundMusic = false
                           : globals.backgroundMusic = true;
+                      globals.backgroundMusic
+                          ? FlameAudio.bgm.play(
+                              'Kumasuk Ruang Maha Kudus (Instrumental).mp3',
+                              volume: 1)
+                          : FlameAudio.bgm.stop();
                       changeSettings(
                           "backgroundMusic", globals.backgroundMusic);
                     });

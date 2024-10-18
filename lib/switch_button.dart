@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,13 @@ class _SwitchExampleState extends State<SwitchButton> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FlameAudio.bgm.initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Switch(
       inactiveTrackColor: Colors.white,
@@ -25,6 +33,11 @@ class _SwitchExampleState extends State<SwitchButton> {
       activeColor: Colors.green,
       onChanged: (bool value) {
         setState(() {
+          value
+              ? FlameAudio.bgm.play(
+                  'Kumasuk Ruang Maha Kudus (Instrumental).mp3',
+                  volume: 1)
+              : FlameAudio.bgm.stop();
           globals.backgroundMusic = value;
           changeSettings();
         });

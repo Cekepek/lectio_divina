@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flame_audio/flame_audio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/login.dart';
@@ -29,18 +30,27 @@ import 'package:file_picker/file_picker.dart';
 
 Future<void> getLD() async {}
 
+Future<int> checkUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  int user_id = prefs.getInt("user_id") ?? 0;
+  return user_id;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (globals.userid == -1) {
-    runApp(MyLogin());
-  } else {
-    await initializeDateFormatting('id_ID', null).then((_) => runApp(
-          ChangeNotifierProvider(
-            create: (_) => ThemeModel(),
-            child: MyApp(),
-          ),
-        ));
-  }
+  checkUser().then((int result) async {
+    if (result == 0) {
+      runApp(MyLogin());
+    } else {
+      print(result);
+      await initializeDateFormatting('id_ID', null).then((_) => runApp(
+            ChangeNotifierProvider(
+              create: (_) => ThemeModel(),
+              child: MyApp(),
+            ),
+          ));
+    }
+  });
 }
 
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
@@ -564,6 +574,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             onTap: () {
               print("Ini FAQ");
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout, color: Colors.black),
+            title: Text(
+              "Sign Out",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.remove('user_id');
+              main();
             },
           ),
         ],
