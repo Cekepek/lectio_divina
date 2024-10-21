@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flame_audio/flame_audio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/model/themeModel.dart';
@@ -8,7 +8,6 @@ import 'package:lectio_divina/screen/login.dart';
 import 'package:lectio_divina/screen/settings.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +26,7 @@ import 'package:lectio_divina/globals.dart' as globals;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 
 Future<void> getLD() async {}
 
@@ -164,6 +164,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> loadLd() async {
+    // final body = jsonEncode({
+    //   'id_user': 0,
+    // });
+    // final response = await http.post(
+    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
+    //     body: body);
     final prefs = await SharedPreferences.getInstance();
     final String ldsstring =
         await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";

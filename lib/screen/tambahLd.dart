@@ -40,6 +40,7 @@ class _TambahLdState extends State<TambahLd>
   late String catatan;
   late String hashtag;
   late String warna;
+  int idLd = 0;
   bool selesai = false;
   bool shareable = false;
   late String headerSabda;
@@ -148,7 +149,7 @@ class _TambahLdState extends State<TambahLd>
     animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         LD ldBaru = LD(
-            id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length,
+            id: idLd,
             tanggal: globals.tanggalTerpilih,
             judul: judul,
             ayat: ayat,
@@ -292,7 +293,7 @@ class _TambahLdState extends State<TambahLd>
       'id': 0,
       'tanggal':
           DateFormat('yyyy-MM-dd HH:mm:ss').format(globals.tanggalTerpilih),
-      'judul': judul,
+      'judul1': judul,
       'ayat': ayat,
       'isi_ayat': sabda,
       'sabda_tuhan': sabdaBagiSaya,
@@ -312,8 +313,9 @@ class _TambahLdState extends State<TambahLd>
       print("KEUPLOAD ");
       Map json = jsonDecode(response.body);
       print(json);
-      if (json['message'] == 'berhasil') {
-      } else {}
+      setState(() {
+        idLd = json['data']['id'];
+      });
     } else {
       throw Exception('Failed to read API');
     }
@@ -337,7 +339,6 @@ class _TambahLdState extends State<TambahLd>
     lds.add(ld);
     globals.MyLd.add(ld);
     await saveLd(lds);
-    uploadLd();
   }
 
   void ldTersimpan() => showDialog(
@@ -401,6 +402,7 @@ class _TambahLdState extends State<TambahLd>
             MaterialButton(
               onPressed: () {
                 Navigator.pop(context);
+                uploadLd();
                 ldTersimpan();
               },
               child: Container(
@@ -673,6 +675,7 @@ class _TambahLdState extends State<TambahLd>
                         child: GestureDetector(
                           onTap: () {
                             simpanClicked == true;
+                            uploadLd();
                             ldTersimpan();
                           },
                           child: Container(
