@@ -38,6 +38,7 @@ class _TambahLdState extends State<TambahLd>
   late String hashtag;
   late String warna;
   bool selesai = false;
+  bool shareable = false;
   late String headerSabda;
   late String tempSabda;
   bool simpanClicked = false;
@@ -155,6 +156,7 @@ class _TambahLdState extends State<TambahLd>
             catatan: catatan,
             hashtag: hashtag,
             warna: warna,
+            shareable: shareable,
             selesai: selesai);
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
@@ -541,6 +543,24 @@ class _TambahLdState extends State<TambahLd>
                 runSpacing: 10,
                 spacing: 10,
                 children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            shareable ? shareable = false : shareable = true;
+                          });
+                        },
+                        child: Icon(
+                          shareable
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          size: 24.0,
+                        ),
+                      ),
+                      Text("Share Catatan"),
+                    ],
+                  ),
                   TextField(
                     onChanged: (value) {
                       catatan = value;

@@ -33,6 +33,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       catatan: "",
       hashtag: "",
       warna: "",
+      shareable: false,
       selesai: false);
   late DateTime tanggalLd;
   final TextEditingController judul = TextEditingController();

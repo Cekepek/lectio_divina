@@ -105,6 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     globals.colorTheme = Color(prefs.getInt('color') ?? themeColor.value);
     globals.backgroundMusic = prefs.getBool('backgroundMusic') ?? false;
+    globals.backgroundMusic
+        ? FlameAudio.bgm
+            .play('Kumasuk Ruang Maha Kudus (Instrumental).mp3', volume: 1)
+        : FlameAudio.bgm.stop();
     globals.autoJudul = prefs.getBool("autoJudul") ?? false;
     globals.header = prefs.getBool("header") ?? true;
     globals.ayatBacaan = prefs.getBool("ayatBacaan") ?? false;
@@ -117,6 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
   }
@@ -323,11 +329,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Image(
+                  Image(
                       width: 48,
                       height: 24,
                       image: AssetImage('assets/images/Logo.png')),
-                  const Text(
+                  Text(
                     "Lectio Divina",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   )
@@ -352,7 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.25,
                       child: CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/User.jpg'),
+                        backgroundImage: AssetImage('assets/images/blank.jpeg'),
                         // minRadius: 50,
                         radius: 30,
                       ),
@@ -367,7 +373,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Christopher Kelvin",
+                              globals.userLogin.name,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

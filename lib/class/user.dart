@@ -10,4 +10,12 @@ class User {
       required this.password,
       required this.name,
       required this.foto});
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+        id: json['id'] as int,
+        username: json['username'] as String,
+        password: json['password'] as String,
+        name: json['nama'] as String,
+        foto: json['foto'] as String);
+  }
 }

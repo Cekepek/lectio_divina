@@ -31,6 +31,7 @@ class _DetailLdState extends State<DetailLd> {
       catatan: "",
       hashtag: "",
       warna: "",
+      shareable: false,
       selesai: false);
 
   void _getLdDetail() {

@@ -42,6 +42,7 @@ class _LDKalenderState extends State<LDKalender> {
   String isiSabda = "";
   String isiTanggapan = "";
   String isiTindakan = "";
+  String isiCatatan = "";
 
   void _onDaySelected(DateTime day, DateTime focusDay) {
     setState(() {
@@ -436,6 +437,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                               isiSabda = globals.isiSabda ? "*" + value[index].sabdaBagiSaya + "*" : value[index].sabdaBagiSaya;
                                                                               isiTanggapan = globals.isiTanggapan ? "*" + value[index].tanggapan + "*" : value[index].tanggapan;
                                                                               isiTindakan = globals.isiTindakan ? "*" + value[index].tindakan + "*" : value[index].tindakan;
+                                                                              isiCatatan = value[index].shareable ? "\n\n*Catatan :*\n" + value[index].catatan : "";
                                                                             });
                                                                             Share.share(header +
                                                                                 "\n\n" +
@@ -444,7 +446,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                                 "*\n\n" +
                                                                                 "*Ayat yang berkesan,*\n" +
                                                                                 ayat +
-                                                                                "\n\n*Isi Ayat :*\n" +
+                                                                                "\n\n" +
                                                                                 isiAyat +
                                                                                 "\n\n*Sabda Tuhan Bagi Saya,*\n" +
                                                                                 isiSabda +
@@ -452,8 +454,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                                 isiTanggapan +
                                                                                 "\n\n*Tindakan Nyata,*\n" +
                                                                                 isiTindakan +
-                                                                                "\n\n*Catatan :*\n" +
-                                                                                value[index].catatan);
+                                                                                isiCatatan);
                                                                           }
                                                                         },
                                                                         itemBuilder:
@@ -554,7 +555,7 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
   String isiSabda = "";
   String isiTanggapan = "";
   String isiTindakan = "";
-
+  String isiCatatan = "";
   @override
   void initState() {
     // TODO: implement initState
@@ -711,6 +712,11 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                                                   ldHariIni[index].tindakan +
                                                   "*"
                                               : ldHariIni[index].tindakan;
+                                          isiCatatan =
+                                              ldHariIni[index].shareable
+                                                  ? "\n\n*Catatan :*\n" +
+                                                      ldHariIni[index].catatan
+                                                  : "";
                                         });
                                         Share.share(header +
                                             "\n\n" +
@@ -718,18 +724,17 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                                             formatBagikan.format(DateTime.parse(
                                                 ldHariIni[index].tanggal)) +
                                             "*\n\n" +
-                                            "*Ayat :*\n" +
+                                            "*Ayat,*\n" +
                                             ayat +
-                                            "\n\n*Isi Ayat :*\n" +
+                                            "\n\n" +
                                             isiAyat +
-                                            "\n\n*Sabda Tuhan Bagi Saya :*\n" +
+                                            "\n\n*Sabda Tuhan Bagi Saya,*\n" +
                                             isiSabda +
-                                            "\n\n*Tanggapan :*\n" +
+                                            "\n\n*Tanggapan,*\n" +
                                             isiTanggapan +
-                                            "\n\n*Tindakan :*\n" +
+                                            "\n\n*Tindakan,*\n" +
                                             isiTindakan +
-                                            "\n\n*Catatan :*\n" +
-                                            ldHariIni[index].catatan);
+                                            isiCatatan);
                                       }
                                     },
                                     itemBuilder: (BuildContext context) {

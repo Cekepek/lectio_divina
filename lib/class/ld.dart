@@ -12,6 +12,7 @@ class LD {
   String catatan = "";
   String hashtag = "";
   String warna = "";
+  bool shareable = false;
   bool selesai = false;
 
   LD({
@@ -26,6 +27,7 @@ class LD {
     required this.catatan,
     required this.hashtag,
     required this.warna,
+    required this.shareable,
     required this.selesai,
   });
 
@@ -42,6 +44,7 @@ class LD {
         catatan: jsonData['catatan'],
         hashtag: jsonData['hashtag'],
         warna: jsonData['warna'],
+        shareable: jsonData['shareable'],
         selesai: jsonData['selesai']);
   }
 
@@ -57,6 +60,7 @@ class LD {
         'catatan': ld.catatan,
         'hashtag': ld.hashtag,
         'warna': ld.warna,
+        'shareable': ld.shareable,
         'selesai': ld.selesai
       };
 

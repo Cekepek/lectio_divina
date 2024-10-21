@@ -72,12 +72,8 @@ class _LoginState extends State<Login> {
       if (json['message'] == 'berhasil') {
         final prefs = await SharedPreferences.getInstance();
         prefs.setInt("user_id", json['data']['id']);
-        globals.userLogin = User(
-            id: json['data']['id'],
-            username: json['data']['username'],
-            password: json['data']['password'],
-            name: json['data']['nama'],
-            foto: json['data']['foto']);
+        globals.userLogin = User.fromJson(json['data']);
+        print(globals.userLogin.id);
         main();
       } else {
         setState(() {
@@ -147,6 +143,9 @@ class _LoginState extends State<Login> {
             padding: const EdgeInsets.all(10),
             child: TextField(
               onChanged: (value) {
+                setState(() {
+                  error_login = "";
+                });
                 _user_id = value;
               },
               decoration: const InputDecoration(
@@ -162,6 +161,10 @@ class _LoginState extends State<Login> {
             child: TextField(
               obscureText: isObscured,
               onChanged: (value) {
+                setState(() {
+                  error_login = "";
+                });
+
                 _user_password = value;
               },
               decoration: InputDecoration(

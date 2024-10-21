@@ -144,6 +144,9 @@ class _RegisterState extends State<Register> {
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
                     name = value;
                   },
                   decoration: const InputDecoration(
@@ -156,6 +159,9 @@ class _RegisterState extends State<Register> {
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
                     username = value;
                   },
                   decoration: const InputDecoration(
@@ -171,6 +177,9 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   obscureText: isObscuredRegister,
                   onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
                     password = value;
                   },
                   decoration: InputDecoration(
@@ -196,6 +205,9 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   obscureText: isObscuredRegister,
                   onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
                     repeat_password = value;
                   },
                   decoration: InputDecoration(

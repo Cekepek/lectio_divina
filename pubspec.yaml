@@ -73,6 +73,7 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/images/User.jpg
+    - assets/images/blank.jpeg
     - assets/json/ayt.json
     - assets/animations/
     - assets/audio/
