@@ -124,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
     FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
-    globals.currentIndex = 0;
   }
 
   Future<void> importLd() async {

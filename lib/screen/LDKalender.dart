@@ -44,6 +44,8 @@ class _LDKalenderState extends State<LDKalender> {
     setState(() {
       selectedDay = day;
       focusedDay = focusDay;
+      print(focusedDay);
+      print(selectedDay);
       _selectedLD.value = _getLDForDay(selectedDay);
     });
   }
@@ -79,10 +81,10 @@ class _LDKalenderState extends State<LDKalender> {
     selectedDay = _removeTime(DateTime.now());
     focusedDay = selectedDay;
     for (LD ld in globals.MyLd) {
-      if (lds[DateTime.parse(ld.tanggal)] != null) {
-        lds[DateTime.parse(ld.tanggal)]!.add(ld);
+      if (lds[_removeTime(ld.tanggal)] != null) {
+        lds[_removeTime(ld.tanggal)]!.add(ld);
       } else {
-        lds[DateTime.parse(ld.tanggal)] = [ld];
+        lds[_removeTime(ld.tanggal)] = [ld];
       }
     }
 
@@ -94,16 +96,15 @@ class _LDKalenderState extends State<LDKalender> {
   }
 
   List<LD> _getLDForMonth(int year, int month) {
-    return globals.MyLd.where((ld) =>
-        DateTime.parse(ld.tanggal).year == year &&
-        DateTime.parse(ld.tanggal).month == month).toList();
+    return globals.MyLd.where(
+        (ld) => ld.tanggal.year == year && ld.tanggal.month == month).toList();
   }
 
   List<DateTime> getTanggalLd(List<LD> listLd) {
     List<DateTime> listTanggal = [];
     for (LD ld in listLd) {
-      if (!listTanggal.contains(DateTime.parse(ld.tanggal))) {
-        listTanggal.add(DateTime.parse(ld.tanggal));
+      if (!listTanggal.contains(_removeTime(ld.tanggal))) {
+        listTanggal.add(_removeTime(ld.tanggal));
       }
     }
     listTanggal.sort((a, b) => b.compareTo(a));
@@ -117,7 +118,13 @@ class _LDKalenderState extends State<LDKalender> {
         onPressed: () {
           setState(() {
             globals.ayatDipilih.clear();
-            globals.tanggalTerpilih = _removeTime(selectedDay);
+            globals.tanggalTerpilih = DateTime.utc(
+                selectedDay.year,
+                selectedDay.month,
+                selectedDay.day,
+                DateTime.now().hour,
+                DateTime.now().minute,
+                DateTime.now().second);
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => TambahLd()));
           });
@@ -438,7 +445,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                             Share.share(header +
                                                                                 "\n\n" +
                                                                                 "*" +
-                                                                                formatBagikan.format(DateTime.parse(value[index].tanggal)) +
+                                                                                formatBagikan.format(value[index].tanggal) +
                                                                                 "*\n\n" +
                                                                                 "*Ayat yang berkesan,*\n" +
                                                                                 ayat +
@@ -717,8 +724,8 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                                         Share.share(header +
                                             "\n\n" +
                                             "*" +
-                                            formatBagikan.format(DateTime.parse(
-                                                ldHariIni[index].tanggal)) +
+                                            formatBagikan.format(
+                                                ldHariIni[index].tanggal) +
                                             "*\n\n" +
                                             "*Ayat,*\n" +
                                             ayat +

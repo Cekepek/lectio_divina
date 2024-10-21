@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class LD {
   int id;
-  String tanggal;
+  DateTime tanggal;
   String judul = "";
   String ayat = "";
   String sabda = "";
@@ -35,7 +35,7 @@ class LD {
   factory LD.fromJson(Map<String, dynamic> jsonData) {
     return LD(
         id: jsonData['id'],
-        tanggal: jsonData['tanggal'],
+        tanggal: DateTime.parse(jsonData['tanggal']),
         judul: jsonData['judul'],
         ayat: jsonData['ayat'],
         sabda: jsonData['sabda'],
@@ -52,7 +52,7 @@ class LD {
 
   static Map<String, dynamic> toMap(LD ld) => {
         'id': ld.id,
-        'tanggal': ld.tanggal,
+        'tanggal': ld.tanggal.toString(),
         'judul': ld.judul,
         'ayat': ld.ayat,
         'sabda': ld.sabda,

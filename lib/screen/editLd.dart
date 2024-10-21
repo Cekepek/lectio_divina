@@ -23,7 +23,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
   LD editLd = LD(
       id: 0,
-      tanggal: "",
+      tanggal: DateTime.now(),
       judul: "",
       ayat: "",
       sabda: "",
@@ -57,7 +57,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     _getLdToEdit();
 
     print(editLd.id);
-    tanggalLd = DateTime.parse(editLd.tanggal);
+    tanggalLd = editLd.tanggal;
     print(editLd.judul);
     judul.text = editLd.judul;
     print(judul.text);
@@ -225,7 +225,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             lastDate: DateTime.utc(2030, 5, 15))
         .then((value) => setState(() {
               tanggalLd = value!;
-              editLd.tanggal = value.toString();
+              editLd.tanggal = DateTime.utc(
+                  value.year,
+                  value.month,
+                  value.day,
+                  DateTime.now().hour,
+                  DateTime.now().minute,
+                  DateTime.now().second);
             }));
   }
 

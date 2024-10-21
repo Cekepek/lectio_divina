@@ -146,7 +146,7 @@ class _TambahLdState extends State<TambahLd>
       if (status == AnimationStatus.completed) {
         LD ldBaru = LD(
             id: globals.MyLd.isEmpty ? 0 : globals.MyLd.length,
-            tanggal: globals.tanggalTerpilih.toString(),
+            tanggal: globals.tanggalTerpilih,
             judul: judul,
             ayat: ayat,
             sabda: sabda,

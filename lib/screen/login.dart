@@ -73,6 +73,9 @@ class _LoginState extends State<Login> {
         final prefs = await SharedPreferences.getInstance();
         prefs.setInt("user_id", json['data']['id']);
         globals.userLogin = User.fromJson(json['data']);
+        setState(() {
+          globals.currentIndex = 0;
+        });
         print(globals.userLogin.id);
         main();
       } else {

@@ -21,7 +21,7 @@ class _DetailLdState extends State<DetailLd> {
   String tanggalLd = "";
   LD detailLd = LD(
       id: 0,
-      tanggal: "",
+      tanggal: DateTime.now(),
       judul: "",
       ayat: "",
       sabda: "",
@@ -48,7 +48,7 @@ class _DetailLdState extends State<DetailLd> {
     // TODO: implement initState
     super.initState();
     _getLdDetail();
-    DateTime dateTimeLd = DateTime.parse(detailLd.tanggal);
+    DateTime dateTimeLd = detailLd.tanggal;
     tanggalLd = format.format(dateTimeLd);
   }
 
