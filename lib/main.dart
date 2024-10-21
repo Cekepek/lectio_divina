@@ -121,10 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
+    globals.currentIndex = 0;
   }
 
   Future<void> importLd() async {
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
         globals.MyLd.addAll(importedLd);
         final prefs = await SharedPreferences.getInstance();
         final String encodedData = LD.encode(globals.MyLd);
-        await prefs.setString('lds_key', encodedData);
+        await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
         print(encodedData);
       } catch (e) {
         print("Couldn't read file");
@@ -166,7 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> loadLd() async {
     final prefs = await SharedPreferences.getInstance();
-    final String ldsstring = await prefs.getString('lds_key') ?? "";
+    final String ldsstring =
+        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
     if (ldsstring != "") {
       final List<LD> ldList = LD.decode(ldsstring);
       setState(() {

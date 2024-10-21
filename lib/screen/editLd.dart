@@ -34,7 +34,8 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       hashtag: "",
       warna: "",
       shareable: false,
-      selesai: false);
+      selesai: false,
+      user_id: 0);
   late DateTime tanggalLd;
   final TextEditingController judul = TextEditingController();
   final TextEditingController ayat = TextEditingController();
@@ -47,6 +48,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   late Color warna;
   bool selesai = false;
   bool simpanClicked = false;
+  bool shareable = false;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     tindakan.text = editLd.tindakan;
     catatan.text = editLd.catatan;
     hashtag.text = editLd.hashtag;
+    shareable = editLd.shareable;
     warna =
         Color(int.parse(editLd.warna.split('(0x')[1].split(')')[0], radix: 16));
     selesai = editLd.selesai;
@@ -105,7 +108,8 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
 
   Future<List<LD>> loadLd() async {
     final prefs = await SharedPreferences.getInstance();
-    final String ldsstring = await prefs.getString('lds_key') ?? "";
+    final String ldsstring =
+        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
     if (ldsstring != "") {
       final List<LD> ldList = LD.decode(ldsstring);
       return ldList;
@@ -116,7 +120,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   Future<void> saveLd(List<LD> lds) async {
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
-    await prefs.setString('lds_key', encodedData);
+    await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
   }
 
   Future<void> EditLd(LD ld) async {
@@ -427,6 +431,25 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                 runSpacing: 10,
                 spacing: 10,
                 children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            shareable ? shareable = false : shareable = true;
+                            editLd.shareable = shareable;
+                          });
+                        },
+                        child: Icon(
+                          shareable
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          size: 24.0,
+                        ),
+                      ),
+                      Text("Share Catatan"),
+                    ],
+                  ),
                   TextField(
                     controller: catatan,
                     onChanged: (value) {

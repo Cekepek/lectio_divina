@@ -32,7 +32,8 @@ class _DetailLdState extends State<DetailLd> {
       hashtag: "",
       warna: "",
       shareable: false,
-      selesai: false);
+      selesai: false,
+      user_id: 0);
 
   void _getLdDetail() {
     for (LD ld in globals.MyLd) {

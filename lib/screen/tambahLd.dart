@@ -157,7 +157,8 @@ class _TambahLdState extends State<TambahLd>
             hashtag: hashtag,
             warna: warna,
             shareable: shareable,
-            selesai: selesai);
+            selesai: selesai,
+            user_id: globals.userLogin.id);
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
@@ -279,13 +280,14 @@ class _TambahLdState extends State<TambahLd>
   Future<void> saveLd(List<LD> lds) async {
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
-    await prefs.setString('lds_key', encodedData);
+    await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
   }
 
   // Ambil daftar event dari SharedPreferences
   Future<List<LD>> loadLd() async {
     final prefs = await SharedPreferences.getInstance();
-    final String ldsstring = await prefs.getString('lds_key') ?? "";
+    final String ldsstring =
+        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
     if (ldsstring != "") {
       final List<LD> ldList = LD.decode(ldsstring);
       return ldList;
