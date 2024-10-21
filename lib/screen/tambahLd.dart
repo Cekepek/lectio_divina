@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +11,7 @@ import 'package:lectio_divina/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:http/http.dart' as http;
 
 class TambahLd extends StatefulWidget {
   const TambahLd({super.key});
@@ -283,6 +286,39 @@ class _TambahLdState extends State<TambahLd>
     await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
   }
 
+  void uploadLd() async {
+    print(warna);
+    final body = jsonEncode({
+      'id': 0,
+      'tanggal':
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(globals.tanggalTerpilih),
+      'judul': judul,
+      'ayat': ayat,
+      'isi_ayat': sabda,
+      'sabda_tuhan': sabdaBagiSaya,
+      'tanggapan': tanggapan,
+      'tindakan': tindakan,
+      'hashtag': hashtag,
+      'warna_tagline': warna,
+      // 'shareable': shareable ? "1" : "0",
+      'status': selesai ? 1 : 0,
+      'id_user': globals.userLogin.id
+    });
+    final response = await http.post(
+        Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
+        body: body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print("KEUPLOAD ");
+      Map json = jsonDecode(response.body);
+      print(json);
+      if (json['message'] == 'berhasil') {
+      } else {}
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
   // Ambil daftar event dari SharedPreferences
   Future<List<LD>> loadLd() async {
     final prefs = await SharedPreferences.getInstance();
@@ -301,6 +337,7 @@ class _TambahLdState extends State<TambahLd>
     lds.add(ld);
     globals.MyLd.add(ld);
     await saveLd(lds);
+    uploadLd();
   }
 
   void ldTersimpan() => showDialog(
