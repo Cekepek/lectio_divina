@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lectio_divina/class/api.dart';
 import 'package:lectio_divina/class/user.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/register.dart';
@@ -65,19 +66,18 @@ class _LoginState extends State<Login> {
   //   }
   // }
   void doLogin() async {
-    final response = await http.post(
-        Uri.parse("http://sw.crossnet.co.id:5868/login"),
-        body: {'username': _user_id, 'password': _user_password});
-    if (response.statusCode == 200) {
-      Map json = jsonDecode(response.body);
-      if (json['message'] == 'berhasil') {
+    ResponseRequestApi response = await api.connectApi(
+        "/login?username=$_user_id&password=$_user_password", "post", null);
+    debugPrint("String username : $_user_id");
+    if (response.status == 200) {
+      if (response.message == 'berhasil') {
         final prefs = await SharedPreferences.getInstance();
-        prefs.setInt("user_id", json['data']['id']);
-        globals.userLogin = User.fromJson(json['data']);
+        prefs.setInt("user_id", response.data['id']);
+        globals.userLogin = User.fromJson(response.data);
         setState(() {
           globals.currentIndex = 0;
         });
-        print(globals.userLogin.id);
+        debugPrint("Json data = ${response.data}");
         main();
       } else {
         setState(() {
@@ -87,6 +87,28 @@ class _LoginState extends State<Login> {
     } else {
       throw Exception('Failed to read API');
     }
+    // final response = await http.post(
+    //     Uri.parse("http://sw.crossnet.co.id:5868/login"),
+    //     body: {'username': _user_id, 'password': _user_password});
+    // if (response.statusCode == 200) {
+    //   Map json = jsonDecode(response.body);
+    //   if (json['message'] == 'berhasil') {
+    //     final prefs = await SharedPreferences.getInstance();
+    //     prefs.setInt("user_id", json['data']['id']);
+    //     globals.userLogin = User.fromJson(json['data']);
+    //     setState(() {
+    //       globals.currentIndex = 0;
+    //     });
+    //     print(globals.userLogin.id);
+    //     main();
+    //   } else {
+    //     setState(() {
+    //       error_login = "Incorrect user or password";
+    //     });
+    //   }
+    // } else {
+    //   throw Exception('Failed to read API');
+    // }
   }
 
   @override
@@ -219,12 +241,7 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.all(10),
                 child: GestureDetector(
                   onTap: () {
-                    // doLogin();
-                    Future<Map> json = api.connectApi(
-                        "/login?username:${_user_id}&password:${_user_password}",
-                        "post",
-                        null);
-                    if(json==)
+                    doLogin();
                   },
                   child: Container(
                     height: 40,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:lectio_divina/class/api.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/class/ld.dart';
 import 'package:http/http.dart' as http;
@@ -9,38 +10,59 @@ import 'package:lectio_divina/core.dart';
 
 String urlApi = "http://sw.crossnet.co.id:5868";
 
-Future<Map<dynamic, dynamic>> connectApi(
+Future<ResponseRequestApi> connectApi(
     String url, String method, dynamic body) async {
   if (method == "post") {
     final response = await http.post(Uri.parse(urlApi + url), body: body);
+    print("URL : " + urlApi + url);
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
-      // ResponseRequest responseRequest = ResponseRequest(
-      //   response.statusCode,
-      // );
-      return json;
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     } else {
       Map json = jsonDecode(response.body);
-      return {"error": json["data"].toString()};
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     }
   } else if (method == "get") {
     final response = await http.get(Uri.parse(urlApi + url));
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
-
-      return json;
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     } else {
       Map json = jsonDecode(response.body);
-      return {"error": json["data"].toString()};
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     }
   } else {
     final response = await http.delete(Uri.parse(urlApi + url), body: body);
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
-      return json;
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     } else {
       Map json = jsonDecode(response.body);
-      return {"error": json["data"].toString()};
+      ResponseRequestApi responseRequest = ResponseRequestApi(
+          status: response.statusCode,
+          message: json['message'],
+          data: json['data']);
+      return responseRequest;
     }
   }
 }
