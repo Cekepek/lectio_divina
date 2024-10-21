@@ -32,7 +32,6 @@ int currentIndex = 0;
 int namaKitab = 0;
 int bab = 0;
 String ayat = "0";
-
 DateTime waktuSaatIni = DateTime.now();
 DateTime tanggalTerpilih =
     DateTime(waktuSaatIni.year, waktuSaatIni.month, waktuSaatIni.day);

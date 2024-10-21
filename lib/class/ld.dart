@@ -75,3 +75,9 @@ class LD {
       .map<LD>((item) => LD.fromJson(item))
       .toList();
 }
+
+class ResponseRequest {
+  int status = 0;
+  String message = "";
+  dynamic data = [];
+}

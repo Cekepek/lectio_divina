@@ -8,6 +8,7 @@ import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 
 class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
@@ -218,7 +219,12 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.all(10),
                 child: GestureDetector(
                   onTap: () {
-                    doLogin();
+                    // doLogin();
+                    Future<Map> json = api.connectApi(
+                        "/login?username:${_user_id}&password:${_user_password}",
+                        "post",
+                        null);
+                    if(json==)
                   },
                   child: Container(
                     height: 40,
