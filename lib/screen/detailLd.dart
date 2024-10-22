@@ -23,6 +23,7 @@ class _DetailLdState extends State<DetailLd> {
       id: 0,
       tanggal: DateTime.now(),
       judul: "",
+      judul2: "",
       ayat: "",
       sabda: "",
       sabdaBagiSaya: "",
@@ -33,7 +34,8 @@ class _DetailLdState extends State<DetailLd> {
       warna: "",
       shareable: false,
       selesai: false,
-      user_id: 0);
+      user_id: 0,
+      statusUpload: false);
 
   void _getLdDetail() {
     for (LD ld in globals.MyLd) {
@@ -123,6 +125,16 @@ class _DetailLdState extends State<DetailLd> {
                               detailLd.judul,
                               style: TextStyle(
                                 fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              detailLd.judul2,
+                              style: TextStyle(
+                                fontSize: 18,
                               ),
                             ),
                           ),
@@ -240,19 +252,6 @@ class _DetailLdState extends State<DetailLd> {
                             ),
                           ),
                           Text(detailLd.hashtag),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: 24.0,
-                          ),
-                          Text("Pribadi")
                         ],
                       ),
                     ),

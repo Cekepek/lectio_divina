@@ -4,6 +4,7 @@ class LD {
   int id;
   DateTime tanggal;
   String judul = "";
+  String judul2 = "";
   String ayat = "";
   String sabda = "";
   String sabdaBagiSaya = "";
@@ -15,11 +16,13 @@ class LD {
   bool shareable = false;
   bool selesai = false;
   int user_id = 0;
+  bool statusUpload = false;
 
   LD(
       {required this.id,
       required this.tanggal,
       required this.judul,
+      required this.judul2,
       required this.ayat,
       required this.sabda,
       required this.sabdaBagiSaya,
@@ -30,41 +33,46 @@ class LD {
       required this.warna,
       required this.shareable,
       required this.selesai,
-      required this.user_id});
+      required this.user_id,
+      required this.statusUpload});
 
   factory LD.fromJson(Map<String, dynamic> jsonData) {
     return LD(
         id: jsonData['id'],
         tanggal: DateTime.parse(jsonData['tanggal']),
-        judul: jsonData['judul'],
+        judul: jsonData['judul1'],
+        judul2: jsonData['judul2'],
         ayat: jsonData['ayat'],
-        sabda: jsonData['sabda'],
-        sabdaBagiSaya: jsonData['sabdaBagiSaya'],
+        sabda: jsonData['isi_ayat'],
+        sabdaBagiSaya: jsonData['sabda_tuhan'],
         tanggapan: jsonData['tanggapan'],
         tindakan: jsonData['tindakan'],
         catatan: jsonData['catatan'],
         hashtag: jsonData['hashtag'],
-        warna: jsonData['warna'],
+        warna: jsonData['warna_tagline'],
         shareable: jsonData['shareable'],
-        selesai: jsonData['selesai'],
-        user_id: jsonData['user_id']);
+        selesai: jsonData['status'],
+        user_id: jsonData['user_id'],
+        statusUpload: jsonData['status_upload']);
   }
 
   static Map<String, dynamic> toMap(LD ld) => {
         'id': ld.id,
         'tanggal': ld.tanggal.toString(),
-        'judul': ld.judul,
+        'judul1': ld.judul,
+        'judul2': ld.judul2,
         'ayat': ld.ayat,
-        'sabda': ld.sabda,
-        'sabdaBagiSaya': ld.sabdaBagiSaya,
+        'isi_ayat': ld.sabda,
+        'sabda_tuhan': ld.sabdaBagiSaya,
         'tanggapan': ld.tanggapan,
         'tindakan': ld.tindakan,
         'catatan': ld.catatan,
         'hashtag': ld.hashtag,
-        'warna': ld.warna,
+        'warna_tagline': ld.warna,
         'shareable': ld.shareable,
-        'selesai': ld.selesai,
-        'user_id': ld.user_id
+        'status': ld.selesai,
+        'user_id': ld.user_id,
+        'status_upload': ld.statusUpload
       };
 
   static String encode(List<LD> lds) => json.encode(

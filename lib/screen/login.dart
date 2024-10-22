@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lectio_divina/class/api.dart';
 import 'package:lectio_divina/class/user.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 
@@ -66,7 +62,7 @@ class _LoginState extends State<Login> {
   //   }
   // }
   void doLogin() async {
-    ResponseRequestApi response = await api.connectApi(
+    final response = await api.connectApi(
         "/login?username=$_user_id&password=$_user_password", "post", null);
     debugPrint("String username : $_user_id");
     if (response.status == 200) {

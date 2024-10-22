@@ -12,6 +12,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:http/http.dart' as http;
+import 'package:lectio_divina/model/api.dart' as api;
 
 class TambahLd extends StatefulWidget {
   const TambahLd({super.key});
@@ -32,6 +33,7 @@ class _TambahLdState extends State<TambahLd>
 
   Color _selectedColor = Color.fromRGBO(255, 0, 0, 1);
   late String judul;
+  late String judul2;
   late String ayat;
   late String sabda;
   late String sabdaBagiSaya;
@@ -45,6 +47,7 @@ class _TambahLdState extends State<TambahLd>
   bool shareable = false;
   late String headerSabda;
   late String tempSabda;
+  bool statusUpload = false;
   bool simpanClicked = false;
   // Daftar warna yang akan ditampilkan dalam dropdown
   final List<Color> _colors = [
@@ -152,6 +155,7 @@ class _TambahLdState extends State<TambahLd>
             id: idLd,
             tanggal: globals.tanggalTerpilih,
             judul: judul,
+            judul2: judul2,
             ayat: ayat,
             sabda: sabda,
             sabdaBagiSaya: sabdaBagiSaya,
@@ -162,7 +166,8 @@ class _TambahLdState extends State<TambahLd>
             warna: warna,
             shareable: shareable,
             selesai: selesai,
-            user_id: globals.userLogin.id);
+            user_id: globals.userLogin.id,
+            statusUpload: statusUpload);
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
@@ -175,6 +180,7 @@ class _TambahLdState extends State<TambahLd>
       }
     });
     judul = "";
+    judul2 = "";
     ayat = "";
     headerSabda = "";
     tempSabda = "";
@@ -294,6 +300,7 @@ class _TambahLdState extends State<TambahLd>
       'tanggal':
           DateFormat('yyyy-MM-dd HH:mm:ss').format(globals.tanggalTerpilih),
       'judul1': judul,
+      'judul2': judul2,
       'ayat': ayat,
       'isi_ayat': sabda,
       'sabda_tuhan': sabdaBagiSaya,
@@ -301,20 +308,26 @@ class _TambahLdState extends State<TambahLd>
       'tindakan': tindakan,
       'hashtag': hashtag,
       'warna_tagline': warna,
-      // 'shareable': shareable ? "1" : "0",
+      'shareable': shareable ? 1 : 0,
       'status': selesai ? 1 : 0,
-      'id_user': globals.userLogin.id
+      'id_user': globals.userLogin.id,
+      // 'statusUpload': statusUpload ? 1 : 0,
     });
-    final response = await http.post(
-        Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
-        body: body);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      print("KEUPLOAD ");
-      Map json = jsonDecode(response.body);
-      print(json);
+    // final response = await http.post(
+    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
+    //     body: body);
+    final response = await api.connectApi("/lectio_divina", "post", body);
+    if (response.status == 200) {
       setState(() {
-        idLd = json['data']['id'];
+        statusUpload = true;
+      });
+      print("KEUPLOAD ");
+
+      print(response.data['id']);
+      // Map json = jsonDecode(response.body);
+      // print(json);
+      setState(() {
+        idLd = response.data['id'];
       });
     } else {
       throw Exception('Failed to read API');
@@ -478,6 +491,27 @@ class _TambahLdState extends State<TambahLd>
                     border: OutlineInputBorder(),
                     labelText: 'Judul atau Topik Bacaan',
                     hintText: 'Judul Bacaan'),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Wrap(
+                runSpacing: 10,
+                spacing: 10,
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      judul2 = value;
+                    },
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 4,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Topik',
+                        hintText: 'Masukkan topik yang dibahas'),
+                  )
+                ],
               ),
             ),
             Padding(

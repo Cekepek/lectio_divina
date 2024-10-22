@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:lectio_divina/class/api.dart';
-import 'package:lectio_divina/globals.dart' as globals;
-import 'package:lectio_divina/class/ld.dart';
 import 'package:http/http.dart' as http;
-import 'package:lectio_divina/core.dart';
 
 String urlApi = "http://sw.crossnet.co.id:5868";
 

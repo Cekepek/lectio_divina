@@ -26,7 +26,6 @@ import 'package:lectio_divina/globals.dart' as globals;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
 
 Future<void> getLD() async {}
 

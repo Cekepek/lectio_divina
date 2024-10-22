@@ -25,6 +25,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       id: 0,
       tanggal: DateTime.now(),
       judul: "",
+      judul2: "",
       ayat: "",
       sabda: "",
       sabdaBagiSaya: "",
@@ -35,9 +36,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       warna: "",
       shareable: false,
       selesai: false,
-      user_id: 0);
+      user_id: 0,
+      statusUpload: false);
   late DateTime tanggalLd;
   final TextEditingController judul = TextEditingController();
+  final TextEditingController judul2 = TextEditingController();
   final TextEditingController ayat = TextEditingController();
   final TextEditingController sabda = TextEditingController();
   final TextEditingController sabdaBagiSaya = TextEditingController();
@@ -60,6 +63,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     tanggalLd = editLd.tanggal;
     print(editLd.judul);
     judul.text = editLd.judul;
+    judul2.text = editLd.judul2;
     print(judul.text);
     ayat.text = editLd.ayat;
     sabda.text = editLd.sabda;
@@ -323,6 +327,29 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                     border: OutlineInputBorder(),
                     labelText: 'Judul atau Topik Bacaan',
                     hintText: 'Judul Bacaan'),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Wrap(
+                runSpacing: 10,
+                spacing: 10,
+                children: [
+                  TextField(
+                    controller: sabda,
+                    onChanged: (value) {
+                      judul2.text = value;
+                      editLd.judul2 = value;
+                    },
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 4,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Topik',
+                        hintText: 'Masukkan topik yang dibahas'),
+                  )
+                ],
               ),
             ),
             Padding(

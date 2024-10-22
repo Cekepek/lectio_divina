@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 import 'package:lectio_divina/screen/login.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,13 +59,11 @@ class _RegisterState extends State<Register> {
         'nama': name,
         'foto': ""
       });
-      final response = await http
-          .post(Uri.parse("http://sw.crossnet.co.id:5868/user"), body: body);
-      if (response.statusCode == 200) {
+      final response = await api.connectApi("/user", "post", body);
+      if (response.status == 200) {
         print("MASUK");
-        Map json = jsonDecode(response.body);
-        print(json);
-        if (json['message'] == 'berhasil') {
+        print(response.data);
+        if (response.message == 'berhasil') {
           setState(() {
             Navigator.push(
                 context,
