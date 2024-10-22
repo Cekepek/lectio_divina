@@ -40,6 +40,21 @@ class _LDKalenderState extends State<LDKalender> {
   String isiTindakan = "";
   String isiCatatan = "";
 
+  String potongKataTopik(String topik) {
+    int startIndex = 0, indexOfSpace = 0;
+
+    for (int i = 0; i < 5; i++) {
+      indexOfSpace = topik.indexOf(' ', startIndex);
+      if (indexOfSpace == -1) {
+        //-1 is when character is not found
+        return topik;
+      }
+      startIndex = indexOfSpace + 1;
+    }
+
+    return topik.substring(0, indexOfSpace) + '...';
+  }
+
   void _onDaySelected(DateTime day, DateTime focusDay) {
     setState(() {
       selectedDay = day;
@@ -373,8 +388,12 @@ class _LDKalenderState extends State<LDKalender> {
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                    value[index]
-                                                                        .judul,
+                                                                    value[index].judul !=
+                                                                            ""
+                                                                        ? value[index]
+                                                                            .judul
+                                                                        : potongKataTopik(
+                                                                            value[index].judul2),
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
@@ -559,6 +578,22 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
   String isiTanggapan = "";
   String isiTindakan = "";
   String isiCatatan = "";
+
+  String potongKataTopik(String topik) {
+    int startIndex = 0, indexOfSpace = 0;
+
+    for (int i = 0; i < 5; i++) {
+      indexOfSpace = topik.indexOf(' ', startIndex);
+      if (indexOfSpace == -1) {
+        //-1 is when character is not found
+        return topik;
+      }
+      startIndex = indexOfSpace + 1;
+    }
+
+    return topik.substring(0, indexOfSpace) + '...';
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -638,7 +673,9 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                ldHariIni[index].judul,
+                                ldHariIni[index].judul != ""
+                                    ? ldHariIni[index].judul
+                                    : potongKataTopik(ldHariIni[index].judul2),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

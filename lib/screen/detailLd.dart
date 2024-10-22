@@ -45,6 +45,21 @@ class _DetailLdState extends State<DetailLd> {
     }
   }
 
+  String potongKataTopik(String topik) {
+    int startIndex = 0, indexOfSpace = 0;
+
+    for (int i = 0; i < 5; i++) {
+      indexOfSpace = topik.indexOf(' ', startIndex);
+      if (indexOfSpace == -1) {
+        //-1 is when character is not found
+        return topik;
+      }
+      startIndex = indexOfSpace + 1;
+    }
+
+    return topik.substring(0, indexOfSpace) + '...';
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -119,22 +134,29 @@ class _DetailLdState extends State<DetailLd> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              detailLd.judul,
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              detailLd.judul2,
-                              style: TextStyle(
-                                fontSize: 18,
+                          detailLd.judul != ""
+                              ? Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    detailLd.judul,
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              : Text(""),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                detailLd.judul2,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -144,6 +166,7 @@ class _DetailLdState extends State<DetailLd> {
                               "Tanggal : " + tanggalLd,
                               style: TextStyle(
                                 fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

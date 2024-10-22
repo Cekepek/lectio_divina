@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/login.dart';
 import 'package:lectio_divina/screen/settings.dart';
@@ -26,6 +27,7 @@ import 'package:lectio_divina/globals.dart' as globals;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 
 Future<void> getLD() async {}
 
@@ -163,17 +165,39 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> loadLd() async {
-    // final body = jsonEncode({
-    //   'id_user': 0,
-    // });
-    // final response = await http.post(
-    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
-    //     body: body);
+    int id = globals.userLogin.id;
+    final response =
+        await api.connectApi('/sinkronasi?id_user=$id', 'get', null);
+    if (response.status == 200) {
+      print("MASUK");
+      print(response.data);
+      if (response.message == 'berhasil') {
+        String tesTgl = DateFormat("yyyy-MM-dd HH:mm:ss")
+            .format(DateTime.parse(response.data[0]["first_date"]));
+        debugPrint("Tes tgl : $tesTgl");
+      } else {
+        print("Gagal");
+      }
+    } else {
+      throw Exception('Failed to read API');
+    }
     final prefs = await SharedPreferences.getInstance();
     final String ldsstring =
         await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
     if (ldsstring != "") {
       final List<LD> ldList = LD.decode(ldsstring);
+      ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
+      Map<String, dynamic> tanggalSinkron() => {
+            "tanggalAwalDb": DateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(DateTime.parse(response.data[0]["first_date"])),
+            "tanggalAkhirDb": DateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(DateTime.parse(response.data[0]["last_date"])),
+            "tanggalAwalApp":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.last.tanggal),
+            "tanggalAkhirApp":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.first.tanggal)
+          };
+      print(tanggalSinkron());
       setState(() {
         globals.MyLd = ldList;
       });
