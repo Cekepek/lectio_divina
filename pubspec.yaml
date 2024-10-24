@@ -64,6 +64,11 @@ dev_dependencies:
 
 flutter_icons:
   image_path: "assets/images/Logo.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

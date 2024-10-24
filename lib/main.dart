@@ -125,6 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+    globals.MyLd.clear();
     FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
