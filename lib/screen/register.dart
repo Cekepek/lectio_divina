@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 import 'package:lectio_divina/screen/login.dart';
-import 'package:http/http.dart' as http;
 
 class MyRegister extends StatelessWidget {
   const MyRegister({super.key});

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lectio_divina/class/user.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;

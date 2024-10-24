@@ -11,7 +11,6 @@ import 'package:lectio_divina/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/globals.dart' as globals;
-import 'package:http/http.dart' as http;
 import 'package:lectio_divina/model/api.dart' as api;
 
 class TambahLd extends StatefulWidget {
