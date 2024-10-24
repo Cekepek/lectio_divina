@@ -50,10 +50,10 @@ class LD {
         catatan: jsonData['catatan'],
         hashtag: jsonData['hashtag'],
         warna: jsonData['warna_tagline'],
-        shareable: jsonData['shareable'],
-        selesai: jsonData['status'],
-        user_id: jsonData['user_id'],
-        statusUpload: jsonData['status_upload']);
+        shareable: jsonData['shareable'] == 1 ? true : false,
+        selesai: jsonData['status'] == 1 ? true : false,
+        user_id: jsonData['id_user'],
+        statusUpload: jsonData['status_upload'] == 1 ? true : false);
   }
 
   static Map<String, dynamic> toMap(LD ld) => {
@@ -69,10 +69,10 @@ class LD {
         'catatan': ld.catatan,
         'hashtag': ld.hashtag,
         'warna_tagline': ld.warna,
-        'shareable': ld.shareable,
-        'status': ld.selesai,
-        'user_id': ld.user_id,
-        'status_upload': ld.statusUpload
+        'shareable': ld.shareable ? 1 : 0,
+        'status': ld.selesai ? 1 : 0,
+        'id_user': ld.user_id,
+        'status_upload': ld.statusUpload ? 1 : 0
       };
 
   static String encode(List<LD> lds) => json.encode(

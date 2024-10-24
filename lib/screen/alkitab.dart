@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lectio_divina/class/ayat.dart';
+import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/cariAlkitab.dart';
@@ -27,6 +32,8 @@ class Alkitab extends StatefulWidget {
 }
 
 class _AlkitabState extends State<Alkitab> {
+  String namaFile = "";
+  String? directoryPath;
   final itemController = ItemScrollController();
 
   // void scrollToIndex(int index) => itemController.jumpTo(index: index);
@@ -131,6 +138,144 @@ class _AlkitabState extends State<Alkitab> {
             ));
   }
 
+  Future<void> exportFile(String namaFile) async {
+    final File file = File('$directoryPath/$namaFile.txt');
+    String text = LD.encode(globals.MyLd);
+    print(text);
+    await file.writeAsString(text);
+    toastExportLD();
+  }
+
+  void namaFileDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("Masukkan Nama File Anda", textAlign: TextAlign.center),
+            content: TextField(
+              onChanged: (value) {
+                namaFile = value;
+              },
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nama File',
+                  hintText: 'FileLD'),
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(width: 1, color: Colors.black),
+                    ),
+                    child: Text("BATALKAN")),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  exportFile(namaFile);
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(width: 1, color: Colors.grey),
+                        color: Theme.of(context).primaryColor),
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ),
+            ],
+          ));
+  Future<void> pickDirectoryPath() async {
+    directoryPath = await FilePicker.platform.getDirectoryPath();
+
+    if (directoryPath != null) {
+      print("Path direktori yang dipilih: $directoryPath");
+      namaFileDialog();
+    } else {}
+  }
+
+  void exportDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Apakah Anda ingin melakukan export data ? tekan "Ya" kemudian pilihlah folder yang ingin Anda gunakan untuk menyimpan!',
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("TIDAK")),
+            ),
+            MaterialButton(
+              onPressed: () {
+                pickDirectoryPath();
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).primaryColor),
+                  child: Text(
+                    "YA",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
+
+  void toastExportLD() {
+    Fluttertoast.showToast(
+      msg: "File LD berhasil export",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  Future<void> importLd() async {
+    String text;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      try {
+        String? filePath = result.files.single.path;
+        final File file = File(filePath!);
+        text = await file.readAsString();
+        final List<LD> importedLd = LD.decode(text);
+        globals.MyLd.addAll(importedLd);
+        final prefs = await SharedPreferences.getInstance();
+        final String encodedData = LD.encode(globals.MyLd);
+        await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+        print(encodedData);
+      } catch (e) {
+        print("Couldn't read file");
+      }
+    } else {}
+  }
+
   Widget myDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -142,11 +287,11 @@ class _AlkitabState extends State<Alkitab> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Image(
+                  Image(
                       width: 48,
                       height: 24,
                       image: AssetImage('assets/images/Logo.png')),
-                  const Text(
+                  Text(
                     "Lectio Divina",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   )
@@ -156,12 +301,7 @@ class _AlkitabState extends State<Alkitab> {
                 setState(() {
                   titleHome = "Lectio Divina";
                   globals.currentIndex = 0;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyHomePage(
-                                title: "Lectio Divina",
-                              )));
+                  Navigator.pop(context);
                 });
               },
             )),
@@ -176,7 +316,7 @@ class _AlkitabState extends State<Alkitab> {
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.25,
                       child: CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/User.jpg'),
+                        backgroundImage: AssetImage('assets/images/blank.jpeg'),
                         // minRadius: 50,
                         radius: 30,
                       ),
@@ -191,7 +331,7 @@ class _AlkitabState extends State<Alkitab> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Christopher Kelvin",
+                              globals.userLogin.name,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -235,7 +375,17 @@ class _AlkitabState extends State<Alkitab> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                setState(() {
+                  // titleHome = "Alkitab";
+                  // globals.currentIndex = 1;
+                  globals.namaKitab = 0;
+                  globals.bab = 0;
+                  globals.ayat = "0";
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Alkitab()));
+                });
+              },
             ),
           ),
           ListTile(
@@ -249,13 +399,9 @@ class _AlkitabState extends State<Alkitab> {
             ),
             onTap: () {
               setState(() {
+                titleHome = "My LD";
                 globals.currentIndex = 1;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                              title: "Lectio Divina",
-                            )));
+                Navigator.pop(context);
               });
             },
           ),
@@ -283,14 +429,38 @@ class _AlkitabState extends State<Alkitab> {
             ),
             onTap: () {
               setState(() {
+                titleHome = "Komunitas";
                 globals.currentIndex = 2;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                              title: "Komunitas",
-                            )));
+                Navigator.pop(context);
               });
+            },
+          ),
+          ListTile(
+            leading:
+                Icon(CupertinoIcons.cloud_download_fill, color: Colors.black),
+            title: Text(
+              "Export LD",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              exportDialog();
+            },
+          ),
+          ListTile(
+            leading:
+                Icon(CupertinoIcons.cloud_download_fill, color: Colors.black),
+            title: Text(
+              "Import LD",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              importLd();
             },
           ),
           Padding(
@@ -315,7 +485,7 @@ class _AlkitabState extends State<Alkitab> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Change Color",
+                  "Change Background Color",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -327,7 +497,7 @@ class _AlkitabState extends State<Alkitab> {
                     // minRadius: 50,
                     radius: 20,
                     child: CircleAvatar(
-                      backgroundColor: globals.colorTheme,
+                      backgroundColor: Theme.of(context).primaryColor,
                       radius: 18,
                     ),
                   ),
@@ -348,7 +518,11 @@ class _AlkitabState extends State<Alkitab> {
               ),
             ),
             onTap: () {
-              print("Ini Settings");
+              setState(() {
+                titleHome = "Settings";
+                globals.currentIndex = 3;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
@@ -363,6 +537,21 @@ class _AlkitabState extends State<Alkitab> {
             ),
             onTap: () {
               print("Ini FAQ");
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout, color: Colors.black),
+            title: Text(
+              "Sign Out",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.remove('userLogin');
+              main();
             },
           ),
         ],

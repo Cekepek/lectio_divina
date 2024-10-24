@@ -311,7 +311,7 @@ class _TambahLdState extends State<TambahLd>
       'shareable': shareable ? 1 : 0,
       'status': selesai ? 1 : 0,
       'id_user': globals.userLogin.id,
-      // 'statusUpload': statusUpload ? 1 : 0,
+      'statusUpload': statusUpload ? 1 : 0,
     });
     // final response = await http.post(
     //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
@@ -320,15 +320,11 @@ class _TambahLdState extends State<TambahLd>
     if (response.status == 200) {
       setState(() {
         statusUpload = true;
+        idLd = response.data['id'];
       });
       print("KEUPLOAD ");
 
       print(response.data['id']);
-      // Map json = jsonDecode(response.body);
-      // print(json);
-      setState(() {
-        idLd = response.data['id'];
-      });
     } else {
       throw Exception('Failed to read API');
     }

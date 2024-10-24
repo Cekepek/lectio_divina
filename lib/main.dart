@@ -31,16 +31,19 @@ import 'package:lectio_divina/model/api.dart' as api;
 
 Future<void> getLD() async {}
 
-Future<int> checkUser() async {
+Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
-  int user_id = prefs.getInt("user_id") ?? 0;
-  return user_id;
+  String userLogin = prefs.getString("userLogin") ?? "";
+  if (userLogin != "") {
+    globals.userLogin = User.fromJson(jsonDecode(userLogin));
+  }
+  return userLogin;
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  checkUser().then((int result) async {
-    if (result == 0) {
+  checkUser().then((String result) async {
+    if (result == "") {
       runApp(MyLogin());
     } else {
       await initializeDateFormatting('id_ID', null).then((_) => runApp(
@@ -166,41 +169,110 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> loadLd() async {
     int id = globals.userLogin.id;
+    print("ID USER : " + globals.userLogin.id.toString());
+
+    final prefs = await SharedPreferences.getInstance();
+    final String ldsstring =
+        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
+    final body = jsonEncode({"id_user": id});
+    print(body);
     final response =
-        await api.connectApi('/sinkronasi?id_user=$id', 'get', null);
+        await api.connectApi('/sinkronasi?id_user=$id', 'post', null);
     if (response.status == 200) {
       print("MASUK");
       print(response.data);
       if (response.message == 'berhasil') {
-        String tesTgl = DateFormat("yyyy-MM-dd HH:mm:ss")
-            .format(DateTime.parse(response.data[0]["first_date"]));
-        debugPrint("Tes tgl : $tesTgl");
-      } else {
-        print("Gagal");
-      }
-    } else {
-      throw Exception('Failed to read API');
-    }
-    final prefs = await SharedPreferences.getInstance();
-    final String ldsstring =
-        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
-    if (ldsstring != "") {
-      final List<LD> ldList = LD.decode(ldsstring);
-      ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
-      Map<String, dynamic> tanggalSinkron() => {
-            "tanggalAwalDb": DateFormat("yyyy-MM-dd HH:mm:ss")
-                .format(DateTime.parse(response.data[0]["first_date"])),
+        if (ldsstring != "") {
+          final List<LD> ldList = LD.decode(ldsstring);
+          ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
+          Map<String, dynamic> tanggalSinkron = {
             "tanggalAkhirDb": DateFormat("yyyy-MM-dd HH:mm:ss")
-                .format(DateTime.parse(response.data[0]["last_date"])),
-            "tanggalAwalApp":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.last.tanggal),
+                .format(DateTime.parse(response.data[0]["first_date"])),
             "tanggalAkhirApp":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.first.tanggal)
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.last.tanggal),
           };
-      print(tanggalSinkron());
-      setState(() {
-        globals.MyLd = ldList;
-      });
+          print(tanggalSinkron);
+          if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
+              .isBefore(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            for (LD ld in ldList) {
+              print("BANDINGKAN TANGGAL : " +
+                  ld.tanggal.toString() +
+                  ":" +
+                  tanggalSinkron["tanggalAkhirDb"]);
+              if (DateTime.parse(
+                      DateFormat("yyyy-MM-dd HH:mm:ss").format(ld.tanggal))
+                  .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirDb"]))) {
+                final body = jsonEncode({
+                  'id': 0,
+                  'tanggal':
+                      DateFormat('yyyy-MM-dd HH:mm:ss').format(ld.tanggal),
+                  'judul1': ld.judul,
+                  'judul2': ld.judul2,
+                  'ayat': ld.ayat,
+                  'isi_ayat': ld.sabda,
+                  'sabda_tuhan': ld.sabdaBagiSaya,
+                  'tanggapan': ld.tanggapan,
+                  'tindakan': ld.tindakan,
+                  'hashtag': ld.hashtag,
+                  'warna_tagline': ld.warna,
+                  'shareable': ld.shareable ? 1 : 0,
+                  'status': ld.selesai ? 1 : 0,
+                  'id_user': globals.userLogin.id,
+                  'statusUpload': ld.statusUpload ? 1 : 0,
+                });
+                final response2 =
+                    await api.connectApi("/lectio_divina", "post", body);
+                if (response2.status == 200) {
+                  print("KEUPLOAD ");
+
+                  print(response2.data['id']);
+                  ld.id = response2.data['id'];
+                } else {
+                  throw Exception('Failed to read API');
+                }
+              }
+            }
+          }
+          if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
+              .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
+            String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
+            final response2 = await api.connectApi(
+                '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+            final List<LD> listDb = LD.decode(jsonEncode(response2.data));
+            ldList.addAll(listDb);
+            final prefs = await SharedPreferences.getInstance();
+            final String encodedData = LD.encode(ldList);
+            await prefs.setString(
+                'lds_data_${globals.userLogin.id}', encodedData);
+          }
+
+          setState(() {
+            globals.MyLd = ldList;
+          });
+        } else {
+          String tanggalAwal = DateFormat("yyyy-MM-dd HH:mm:ss")
+              .format(DateTime.parse(response.data[0]["first_date"]));
+          String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")
+              .format(DateTime.parse(response.data[0]["last_date"]));
+          final response3 = await api.connectApi(
+              '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+          if (response3.status == 200) {
+            if (response3.data != null) {
+              final List<LD> lds = LD.decode(jsonEncode(response3.data));
+              final prefs = await SharedPreferences.getInstance();
+              final String encodedData = LD.encode(lds);
+              await prefs.setString(
+                  'lds_data_${globals.userLogin.id}', encodedData);
+              setState(() {
+                globals.MyLd = lds;
+              });
+            }
+          }
+        }
+      } else {
+        throw Exception('Failed to read API');
+      }
     }
   }
 
@@ -621,7 +693,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             onTap: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.remove('user_id');
+              prefs.remove('userLogin');
               main();
             },
           ),

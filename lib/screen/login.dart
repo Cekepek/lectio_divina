@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lectio_divina/class/user.dart';
@@ -64,16 +66,16 @@ class _LoginState extends State<Login> {
   void doLogin() async {
     final response = await api.connectApi(
         "/login?username=$_user_id&password=$_user_password", "post", null);
-    debugPrint("String username : $_user_id");
     if (response.status == 200) {
       if (response.message == 'berhasil') {
         final prefs = await SharedPreferences.getInstance();
-        prefs.setInt("user_id", response.data['id']);
-        globals.userLogin = User.fromJson(response.data);
+        prefs.setString("userLogin", jsonEncode(response.data));
+        final String userLogin =
+            await prefs.getString("userLogin") ?? "GAK ADA";
+        print("LOGIN = $userLogin");
         setState(() {
           globals.currentIndex = 0;
         });
-        debugPrint("Json data = ${response.data}");
         main();
       } else {
         setState(() {

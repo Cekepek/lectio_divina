@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class User {
   int id;
   String username;
@@ -18,4 +20,7 @@ class User {
         name: json['nama'] as String,
         foto: json['foto'] as String);
   }
+  // static String encode(List<User> lds) => json.encode(
+  //       lds.map<Map<String, dynamic>>((ld) => User.toMap(ld)).toList(),
+  //     );
 }
