@@ -72,7 +72,7 @@ class LD {
         'shareable': ld.shareable ? 1 : 0,
         'status': ld.selesai ? 1 : 0,
         'id_user': ld.user_id,
-        'status_upload': ld.statusUpload ? 1 : 0
+        'status_upload': ld.statusUpload ? 1 : 0,
       };
 
   static String encode(List<LD> lds) => json.encode(
