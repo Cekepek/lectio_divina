@@ -26,11 +26,9 @@ class ThemeModel extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _currentTheme = ThemeData(
       fontFamily: "Poppins",
-      primaryColor:
-          Color(prefs.getInt('primaryColor') ?? globals.colorTheme.value),
+      primaryColor: Color(prefs.getInt('color') ?? globals.colorTheme.value),
       colorScheme: ColorScheme.fromSeed(
-          seedColor:
-              Color(prefs.getInt('primaryColor') ?? globals.colorTheme.value)),
+          seedColor: Color(prefs.getInt('color') ?? globals.colorTheme.value)),
       useMaterial3: true,
     );
     notifyListeners();

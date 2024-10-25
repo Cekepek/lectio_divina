@@ -276,6 +276,7 @@ class _AlkitabState extends State<Alkitab> {
     } else {}
   }
 
+  //DRAWER DI ALKITAB HARUS DI NAVIGATOR PUSH UNTUK PINDAH PAGE TIDAK BISA NAVIGATOR POP
   Widget myDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -301,7 +302,12 @@ class _AlkitabState extends State<Alkitab> {
                 setState(() {
                   titleHome = "Lectio Divina";
                   globals.currentIndex = 0;
-                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyHomePage(
+                                title: "Lectio Divina",
+                              )));
                 });
               },
             )),
@@ -401,7 +407,12 @@ class _AlkitabState extends State<Alkitab> {
               setState(() {
                 titleHome = "My LD";
                 globals.currentIndex = 1;
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: titleHome,
+                            )));
               });
             },
           ),
@@ -431,7 +442,12 @@ class _AlkitabState extends State<Alkitab> {
               setState(() {
                 titleHome = "Komunitas";
                 globals.currentIndex = 2;
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: titleHome,
+                            )));
               });
             },
           ),
@@ -521,7 +537,12 @@ class _AlkitabState extends State<Alkitab> {
               setState(() {
                 titleHome = "Settings";
                 globals.currentIndex = 3;
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: titleHome,
+                            )));
               });
             },
           ),

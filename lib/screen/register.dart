@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:lectio_divina/model/api.dart' as api;
+import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/login.dart';
 
 class MyRegister extends StatelessWidget {
@@ -12,8 +13,10 @@ class MyRegister extends StatelessWidget {
     return MaterialApp(
       title: 'LECTIO DIVINA',
       theme: ThemeData(
-        fontFamily: 'Poppins',
-        primaryColor: Color.fromRGBO(255, 141, 116, 1),
+        fontFamily: "Poppins",
+        primaryColor: globals.colorTheme,
+        colorScheme: ColorScheme.fromSeed(seedColor: globals.colorTheme),
+        useMaterial3: true,
       ),
       home: const Register(),
     );
@@ -96,7 +99,7 @@ class _RegisterState extends State<Register> {
                 color: Colors.white),
             textAlign: TextAlign.center,
           ),
-          backgroundColor: Color.fromRGBO(255, 141, 116, 1),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
@@ -243,7 +246,7 @@ class _RegisterState extends State<Register> {
                         height: 40,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: Color.fromRGBO(255, 141, 116, 1),
+                            color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(5)),
                         child: const Center(
                           child: Text(

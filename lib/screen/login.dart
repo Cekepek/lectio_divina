@@ -3,21 +3,30 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:lectio_divina/state_util.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 
 class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
-
   @override
   Widget build(BuildContext context) {
+    // final theme = Provider.of<ThemeModel>(context);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
     return MaterialApp(
       title: 'LECTIO DIVINA',
       theme: ThemeData(
-        fontFamily: 'Poppins',
-        primaryColor: Color.fromRGBO(255, 141, 116, 1),
+        fontFamily: "Poppins",
+        primaryColor: globals.colorTheme,
+        colorScheme: ColorScheme.fromSeed(seedColor: globals.colorTheme),
+        useMaterial3: true,
       ),
       home: Login(),
     );
@@ -74,6 +83,7 @@ class _LoginState extends State<Login> {
         print("LOGIN = $userLogin");
         setState(() {
           globals.currentIndex = 0;
+          globals.MyLd.clear();
         });
         main();
       } else {
@@ -84,28 +94,6 @@ class _LoginState extends State<Login> {
     } else {
       throw Exception('Failed to read API');
     }
-    // final response = await http.post(
-    //     Uri.parse("http://sw.crossnet.co.id:5868/login"),
-    //     body: {'username': _user_id, 'password': _user_password});
-    // if (response.statusCode == 200) {
-    //   Map json = jsonDecode(response.body);
-    //   if (json['message'] == 'berhasil') {
-    //     final prefs = await SharedPreferences.getInstance();
-    //     prefs.setInt("user_id", json['data']['id']);
-    //     globals.userLogin = User.fromJson(json['data']);
-    //     setState(() {
-    //       globals.currentIndex = 0;
-    //     });
-    //     print(globals.userLogin.id);
-    //     main();
-    //   } else {
-    //     setState(() {
-    //       error_login = "Incorrect user or password";
-    //     });
-    //   }
-    // } else {
-    //   throw Exception('Failed to read API');
-    // }
   }
 
   @override
@@ -121,7 +109,7 @@ class _LoginState extends State<Login> {
               color: Colors.white),
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Color.fromRGBO(255, 141, 116, 1),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -244,7 +232,7 @@ class _LoginState extends State<Login> {
                     height: 40,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 141, 116, 1),
+                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(5)),
                     child: const Center(
                       child: Text(

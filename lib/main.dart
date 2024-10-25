@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/model/themeModel.dart';
@@ -29,11 +30,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 
-Future<void> getLD() async {}
-
 Future<String> checkUser() async {
   final prefs = await SharedPreferences.getInstance();
   String userLogin = prefs.getString("userLogin") ?? "";
+  globals.colorTheme = Color(prefs.getInt("color") ?? globals.colorTheme.value);
   if (userLogin != "") {
     globals.userLogin = User.fromJson(jsonDecode(userLogin));
   }
@@ -46,6 +46,8 @@ Future<void> main() async {
     if (result == "") {
       runApp(MyLogin());
     } else {
+      WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
       await initializeDateFormatting('id_ID', null).then((_) => runApp(
             ChangeNotifierProvider(
               create: (_) => ThemeModel(),
@@ -74,12 +76,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: Get.navigatorKey,
-      // theme: ThemeData(
-      //   fontFamily: "Poppins",
-      //   colorScheme:
-      //       ColorScheme.fromSeed(seedColor: Color.fromRGBO(245, 141, 116, 1)),
-      //   useMaterial3: true,
-      // ),
       theme: theme.currentTheme,
       home: const MyHomePage(title: "Lectio Divina"),
     );
@@ -87,12 +83,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  // final int kitab;
-  // final int bab;
-  // final String ayat;
-  // final int screenIndex;
-
-  // const MyHomePage({Key? key, required this.title, required this.screenIndex, required this.kitab, required this.bab, required this.ayat}) : super(key: key);
   const MyHomePage({super.key, required this.title});
 
   final String title;
@@ -125,11 +115,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
-    globals.MyLd.clear();
     FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
+    FlutterNativeSplash.remove();
   }
 
   Future<void> importLd() async {
@@ -234,8 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
               }
             }
-          }
-          if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
+          } else if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
               .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
             String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
             String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
