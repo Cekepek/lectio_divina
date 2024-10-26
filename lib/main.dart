@@ -118,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
     FlameAudio.bgm.initialize();
     getSettings();
     loadLd();
-    FlutterNativeSplash.remove();
   }
 
   Future<void> importLd() async {

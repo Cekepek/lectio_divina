@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/class/kitab.dart';
 import 'package:lectio_divina/class/pasal.dart';
-
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
 class Home extends StatefulWidget {
@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
     super.initState();
     if (globals.kitab.isEmpty) {
       readJson();
+      FlutterNativeSplash.remove();
     }
   }
 
