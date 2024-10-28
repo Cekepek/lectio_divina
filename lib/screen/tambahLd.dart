@@ -293,7 +293,6 @@ class _TambahLdState extends State<TambahLd>
   }
 
   void uploadLd() async {
-    print(warna);
     final body = jsonEncode({
       'id': 0,
       'tanggal':

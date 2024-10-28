@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -7,6 +9,7 @@ import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 
 class EditLd extends StatefulWidget {
   const EditLd({super.key});
@@ -121,6 +124,37 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     return [];
   }
 
+  void uploadLd(LD ld) async {
+    final body = jsonEncode({
+      'id': ld.id,
+      'tanggal': DateFormat('yyyy-MM-dd HH:mm:ss').format(ld.tanggal),
+      'judul1': ld.judul,
+      'judul2': ld.judul2,
+      'ayat': ld.ayat,
+      'isi_ayat': ld.sabda,
+      'sabda_tuhan': ld.sabdaBagiSaya,
+      'tanggapan': ld.tanggapan,
+      'tindakan': ld.tindakan,
+      'hashtag': ld.hashtag,
+      'warna_tagline': ld.warna,
+      'shareable': ld.shareable ? 1 : 0,
+      'status': ld.selesai ? 1 : 0,
+      'id_user': ld.user_id,
+      'statusUpload': ld.statusUpload,
+    });
+    // final response = await http.post(
+    //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
+    //     body: body);
+    final response = await api.connectApi("/updateLectioDivina", "put", body);
+    if (response.status == 200) {
+      if (response.message == "berhasil") {
+        print("UPLOAD BERHASIL");
+      }
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
   Future<void> saveLd(List<LD> lds) async {
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
@@ -131,10 +165,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     final lds = await loadLd();
     int indexLd = 0;
     for (LD savedLd in lds) {
-      if (savedLd.id == globals.idLdEdit) {
+      if (savedLd.id == ld.id) {
         print(savedLd.id);
         lds[indexLd] = ld;
-        globals.MyLd[indexLd] = ld;
         await saveLd(lds);
         break;
       }
@@ -203,6 +236,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             MaterialButton(
               onPressed: () {
                 Navigator.pop(context);
+                uploadLd(editLd);
                 ldTersimpan();
               },
               child: Container(
@@ -336,7 +370,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                 spacing: 10,
                 children: [
                   TextField(
-                    controller: sabda,
+                    controller: judul2,
                     onChanged: (value) {
                       judul2.text = value;
                       editLd.judul2 = value;
@@ -559,6 +593,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         child: GestureDetector(
                           onTap: () {
                             simpanClicked == true;
+                            uploadLd(editLd);
                             ldTersimpan();
                           },
                           child: Container(

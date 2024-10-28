@@ -59,8 +59,6 @@ class _LDKalenderState extends State<LDKalender> {
     setState(() {
       selectedDay = day;
       focusedDay = focusDay;
-      print(focusedDay);
-      print(selectedDay);
       _selectedLD.value = _getLDForDay(selectedDay);
     });
   }

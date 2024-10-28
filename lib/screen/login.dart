@@ -3,11 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lectio_divina/main.dart';
-import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
-import 'package:lectio_divina/state_util.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 
