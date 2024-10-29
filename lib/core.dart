@@ -15,7 +15,6 @@ export 'package:lectio_divina/globals.dart';
 export 'package:lectio_divina/navbar.dart';
 export 'package:lectio_divina/screen/alkitab.dart';
 export 'package:lectio_divina/screen/cariAlkitab.dart';
-export 'package:lectio_divina/screen/detailBacaan.dart';
 export 'package:lectio_divina/screen/detailKomunitas.dart';
 export 'package:lectio_divina/screen/detailLd.dart';
 export 'package:lectio_divina/screen/editLd.dart';
