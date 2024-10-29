@@ -160,16 +160,16 @@ class _DetailBacaan extends State<DetailBacaan> {
                 ],
               ),
               onTap: () {
-                setState(() {
-                  titleHome = "Lectio Divina";
-                  globals.currentIndex = 0;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyHomePage(
-                                title: "Lectio Divina",
-                              )));
-                });
+                // setState(() {
+                //   titleHome = "Lectio Divina";
+                //   globals.currentIndex = 0;
+                //   Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => MyHomePage(
+                //                 title: "Lectio Divina",
+                //               )));
+                // });
               },
             )),
           ),

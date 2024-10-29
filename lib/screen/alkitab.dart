@@ -439,16 +439,16 @@ class _AlkitabState extends State<Alkitab> {
               ),
             ),
             onTap: () {
-              setState(() {
-                titleHome = "Komunitas";
-                globals.currentIndex = 2;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                              title: titleHome,
-                            )));
-              });
+              // setState(() {
+              //   titleHome = "Komunitas";
+              //   globals.currentIndex = 2;
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => MyHomePage(
+              //                 title: titleHome,
+              //               )));
+              // });
             },
           ),
           ListTile(

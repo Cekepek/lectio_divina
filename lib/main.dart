@@ -560,11 +560,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              setState(() {
-                titleHome = "Komunitas";
-                globals.currentIndex = 2;
-                Navigator.pop(context);
-              });
+              // setState(() {
+              //   titleHome = "Komunitas";
+              //   globals.currentIndex = 2;
+              //   Navigator.pop(context);
+              // });
             },
           ),
           ListTile(
