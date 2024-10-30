@@ -33,6 +33,7 @@ class Register extends StatefulWidget {
 }
 
 var isObscuredRegister;
+var isObscuredRepeatPassword;
 
 class _RegisterState extends State<Register> {
   late String username;
@@ -51,38 +52,47 @@ class _RegisterState extends State<Register> {
     repeat_password = "";
     error_register = "";
     isObscuredRegister = true;
+    isObscuredRepeatPassword = true;
   }
 
   void createAccount() async {
-    if (repeat_password == password) {
-      final body = jsonEncode({
-        'username': username,
-        'password': password,
-        'nama': name,
-        'foto': ""
+    if (username.isEmpty || password.isEmpty || name.isEmpty) {
+      setState(() {
+        error_register = "Username/Password/Nama tidak boleh kosong";
       });
-      final response = await api.connectApi("/user", "post", body);
-      if (response.status == 200) {
-        print("MASUK");
-        print(response.data);
-        if (response.message == 'berhasil') {
-          setState(() {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyLogin(),
-                ));
-          });
+    } else {
+      if (repeat_password == password) {
+        final body = jsonEncode({
+          'username': username,
+          'password': password,
+          'nama': name,
+          'foto': ""
+        });
+        final response = await api.connectApi("/user", "post", body);
+        if (response.status == 200) {
+          print("MASUK");
+          print(response.data);
+          if (response.message == 'berhasil') {
+            setState(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyLogin(),
+                  ));
+            });
+          } else {
+            setState(() {
+              error_register = "Akun gagal Dibuat";
+            });
+          }
         } else {
-          setState(() {
-            error_register = "Akun gagal Dibuat";
-          });
+          throw Exception('Failed to read API');
         }
       } else {
-        throw Exception('Failed to read API');
+        setState(() {
+          error_register = "Password tidak sama";
+        });
       }
-    } else {
-      error_register = "Password tidak sama";
     }
   }
 
@@ -204,7 +214,7 @@ class _RegisterState extends State<Register> {
                     top: 10, bottom: 0, left: 10, right: 10),
                 //padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextField(
-                  obscureText: isObscuredRegister,
+                  obscureText: isObscuredRepeatPassword,
                   onChanged: (value) {
                     setState(() {
                       error_register = "";
@@ -214,12 +224,13 @@ class _RegisterState extends State<Register> {
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
                           padding: const EdgeInsetsDirectional.only(end: 12),
-                          icon: isObscuredRegister
+                          icon: isObscuredRepeatPassword
                               ? const Icon(Icons.visibility)
                               : const Icon(Icons.visibility_off),
                           onPressed: (() {
                             setState(() {
-                              isObscuredRegister = !isObscuredRegister;
+                              isObscuredRepeatPassword =
+                                  !isObscuredRepeatPassword;
                             });
                           })),
                       border: const OutlineInputBorder(),

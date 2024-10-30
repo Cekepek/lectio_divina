@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/model/themeModel.dart';
 import 'package:lectio_divina/screen/login.dart';
+import 'package:lectio_divina/screen/profile.dart';
 import 'package:lectio_divina/screen/settings.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
@@ -61,7 +62,13 @@ Future<void> main() async {
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [Home(), LDKalender(), Komunitas(), Settings()];
+final List<Widget> _screens = [
+  Home(),
+  LDKalender(),
+  Komunitas(),
+  Settings(),
+  Profile()
+];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -471,13 +478,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                print("ini profile");
-                                //   Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => const MyLogin(),
-                                //     ),
-                                //   );
+                                setState(() {
+                                  titleHome = "Profile";
+                                  globals.currentIndex = 4;
+                                  Navigator.pop(context);
+                                });
                               },
                               child: const Text(
                                 "Lihat Profile",

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
@@ -55,6 +56,8 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   bool selesai = false;
   bool simpanClicked = false;
   bool shareable = false;
+  bool keyboardUsed = false;
+  FocusNode myFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -87,6 +90,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
         editLd.selesai = selesai;
         EditLd(editLd);
         globals.ayatDipilih.clear();
+        Fluttertoast.showToast(
+            msg: "LD berhasil di update",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
         globals.currentIndex = 1;
         Navigator.push(
             context,
@@ -201,7 +211,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ),
         ),
       );
-  void backDialog() => showDialog(
+  void backDialog() {
+    if (keyboardUsed) {
+      showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
@@ -255,6 +267,20 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ],
         ),
       );
+    } else {
+      setState(() {
+        globals.ayatDipilih.clear();
+        globals.currentIndex = 1;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MyHomePage(
+                      title: "Lectio Divina",
+                    )));
+      });
+    }
+  }
+
   void _showDatePicker() {
     showDatePicker(
             context: context,
@@ -262,6 +288,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             firstDate: DateTime.utc(2020, 5, 15),
             lastDate: DateTime.utc(2030, 5, 15))
         .then((value) => setState(() {
+              keyboardUsed = true;
               tanggalLd = value!;
               editLd.tanggal = DateTime.utc(
                   value.year,
@@ -352,8 +379,14 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             Padding(
               padding: EdgeInsets.all(8),
               child: TextField(
+                focusNode: myFocusNode,
                 controller: judul,
                 onChanged: (value) {
+                  if (myFocusNode.hasFocus) {
+                    keyboardUsed = true;
+                  } else {
+                    keyboardUsed = false;
+                  }
                   judul.text = value;
                   editLd.judul = value;
                 },
@@ -372,6 +405,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: judul2,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       judul2.text = value;
                       editLd.judul2 = value;
                     },
@@ -391,6 +429,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
               child: TextField(
                 controller: ayat,
                 onChanged: (value) {
+                  if (myFocusNode.hasFocus) {
+                    keyboardUsed = true;
+                  } else {
+                    keyboardUsed = false;
+                  }
                   ayat.text = value;
                   editLd.ayat = value;
                 },
@@ -409,6 +452,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: sabda,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       sabda.text = value;
                       editLd.sabda = value;
                     },
@@ -432,6 +480,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: sabdaBagiSaya,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       sabdaBagiSaya.text = value;
                       editLd.sabdaBagiSaya = value;
                     },
@@ -455,6 +508,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: tanggapan,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       tanggapan.text = value;
                       editLd.tanggapan = value;
                     },
@@ -478,6 +536,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: tindakan,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       tindakan.text = value;
                       editLd.tindakan = value;
                     },
@@ -503,6 +566,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                       GestureDetector(
                         onTap: () {
                           setState(() {
+                            keyboardUsed = true;
                             shareable ? shareable = false : shareable = true;
                             editLd.shareable = shareable;
                           });
@@ -520,6 +584,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: catatan,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       catatan.text = value;
                       editLd.catatan = value;
                     },
@@ -534,6 +603,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: hashtag,
                     onChanged: (value) {
+                      if (myFocusNode.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
                       hashtag.text = value;
                       editLd.hashtag = value;
                     },
@@ -548,6 +622,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                       Text("Warna Tagline"),
                       GestureDetector(
                         onTap: () {
+                          keyboardUsed = true;
                           colorPicker(context);
                         },
                         child: Container(
@@ -579,6 +654,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         value: selesai,
                         onChanged: (bool? value) {
                           setState(() {
+                            keyboardUsed = true;
                             selesai = value!;
                           });
                         },

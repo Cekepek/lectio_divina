@@ -346,12 +346,18 @@ class _AlkitabState extends State<Alkitab> {
                             GestureDetector(
                               onTap: () {
                                 print("ini profile");
-                                //   Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => const MyLogin(),
-                                //     ),
-                                //   );
+                                setState(() {
+                                  setState(() {
+                                    titleHome = "Profile";
+                                    globals.currentIndex = 4;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MyHomePage(
+                                                  title: titleHome,
+                                                )));
+                                  });
+                                });
                               },
                               child: const Text(
                                 "Lihat Profile",

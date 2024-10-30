@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/class/ld.dart';
@@ -170,6 +171,13 @@ class _TambahLdState extends State<TambahLd>
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
+        Fluttertoast.showToast(
+            msg: "Berhasil membuat LD",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
         Navigator.push(
             context,
             MaterialPageRoute(
