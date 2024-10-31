@@ -234,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
             String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
             String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
             final response2 = await api.connectApi(
-                '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+                '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
             final List<LD> listDb = LD.decode(jsonEncode(response2.data));
             ldList.addAll(listDb);
             final prefs = await SharedPreferences.getInstance();
@@ -252,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
           String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["last_date"]));
           final response3 = await api.connectApi(
-              '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+              '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
           if (response3.status == 200) {
             if (response3.data != null) {
               final List<LD> lds = LD.decode(jsonEncode(response3.data));
