@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lectio_divina/class/user.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
   final String edit;
@@ -36,6 +38,7 @@ class EditProfileState extends State<EditProfile> {
       if (widget.edit == "password") {
         if (repeatPassword.text == editData.text) {
           final body = jsonEncode({
+            'id': globals.userLogin.id,
             'username': widget.edit == "username"
                 ? editData.text
                 : globals.userLogin.username,
@@ -51,7 +54,10 @@ class EditProfileState extends State<EditProfile> {
             print("UPDATED");
             print(response.data);
             if (response.message == 'berhasil') {
+              final prefs = await SharedPreferences.getInstance();
+              prefs.setString("userLogin", jsonEncode(response.data));
               setState(() {
+                globals.userLogin = User.fromJson(response.data);
                 globals.currentIndex = 4;
                 Fluttertoast.showToast(
                     msg: "Data berhasil di update",
@@ -98,7 +104,10 @@ class EditProfileState extends State<EditProfile> {
           print("UPDATED");
           print(response.data);
           if (response.message == 'berhasil') {
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setString("userLogin", jsonEncode(response.data));
             setState(() {
+              globals.userLogin = User.fromJson(response.data);
               globals.currentIndex = 4;
               Fluttertoast.showToast(
                   msg: "Data berhasil di update",
