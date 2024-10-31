@@ -112,7 +112,7 @@ class EditProfileState extends State<EditProfile> {
               Fluttertoast.showToast(
                   msg: "Data berhasil di update",
                   toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
+                  gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 1,
                   textColor: Colors.white,
                   fontSize: 16.0);
