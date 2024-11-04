@@ -129,17 +129,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> importLd() async {
     String text;
+    int length = globals.MyLd.length;
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       try {
         String? filePath = result.files.single.path;
         final File file = File(filePath!);
         text = await file.readAsString();
-        final List<LD> importedLd = LD.decode(text);
+        final List<LD> importedLd = LD.decodeImport(text);
+        for (LD ld in importedLd) {
+          length += 1;
+          final body = jsonEncode(LD.toMap(ld));
+          final response2 =
+              await api.connectApi("/lectio_divina", "post", body);
+          if (response2.status == 200) {
+            ld.id = response2.data['id'];
+          }
+        }
         globals.MyLd.addAll(importedLd);
         final prefs = await SharedPreferences.getInstance();
         final String encodedData = LD.encode(globals.MyLd);
         await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+        Fluttertoast.showToast(
+            msg: "LD berhasil di Import",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        setState(() {
+          globals.currentIndex = 0;
+        });
         print(encodedData);
       } catch (e) {
         print("Couldn't read file");

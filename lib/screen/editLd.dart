@@ -382,11 +382,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                 focusNode: myFocusNode,
                 controller: judul,
                 onChanged: (value) {
-                  if (myFocusNode.hasFocus) {
-                    keyboardUsed = true;
-                  } else {
-                    keyboardUsed = false;
-                  }
+                  setState(() {
+                    if (myFocusNode.hasFocus) {
+                      keyboardUsed = true;
+                    } else {
+                      keyboardUsed = false;
+                    }
+                  });
                   judul.text = value;
                   editLd.judul = value;
                 },
@@ -405,11 +407,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: judul2,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       judul2.text = value;
                       editLd.judul2 = value;
                     },
@@ -429,11 +433,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
               child: TextField(
                 controller: ayat,
                 onChanged: (value) {
-                  if (myFocusNode.hasFocus) {
-                    keyboardUsed = true;
-                  } else {
-                    keyboardUsed = false;
-                  }
+                  setState(() {
+                    if (myFocusNode.hasFocus) {
+                      keyboardUsed = true;
+                    } else {
+                      keyboardUsed = false;
+                    }
+                  });
                   ayat.text = value;
                   editLd.ayat = value;
                 },
@@ -452,11 +458,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: sabda,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       sabda.text = value;
                       editLd.sabda = value;
                     },
@@ -480,11 +488,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: sabdaBagiSaya,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       sabdaBagiSaya.text = value;
                       editLd.sabdaBagiSaya = value;
                     },
@@ -508,11 +518,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: tanggapan,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       tanggapan.text = value;
                       editLd.tanggapan = value;
                     },
@@ -536,11 +548,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: tindakan,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       tindakan.text = value;
                       editLd.tindakan = value;
                     },
@@ -584,11 +598,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: catatan,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       catatan.text = value;
                       editLd.catatan = value;
                     },
@@ -603,11 +619,13 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   TextField(
                     controller: hashtag,
                     onChanged: (value) {
-                      if (myFocusNode.hasFocus) {
-                        keyboardUsed = true;
-                      } else {
-                        keyboardUsed = false;
-                      }
+                      setState(() {
+                        if (myFocusNode.hasFocus) {
+                          keyboardUsed = true;
+                        } else {
+                          keyboardUsed = false;
+                        }
+                      });
                       hashtag.text = value;
                       editLd.hashtag = value;
                     },
@@ -622,7 +640,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                       Text("Warna Tagline"),
                       GestureDetector(
                         onTap: () {
-                          keyboardUsed = true;
+                          setState(() {
+                            keyboardUsed = true;
+                          });
                           colorPicker(context);
                         },
                         child: Container(

@@ -277,7 +277,7 @@ class _LDKalenderState extends State<LDKalender> {
             Expanded(
               child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 15,
+                    horizontal: 10,
                   ),
                   child: SingleChildScrollView(
                     child: Container(
@@ -527,25 +527,34 @@ class _LDKalenderState extends State<LDKalender> {
                                               );
                                             });
                                       }),
+                                  Container(
+                                    height: 150,
+                                  )
                                 ],
                               )
-                            : ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                controller: ScrollController(),
-                                itemCount: listTanggalLd.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(format.format(listTanggalLd[index])),
-                                      ListViewLdBulanan(
-                                          ldHariIni: _getLDForDay(
-                                              listTanggalLd[index])),
-                                    ],
-                                  );
-                                })),
+                            : Column(
+                                children: [
+                                  ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      controller: ScrollController(),
+                                      itemCount: listTanggalLd.length,
+                                      itemBuilder: (context, index) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(format
+                                                .format(listTanggalLd[index])),
+                                            ListViewLdBulanan(
+                                                ldHariIni: _getLDForDay(
+                                                    listTanggalLd[index])),
+                                          ],
+                                        );
+                                      }),
+                                  Container(height: 150)
+                                ],
+                              )),
                   )),
             ),
           ],
