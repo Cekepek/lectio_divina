@@ -453,7 +453,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Image(
                       width: 48,
                       height: 24,
-                      image: AssetImage('assets/images/Logo.png')),
+                      image: AssetImage('assets/images/new_logo.png')),
                   Text(
                     "Lectio Divina",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
