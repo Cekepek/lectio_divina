@@ -6,6 +6,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/model/themeModel.dart';
+import 'package:lectio_divina/screen/about.dart';
+import 'package:lectio_divina/screen/faq.dart';
 import 'package:lectio_divina/screen/login.dart';
 import 'package:lectio_divina/screen/profile.dart';
 import 'package:lectio_divina/screen/settings.dart';
@@ -67,7 +69,9 @@ final List<Widget> _screens = [
   LDKalender(),
   Komunitas(),
   Settings(),
-  Profile()
+  Profile(),
+  About(),
+  Faq()
 ];
 
 class MyApp extends StatelessWidget {
@@ -686,6 +690,23 @@ class _MyHomePageState extends State<MyHomePage> {
             leading: Icon(CupertinoIcons.exclamationmark_circle,
                 color: Colors.black),
             title: Text(
+              "About",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                titleHome = "About";
+                globals.currentIndex = 5;
+                Navigator.pop(context);
+              });
+            },
+          ),
+          ListTile(
+            leading: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+            title: Text(
               "FAQ",
               style: TextStyle(
                 fontSize: 14,
@@ -693,7 +714,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              print("Ini FAQ");
+              setState(() {
+                titleHome = "FAQ";
+                globals.currentIndex = 6;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
