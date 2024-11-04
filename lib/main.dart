@@ -133,7 +133,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> importLd() async {
     String text;
-    int length = globals.MyLd.length;
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       try {
@@ -142,7 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
         text = await file.readAsString();
         final List<LD> importedLd = LD.decodeImport(text);
         for (LD ld in importedLd) {
-          length += 1;
           final body = jsonEncode(LD.toMap(ld));
           final response2 =
               await api.connectApi("/lectio_divina", "post", body);
@@ -235,6 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   'tanggapan': ld.tanggapan,
                   'tindakan': ld.tindakan,
                   'hashtag': ld.hashtag,
+                  'catatan': ld.catatan,
                   'warna_tagline': ld.warna,
                   'shareable': ld.shareable ? 1 : 0,
                   'status': ld.selesai ? 1 : 0,
@@ -741,18 +740,70 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void backDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Apakah Anda yakin ingin keluar dari Aplikasi ?",
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("TIDAK")),
+            ),
+            MaterialButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).primaryColor),
+                  child: Text(
+                    "Exit",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: myDrawer(context),
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            titleHome,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: ((didPop) {
+        if (didPop) {
+          return;
+        }
+        backDialog();
+      }),
+      child: Scaffold(
+          drawer: myDrawer(context),
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).primaryColor,
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Text(
+              titleHome,
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
           ),
-        ),
-        body: _screens[globals.currentIndex]);
+          body: _screens[globals.currentIndex]),
+    );
   }
 }
