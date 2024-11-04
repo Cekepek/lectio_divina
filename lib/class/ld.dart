@@ -116,13 +116,4 @@ class LD {
       (json.decode(lds) as List<dynamic>)
           .map<LD>((item) => LD.fromJsonImport(item))
           .toList();
-  int getId() {
-    int id = 0;
-    globals.MyLd.sort(
-      (a, b) => a.id.compareTo(b.id),
-    );
-    id = globals.MyLd[globals.MyLd.length - 1].id;
-    print(id);
-    return id;
-  }
 }
