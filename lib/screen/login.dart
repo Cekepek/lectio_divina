@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
           main();
         } else {
           setState(() {
-            error_login = "Incorrect user or password";
+            error_login = "Username atau password salah";
           });
         }
       } else {
@@ -124,8 +124,9 @@ class _LoginState extends State<Login> {
             child: Container(
               child: Image(
                   width: MediaQuery.of(context).size.width,
-                  image: AssetImage('assets/images/Logo.png'),
-                  fit: BoxFit.fill),
+                  height: 200,
+                  image: AssetImage('assets/images/new_logo.png'),
+                  fit: BoxFit.contain),
             ),
           ), //CONTAINER UNTUK LOGO
           const Padding(
