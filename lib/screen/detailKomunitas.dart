@@ -244,6 +244,7 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
             id: 0,
             nomor: nomorAyat.toString(),
             nomorPasal: bab.toString(),
+            tipe: "",
             text: "",
             kitab: nama,
             title: "",
