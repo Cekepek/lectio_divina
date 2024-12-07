@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/class/ld.dart';
@@ -170,6 +171,13 @@ class _TambahLdState extends State<TambahLd>
         TambahLd(ldBaru);
         globals.ayatDipilih.clear();
         globals.currentIndex = 1;
+        Fluttertoast.showToast(
+            msg: "Berhasil membuat LD",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -305,6 +313,7 @@ class _TambahLdState extends State<TambahLd>
       'tanggapan': tanggapan,
       'tindakan': tindakan,
       'hashtag': hashtag,
+      'catatan': catatan,
       'warna_tagline': warna,
       'shareable': shareable ? 1 : 0,
       'status': selesai ? 1 : 0,
@@ -431,294 +440,305 @@ class _TambahLdState extends State<TambahLd>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Tambah LD",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        backDialog();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Tambah LD",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+          leading: IconButton(
+            onPressed: () {
+              backDialog();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          onPressed: () {
-            backDialog();
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _showDatePicker,
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.grey, width: 1)),
-                  margin: EdgeInsets.all(8),
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.calendar_month_outlined),
-                      Text(
-                        "   Tanggal : " +
-                            format.format(globals.tanggalTerpilih),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  )),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                controller: controllerJudul,
-                onChanged: (value) {
-                  judul = value;
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Judul atau Topik Bacaan',
-                    hintText: 'Judul Bacaan'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      judul2 = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Topik',
-                        hintText: 'Masukkan topik yang dibahas'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                controller: controller,
-                onChanged: (value) {
-                  ayat = value;
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Ayat yang berkesan',
-                    hintText: 'Masukkan Ayat'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: controllerSabda,
-                    onChanged: (value) {
-                      sabda = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Sabda Tuhan',
-                        hintText: 'Masukkan isi sabda Tuhan'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      sabdaBagiSaya = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Sabda Tuhan bagi saya',
-                        hintText: 'Masukkan sabda Tuhan yang anda rasakan'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      tanggapan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Tanggapan Saya',
-                        hintText: 'Masukkan tanggapan pribadi'),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      tindakan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Tindakan saya',
-                        hintText: 'Masukkan tindakan yang akan saya lakukan'),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            shareable ? shareable = false : shareable = true;
-                          });
-                        },
-                        child: Icon(
-                          shareable
-                              ? Icons.check_box
-                              : Icons.check_box_outline_blank,
-                          size: 24.0,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _showDatePicker,
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: Colors.grey, width: 1)),
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.calendar_month_outlined),
+                        Text(
+                          "   Tanggal : " +
+                              format.format(globals.tanggalTerpilih),
+                          style: TextStyle(fontSize: 16),
                         ),
-                      ),
-                      Text("Share Catatan"),
-                    ],
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      catatan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Catatan',
-                        hintText: 'Masukkan catatan yang ingin anda sampaikan'),
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      hashtag = value;
-                    },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Hashtag',
-                        hintText: 'Masukkan hashtag'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Warna Tagline"),
-                      GestureDetector(
-                        onTap: () {
-                          colorPicker(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Row(children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _selectedColor),
-                              width: 24,
-                              height: 24,
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down,
-                              size: 24.0,
-                            ),
-                          ]),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Sudah Selesai ? "),
-                      Checkbox(
-                        value: selesai,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            selesai = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: GestureDetector(
+                      ],
+                    )),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: TextField(
+                  controller: controllerJudul,
+                  onChanged: (value) {
+                    judul = value;
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Judul atau Topik Bacaan',
+                      hintText: 'Judul Bacaan'),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        judul2 = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Topik',
+                          hintText: 'Masukkan topik yang dibahas'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: TextField(
+                  controller: controller,
+                  onChanged: (value) {
+                    ayat = value;
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Ayat yang berkesan',
+                      hintText: 'Masukkan Ayat'),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      controller: controllerSabda,
+                      onChanged: (value) {
+                        sabda = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Sabda Tuhan',
+                          hintText: 'Masukkan isi sabda Tuhan'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        sabdaBagiSaya = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Sabda Tuhan bagi saya',
+                          hintText: 'Masukkan sabda Tuhan yang anda rasakan'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        tanggapan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Tanggapan Saya',
+                          hintText: 'Masukkan tanggapan pribadi'),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        tindakan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Tindakan saya',
+                          hintText: 'Masukkan tindakan yang akan saya lakukan'),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
                           onTap: () {
-                            simpanClicked == true;
-                            uploadLd();
-                            ldTersimpan();
+                            setState(() {
+                              shareable ? shareable = false : shareable = true;
+                            });
+                          },
+                          child: Icon(
+                            shareable
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank,
+                            size: 24.0,
+                          ),
+                        ),
+                        Text("Share Catatan"),
+                      ],
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        catatan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Catatan',
+                          hintText:
+                              'Masukkan catatan yang ingin anda sampaikan'),
+                    ),
+                    TextField(
+                      onChanged: (value) {
+                        hashtag = value;
+                      },
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Hashtag',
+                          hintText: 'Masukkan hashtag'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Warna Tagline"),
+                        GestureDetector(
+                          onTap: () {
+                            colorPicker(context);
                           },
                           child: Container(
-                            height: 40,
-                            width: double.infinity,
+                            padding: EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Center(
-                              child: Text(
-                                'Simpan',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                                borderRadius: BorderRadius.circular(5),
+                                border:
+                                    Border.all(width: 1, color: Colors.grey)),
+                            child: Row(children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _selectedColor),
+                                width: 24,
+                                height: 24,
+                              ),
+                              Icon(
+                                Icons.arrow_drop_down,
+                                size: 24.0,
+                              ),
+                            ]),
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Sudah Selesai ? "),
+                        Checkbox(
+                          value: selesai,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              selesai = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: GestureDetector(
+                            onTap: () {
+                              simpanClicked == true;
+                              uploadLd();
+                              ldTersimpan();
+                            },
+                            child: Container(
+                              height: 40,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: const Center(
+                                child: Text(
+                                  'Simpan',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -726,80 +746,80 @@ class _TambahLdState extends State<TambahLd>
                         ),
                       ),
                     ),
-                  ),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     setState(() {
-                  //       LD ldBaru = LD(
-                  //           id: globals.MyLd.isEmpty
-                  //               ? 0
-                  //               : globals.MyLd.length - 1,
-                  //           tanggal: globals.tanggalTerpilih.toString(),
-                  //           judul: judul,
-                  //           ayat: ayat,
-                  //           sabda: sabda,
-                  //           tanggapan: tanggapan,
-                  //           tindakan: tindakan,
-                  //           catatan: catatan,
-                  //           hashtag: hashtag,
-                  //           warna: warna);
-                  //       TambahLd(ldBaru);
-                  //       globals.currentIndex = 2;
-                  //       Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => MyHomePage(
-                  //                     title: "Lectio Divina",
-                  //                   )));
-                  //     });
-                  //   },
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         color: Theme.of(context).colorScheme.inversePrimary,
-                  //         borderRadius: BorderRadius.circular(5)),
-                  //     child: Center(
-                  //       child: Text(
-                  //         'Simpan LD',
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //           fontSize: 15,
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     print("p");
-                  //   },
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         border: Border.all(
-                  //             color:
-                  //                 Theme.of(context).colorScheme.inversePrimary),
-                  //         color: Colors.transparent,
-                  //         borderRadius: BorderRadius.circular(5)),
-                  //     child: Center(
-                  //       child: Text(
-                  //         'Bagikan LD',
-                  //         style: TextStyle(
-                  //           color: Theme.of(context).colorScheme.inversePrimary,
-                  //           fontSize: 15,
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     setState(() {
+                    //       LD ldBaru = LD(
+                    //           id: globals.MyLd.isEmpty
+                    //               ? 0
+                    //               : globals.MyLd.length - 1,
+                    //           tanggal: globals.tanggalTerpilih.toString(),
+                    //           judul: judul,
+                    //           ayat: ayat,
+                    //           sabda: sabda,
+                    //           tanggapan: tanggapan,
+                    //           tindakan: tindakan,
+                    //           catatan: catatan,
+                    //           hashtag: hashtag,
+                    //           warna: warna);
+                    //       TambahLd(ldBaru);
+                    //       globals.currentIndex = 2;
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => MyHomePage(
+                    //                     title: "Lectio Divina",
+                    //                   )));
+                    //     });
+                    //   },
+                    //   child: Container(
+                    //     height: 40,
+                    //     width: double.infinity,
+                    //     decoration: BoxDecoration(
+                    //         color: Theme.of(context).colorScheme.inversePrimary,
+                    //         borderRadius: BorderRadius.circular(5)),
+                    //     child: Center(
+                    //       child: Text(
+                    //         'Simpan LD',
+                    //         style: TextStyle(
+                    //           color: Colors.white,
+                    //           fontSize: 15,
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     print("p");
+                    //   },
+                    //   child: Container(
+                    //     height: 40,
+                    //     width: double.infinity,
+                    //     decoration: BoxDecoration(
+                    //         border: Border.all(
+                    //             color:
+                    //                 Theme.of(context).colorScheme.inversePrimary),
+                    //         color: Colors.transparent,
+                    //         borderRadius: BorderRadius.circular(5)),
+                    //     child: Center(
+                    //       child: Text(
+                    //         'Bagikan LD',
+                    //         style: TextStyle(
+                    //           color: Theme.of(context).colorScheme.inversePrimary,
+                    //           fontSize: 15,
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

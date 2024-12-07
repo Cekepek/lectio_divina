@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:lectio_divina/globals.dart' as globals;
 
 class LD {
   int id;
@@ -57,6 +58,7 @@ class LD {
   }
 
   static Map<String, dynamic> toMap(LD ld) => {
+        'version': '1.0.0',
         'id': ld.id,
         'tanggal': ld.tanggal.toString(),
         'judul1': ld.judul,
@@ -82,4 +84,35 @@ class LD {
   static List<LD> decode(String lds) => (json.decode(lds) as List<dynamic>)
       .map<LD>((item) => LD.fromJson(item))
       .toList();
+
+  factory LD.fromJsonImportVersiLama(Map<String, dynamic> jsonData) {
+    return LD(
+        id: -1,
+        tanggal: DateTime.parse(jsonData['Tanggal']),
+        judul: jsonData['Judul'],
+        judul2: '',
+        ayat: jsonData['Bacaan'],
+        sabda: jsonData['Ayat'],
+        sabdaBagiSaya: jsonData['Sabda'],
+        tanggapan: jsonData['Tanggapan'],
+        tindakan: jsonData['Tindakan'],
+        catatan: jsonData['Catatan'],
+        hashtag: jsonData['Tagline'],
+        warna: "Color(" + jsonData['Color'] + ")",
+        shareable: false,
+        selesai: false,
+        user_id: globals.userLogin.id,
+        statusUpload: false);
+  }
+  factory LD.fromJsonImport(Map<String, dynamic> jsonData) {
+    if (jsonData.containsKey('version')) {
+      return LD.fromJson(jsonData);
+    } else {
+      return LD.fromJsonImportVersiLama(jsonData);
+    }
+  }
+  static List<LD> decodeImport(String lds) =>
+      (json.decode(lds) as List<dynamic>)
+          .map<LD>((item) => LD.fromJsonImport(item))
+          .toList();
 }

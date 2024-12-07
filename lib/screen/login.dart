@@ -69,27 +69,34 @@ class _LoginState extends State<Login> {
   //   }
   // }
   void doLogin() async {
-    final response = await api.connectApi(
-        "/login?username=$_user_id&password=$_user_password", "post", null);
-    if (response.status == 200) {
-      if (response.message == 'berhasil') {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString("userLogin", jsonEncode(response.data));
-        final String userLogin =
-            await prefs.getString("userLogin") ?? "GAK ADA";
-        print("LOGIN = $userLogin");
-        setState(() {
-          globals.currentIndex = 0;
-          globals.MyLd.clear();
-        });
-        main();
-      } else {
-        setState(() {
-          error_login = "Incorrect user or password";
-        });
-      }
+    if (_user_id.isEmpty || _user_password.isEmpty) {
+      setState(() {
+        error_login = "Username/Password tidak boleh kosong";
+      });
     } else {
-      throw Exception('Failed to read API');
+      final response = await api.connectApi(
+          "/login?username=$_user_id&password=$_user_password", "post", null);
+      if (response.status == 200) {
+        if (response.message == 'berhasil') {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("userLogin", jsonEncode(response.data));
+          final String userLogin =
+              await prefs.getString("userLogin") ?? "GAK ADA";
+          print("LOGIN = $userLogin");
+          setState(() {
+            globals.currentIndex = 0;
+            titleHome = "Lectio Divina";
+            globals.MyLd.clear();
+          });
+          main();
+        } else {
+          setState(() {
+            error_login = "Incorrect user or password";
+          });
+        }
+      } else {
+        throw Exception('Failed to read API');
+      }
     }
   }
 

@@ -6,7 +6,10 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/model/themeModel.dart';
+import 'package:lectio_divina/screen/about.dart';
+import 'package:lectio_divina/screen/faq.dart';
 import 'package:lectio_divina/screen/login.dart';
+import 'package:lectio_divina/screen/profile.dart';
 import 'package:lectio_divina/screen/settings.dart';
 import 'package:lectio_divina/state_util.dart';
 import 'dart:ui';
@@ -61,7 +64,15 @@ Future<void> main() async {
 Color themeColor = Color.fromRGBO(255, 141, 116, 1);
 String titleHome = "Lectio Divina";
 
-final List<Widget> _screens = [Home(), LDKalender(), Komunitas(), Settings()];
+final List<Widget> _screens = [
+  Home(),
+  LDKalender(),
+  Komunitas(),
+  Settings(),
+  Profile(),
+  About(),
+  Faq()
+];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -128,11 +139,29 @@ class _MyHomePageState extends State<MyHomePage> {
         String? filePath = result.files.single.path;
         final File file = File(filePath!);
         text = await file.readAsString();
-        final List<LD> importedLd = LD.decode(text);
+        final List<LD> importedLd = LD.decodeImport(text);
+        for (LD ld in importedLd) {
+          final body = jsonEncode(LD.toMap(ld));
+          final response2 =
+              await api.connectApi("/lectio_divina", "post", body);
+          if (response2.status == 200) {
+            ld.id = response2.data['id'];
+          }
+        }
         globals.MyLd.addAll(importedLd);
         final prefs = await SharedPreferences.getInstance();
         final String encodedData = LD.encode(globals.MyLd);
         await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+        Fluttertoast.showToast(
+            msg: "LD berhasil di Import",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        setState(() {
+          globals.currentIndex = 0;
+        });
         print(encodedData);
       } catch (e) {
         print("Couldn't read file");
@@ -204,6 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   'tanggapan': ld.tanggapan,
                   'tindakan': ld.tindakan,
                   'hashtag': ld.hashtag,
+                  'catatan': ld.catatan,
                   'warna_tagline': ld.warna,
                   'shareable': ld.shareable ? 1 : 0,
                   'status': ld.selesai ? 1 : 0,
@@ -227,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
             String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
             String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
             final response2 = await api.connectApi(
-                '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+                '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
             final List<LD> listDb = LD.decode(jsonEncode(response2.data));
             ldList.addAll(listDb);
             final prefs = await SharedPreferences.getInstance();
@@ -245,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
           String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["last_date"]));
           final response3 = await api.connectApi(
-              '/lectio_divina/$tanggalAwal/$tanggalAkhir/$id', 'get', null);
+              '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
           if (response3.status == 200) {
             if (response3.data != null) {
               final List<LD> lds = LD.decode(jsonEncode(response3.data));
@@ -422,7 +452,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Image(
                       width: 48,
                       height: 24,
-                      image: AssetImage('assets/images/Logo.png')),
+                      image: AssetImage('assets/images/new_logo.png')),
                   Text(
                     "Lectio Divina",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
@@ -471,13 +501,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                print("ini profile");
-                                //   Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => const MyLogin(),
-                                //     ),
-                                //   );
+                                setState(() {
+                                  titleHome = "Profile";
+                                  globals.currentIndex = 4;
+                                  Navigator.pop(context);
+                                });
                               },
                               child: const Text(
                                 "Lihat Profile",
@@ -661,6 +689,23 @@ class _MyHomePageState extends State<MyHomePage> {
             leading: Icon(CupertinoIcons.exclamationmark_circle,
                 color: Colors.black),
             title: Text(
+              "About",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                titleHome = "About";
+                globals.currentIndex = 5;
+                Navigator.pop(context);
+              });
+            },
+          ),
+          ListTile(
+            leading: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+            title: Text(
               "FAQ",
               style: TextStyle(
                 fontSize: 14,
@@ -668,7 +713,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              print("Ini FAQ");
+              setState(() {
+                titleHome = "FAQ";
+                globals.currentIndex = 6;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
@@ -691,18 +740,70 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void backDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Apakah Anda yakin ingin keluar dari Aplikasi ?",
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("TIDAK")),
+            ),
+            MaterialButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).primaryColor),
+                  child: Text(
+                    "Exit",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: myDrawer(context),
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            titleHome,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: ((didPop) {
+        if (didPop) {
+          return;
+        }
+        backDialog();
+      }),
+      child: Scaffold(
+          drawer: myDrawer(context),
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).primaryColor,
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Text(
+              titleHome,
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
           ),
-        ),
-        body: _screens[globals.currentIndex]);
+          body: _screens[globals.currentIndex]),
+    );
   }
 }

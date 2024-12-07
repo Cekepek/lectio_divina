@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
@@ -24,6 +24,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
 
   DateFormat format = new DateFormat("dd MMMM yyyy", "id_ID");
+  late LD editedLd;
   LD editLd = LD(
       id: 0,
       tanggal: DateTime.now(),
@@ -55,6 +56,17 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   bool selesai = false;
   bool simpanClicked = false;
   bool shareable = false;
+  bool keyboardUsed = false;
+  bool statusUpload = false;
+  FocusNode myFocusNodeJudul = FocusNode();
+  FocusNode myFocusNodeJudul2 = FocusNode();
+  FocusNode myFocusNodeAyat = FocusNode();
+  FocusNode myFocusNodeSabda = FocusNode();
+  FocusNode myFocusNodeSabdaBagiSaya = FocusNode();
+  FocusNode myFocusNodeTanggapan = FocusNode();
+  FocusNode myFocusNodeTindakan = FocusNode();
+  FocusNode myFocusNodeCatatan = FocusNode();
+  FocusNode myFocusNodeHashtag = FocusNode();
 
   @override
   void initState() {
@@ -79,14 +91,37 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     warna =
         Color(int.parse(editLd.warna.split('(0x')[1].split(')')[0], radix: 16));
     selesai = editLd.selesai;
-
+    editedLd = LD(
+        id: editLd.id,
+        tanggal: tanggalLd,
+        judul: judul.text,
+        judul2: judul2.text,
+        ayat: ayat.text,
+        sabda: sabda.text,
+        sabdaBagiSaya: sabdaBagiSaya.text,
+        tanggapan: tanggapan.text,
+        tindakan: tindakan.text,
+        catatan: catatan.text,
+        hashtag: hashtag.text,
+        warna: warna.toString(),
+        shareable: shareable,
+        selesai: selesai,
+        user_id: globals.userLogin.id,
+        statusUpload: statusUpload);
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         editLd.selesai = selesai;
-        EditLd(editLd);
+        EditLd(editedLd);
         globals.ayatDipilih.clear();
+        Fluttertoast.showToast(
+            msg: "LD berhasil di update",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
         globals.currentIndex = 1;
         Navigator.push(
             context,
@@ -136,11 +171,12 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
       'tanggapan': ld.tanggapan,
       'tindakan': ld.tindakan,
       'hashtag': ld.hashtag,
+      'catatan': ld.catatan,
       'warna_tagline': ld.warna,
       'shareable': ld.shareable ? 1 : 0,
       'status': ld.selesai ? 1 : 0,
       'id_user': ld.user_id,
-      'statusUpload': ld.statusUpload,
+      'statusUpload': 1,
     });
     // final response = await http.post(
     //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
@@ -148,7 +184,10 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     final response = await api.connectApi("/updateLectioDivina", "put", body);
     if (response.status == 200) {
       if (response.message == "berhasil") {
-        print("UPLOAD BERHASIL");
+        print("UPLOADED");
+        setState(() {
+          statusUpload = true;
+        });
       }
     } else {
       throw Exception('Failed to read API');
@@ -156,6 +195,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
   }
 
   Future<void> saveLd(List<LD> lds) async {
+    setState(() {
+      globals.MyLd = lds;
+    });
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
     await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
@@ -201,7 +243,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ),
         ),
       );
-  void backDialog() => showDialog(
+  void backDialog() {
+    if (keyboardUsed) {
+      showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
@@ -236,7 +280,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             MaterialButton(
               onPressed: () {
                 Navigator.pop(context);
-                uploadLd(editLd);
+                uploadLd(editedLd);
                 ldTersimpan();
               },
               child: Container(
@@ -255,6 +299,20 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ],
         ),
       );
+    } else {
+      setState(() {
+        globals.ayatDipilih.clear();
+        globals.currentIndex = 1;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MyHomePage(
+                      title: "Lectio Divina",
+                    )));
+      });
+    }
+  }
+
   void _showDatePicker() {
     showDatePicker(
             context: context,
@@ -262,6 +320,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             firstDate: DateTime.utc(2020, 5, 15),
             lastDate: DateTime.utc(2030, 5, 15))
         .then((value) => setState(() {
+              keyboardUsed = true;
               tanggalLd = value!;
               editLd.tanggal = DateTime.utc(
                   value.year,
@@ -294,7 +353,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                       availableColors: _colors,
                       onColorChanged: (color) => setState(() {
                             warna = color;
-                            editLd.warna = color.toString();
+                            editedLd.warna = color.toString();
                           })),
                   Text(
                     'SELECT',
@@ -307,308 +366,409 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ));
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Edit LD",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        if (keyboardUsed) {
+          backDialog();
+        } else {
+          globals.currentIndex = 1;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MyHomePage(
+                        title: "Lectio Divina",
+                      )));
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Edit LD",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+          leading: IconButton(
+            onPressed: () {
+              backDialog();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          onPressed: () {
-            backDialog();
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _showDatePicker,
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.grey, width: 1)),
-                  margin: EdgeInsets.all(8),
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.calendar_month_outlined),
-                      Text(
-                        "   Tanggal : " + format.format(tanggalLd),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  )),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                controller: judul,
-                onChanged: (value) {
-                  judul.text = value;
-                  editLd.judul = value;
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Judul atau Topik Bacaan',
-                    hintText: 'Judul Bacaan'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: judul2,
-                    onChanged: (value) {
-                      judul2.text = value;
-                      editLd.judul2 = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Topik',
-                        hintText: 'Masukkan topik yang dibahas'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: TextField(
-                controller: ayat,
-                onChanged: (value) {
-                  ayat.text = value;
-                  editLd.ayat = value;
-                },
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Ayat yang berkesan',
-                    hintText: 'Masukkan Ayat'),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: sabda,
-                    onChanged: (value) {
-                      sabda.text = value;
-                      editLd.sabda = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Sabda Tuhan',
-                        hintText: 'Masukkan isi sabda Tuhan'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: sabdaBagiSaya,
-                    onChanged: (value) {
-                      sabdaBagiSaya.text = value;
-                      editLd.sabdaBagiSaya = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Sabda Tuhan bagi saya',
-                        hintText: 'Masukkan sabda Tuhan yang anda rasakan'),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: tanggapan,
-                    onChanged: (value) {
-                      tanggapan.text = value;
-                      editLd.tanggapan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Tanggapan Saya',
-                        hintText: 'Masukkan tanggapan pribadi'),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  TextField(
-                    controller: tindakan,
-                    onChanged: (value) {
-                      tindakan.text = value;
-                      editLd.tindakan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Tindakan saya',
-                        hintText: 'Masukkan tindakan yang akan saya lakukan'),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Wrap(
-                runSpacing: 10,
-                spacing: 10,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            shareable ? shareable = false : shareable = true;
-                            editLd.shareable = shareable;
-                          });
-                        },
-                        child: Icon(
-                          shareable
-                              ? Icons.check_box
-                              : Icons.check_box_outline_blank,
-                          size: 24.0,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _showDatePicker,
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: Colors.grey, width: 1)),
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.calendar_month_outlined),
+                        Text(
+                          "   Tanggal : " + format.format(tanggalLd),
+                          style: TextStyle(fontSize: 16),
                         ),
-                      ),
-                      Text("Share Catatan"),
-                    ],
-                  ),
-                  TextField(
-                    controller: catatan,
-                    onChanged: (value) {
-                      catatan.text = value;
-                      editLd.catatan = value;
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 4,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Catatan',
-                        hintText: 'Masukkan catatan yang ingin anda sampaikan'),
-                  ),
-                  TextField(
-                    controller: hashtag,
-                    onChanged: (value) {
-                      hashtag.text = value;
-                      editLd.hashtag = value;
-                    },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Hashtag',
-                        hintText: 'Masukkan hashtag'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Warna Tagline"),
-                      GestureDetector(
-                        onTap: () {
-                          colorPicker(context);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Row(children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: warna),
-                              width: 24,
-                              height: 24,
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down,
-                              size: 24.0,
-                            ),
-                          ]),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Sudah Selesai ? "),
-                      Checkbox(
-                        value: selesai,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            selesai = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: GestureDetector(
+                      ],
+                    )),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: TextField(
+                  focusNode: myFocusNodeJudul,
+                  controller: judul,
+                  onChanged: (value) {
+                    setState(() {
+                      if (myFocusNodeJudul.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
+                      print(keyboardUsed);
+                    });
+                    judul.text = value;
+                    editedLd.judul = value;
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Judul atau Topik Bacaan',
+                      hintText: 'Judul Bacaan'),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      focusNode: myFocusNodeJudul2,
+                      controller: judul2,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeJudul2.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                          print(keyboardUsed);
+                        });
+                        judul2.text = value;
+                        editedLd.judul2 = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Topik',
+                          hintText: 'Masukkan topik yang dibahas'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: TextField(
+                  focusNode: myFocusNodeAyat,
+                  controller: ayat,
+                  onChanged: (value) {
+                    setState(() {
+                      if (myFocusNodeAyat.hasFocus) {
+                        keyboardUsed = true;
+                      } else {
+                        keyboardUsed = false;
+                      }
+                    });
+                    ayat.text = value;
+                    editedLd.ayat = value;
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Ayat yang berkesan',
+                      hintText: 'Masukkan Ayat'),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      focusNode: myFocusNodeSabda,
+                      controller: sabda,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeSabda.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        sabda.text = value;
+                        editedLd.sabda = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Sabda Tuhan',
+                          hintText: 'Masukkan isi sabda Tuhan'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      focusNode: myFocusNodeSabdaBagiSaya,
+                      controller: sabdaBagiSaya,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeSabdaBagiSaya.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        sabdaBagiSaya.text = value;
+                        editedLd.sabdaBagiSaya = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Sabda Tuhan bagi saya',
+                          hintText: 'Masukkan sabda Tuhan yang anda rasakan'),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      focusNode: myFocusNodeTanggapan,
+                      controller: tanggapan,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeTanggapan.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        tanggapan.text = value;
+                        editedLd.tanggapan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Tanggapan Saya',
+                          hintText: 'Masukkan tanggapan pribadi'),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    TextField(
+                      focusNode: myFocusNodeTindakan,
+                      controller: tindakan,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeTindakan.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        tindakan.text = value;
+                        editedLd.tindakan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Tindakan saya',
+                          hintText: 'Masukkan tindakan yang akan saya lakukan'),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  runSpacing: 10,
+                  spacing: 10,
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
                           onTap: () {
-                            simpanClicked == true;
-                            uploadLd(editLd);
-                            ldTersimpan();
+                            setState(() {
+                              keyboardUsed = true;
+                              shareable ? shareable = false : shareable = true;
+                              editedLd.shareable = shareable;
+                            });
+                          },
+                          child: Icon(
+                            shareable
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank,
+                            size: 24.0,
+                          ),
+                        ),
+                        Text("Share Catatan"),
+                      ],
+                    ),
+                    TextField(
+                      focusNode: myFocusNodeCatatan,
+                      controller: catatan,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeCatatan.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        catatan.text = value;
+                        editedLd.catatan = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 4,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Catatan',
+                          hintText:
+                              'Masukkan catatan yang ingin anda sampaikan'),
+                    ),
+                    TextField(
+                      focusNode: myFocusNodeHashtag,
+                      controller: hashtag,
+                      onChanged: (value) {
+                        setState(() {
+                          if (myFocusNodeHashtag.hasFocus) {
+                            keyboardUsed = true;
+                          } else {
+                            keyboardUsed = false;
+                          }
+                        });
+                        hashtag.text = value;
+                        editedLd.hashtag = value;
+                      },
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Hashtag',
+                          hintText: 'Masukkan hashtag'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Warna Tagline"),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              keyboardUsed = true;
+                            });
+                            colorPicker(context);
                           },
                           child: Container(
-                            height: 40,
-                            width: double.infinity,
+                            padding: EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Center(
-                              child: Text(
-                                'Simpan',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                                borderRadius: BorderRadius.circular(5),
+                                border:
+                                    Border.all(width: 1, color: Colors.grey)),
+                            child: Row(children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: warna),
+                                width: 24,
+                                height: 24,
+                              ),
+                              Icon(
+                                Icons.arrow_drop_down,
+                                size: 24.0,
+                              ),
+                            ]),
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Sudah Selesai ? "),
+                        Checkbox(
+                          value: selesai,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              keyboardUsed = true;
+                              selesai = value!;
+                              editedLd.selesai = selesai;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: GestureDetector(
+                            onTap: () {
+                              simpanClicked == true;
+                              uploadLd(editLd);
+                              ldTersimpan();
+                            },
+                            child: Container(
+                              height: 40,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: const Center(
+                                child: Text(
+                                  'Simpan',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -616,11 +776,11 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

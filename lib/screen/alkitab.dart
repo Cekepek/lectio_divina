@@ -291,7 +291,7 @@ class _AlkitabState extends State<Alkitab> {
                   Image(
                       width: 48,
                       height: 24,
-                      image: AssetImage('assets/images/Logo.png')),
+                      image: AssetImage('assets/images/new_logo.png')),
                   Text(
                     "Lectio Divina",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
@@ -346,12 +346,18 @@ class _AlkitabState extends State<Alkitab> {
                             GestureDetector(
                               onTap: () {
                                 print("ini profile");
-                                //   Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => const MyLogin(),
-                                //     ),
-                                //   );
+                                setState(() {
+                                  setState(() {
+                                    titleHome = "Profile";
+                                    globals.currentIndex = 4;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MyHomePage(
+                                                  title: titleHome,
+                                                )));
+                                  });
+                                });
                               },
                               child: const Text(
                                 "Lihat Profile",
@@ -550,6 +556,29 @@ class _AlkitabState extends State<Alkitab> {
             leading: Icon(CupertinoIcons.exclamationmark_circle,
                 color: Colors.black),
             title: Text(
+              "About",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                titleHome = "About";
+                globals.currentIndex = 5;
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: titleHome,
+                            )));
+              });
+            },
+          ),
+          ListTile(
+            leading: Icon(CupertinoIcons.chat_bubble_2, color: Colors.black),
+            title: Text(
               "FAQ",
               style: TextStyle(
                 fontSize: 14,
@@ -557,7 +586,17 @@ class _AlkitabState extends State<Alkitab> {
               ),
             ),
             onTap: () {
-              print("Ini FAQ");
+              setState(() {
+                titleHome = "FAQ";
+                globals.currentIndex = 6;
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePage(
+                              title: titleHome,
+                            )));
+              });
             },
           ),
           ListTile(

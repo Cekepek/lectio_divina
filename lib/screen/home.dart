@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Image(
               width: MediaQuery.of(context).size.width / 2,
-              image: AssetImage('assets/images/Logo.png'),
+              image: AssetImage('assets/images/new_logo.png'),
               fit: BoxFit.fill),
           Text(
             "Selamat Datang di Aplikasi Lectio Divina",
