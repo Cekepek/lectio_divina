@@ -30,47 +30,55 @@ class _HomeState extends State<Home> {
 
   Future<void> readJson() async {
     int idAyat = 0;
-    String kitab = "0";
+    int kitab = 0;
     int index_kitab = -1;
-    String pasal = "0";
+    int pasal = 0;
     int index_pasal = -1;
-    String ayat = "0";
+    int ayat = -1;
     String title = "";
-    final String response = await rootBundle.loadString('assets/json/ayt.json');
+    final String response =
+        await rootBundle.loadString('assets/json/Alkitab.json');
     final data = await json.decode(response);
     setState(() {
       for (var i in data) {
-        if (i["book"] != kitab) {
-          kitab = i["book"];
+        if (i["bookID"] != kitab) {
+          kitab = i["bookID"];
           index_kitab += 1;
-          pasal = "0";
+          pasal = 0;
           index_pasal = -1;
           Kitab temp_kitab = new Kitab(
-              id: index_kitab, singkatan: i["abbr"], nama: "", pasal: []);
+              id: index_kitab,
+              singkatan: i["abbreviation"],
+              nama: i["book"],
+              pasal: []);
           globals.kitab.add(temp_kitab);
         }
         if (i["chapter"] != pasal) {
           pasal = i["chapter"];
           index_pasal += 1;
           Pasal temp_pasal = new Pasal(
-              id: index_pasal, nomor: pasal, id_kitab: index_kitab, ayat: []);
+              id: index_pasal,
+              nomor: pasal.toString(),
+              id_kitab: index_kitab,
+              ayat: []);
           globals.kitab[index_kitab].pasal.add(temp_pasal);
         }
 
         if (i["verse"] != ayat) {
           ayat = i["verse"];
           // COBA SETIAP AYAT NYIMPEN JUDUL
-          if (i["title"] != "") {
-            title = i["title"];
+          if (i["type"] == "t") {
+            title = i["content"];
           }
           idAyat += 1;
           Ayat temp_ayat = new Ayat(
               id: idAyat,
-              nomor: i["verse"],
-              nomorPasal: pasal,
-              text: i["text"],
+              nomor: i["verse"].toString(),
+              nomorPasal: pasal.toString(),
+              tipe: i["type"],
+              text: i["content"],
               kitab: globals.kitab[index_kitab].singkatan,
-              title: i["title"],
+              title: title,
               titleIncluded: title);
           globals.kitab[index_kitab].pasal[index_pasal].ayat.add(temp_ayat);
         }

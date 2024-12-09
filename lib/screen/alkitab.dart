@@ -673,8 +673,8 @@ class _AlkitabState extends State<Alkitab> {
                 // physics: const NeverScrollableScrollPhysics(),
                 // shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  if (globals.kitab[book].pasal[chapter].ayat[index].title !=
-                      "") {
+                  if (globals.kitab[book].pasal[chapter].ayat[index].tipe ==
+                      "t") {
                     return AutoScrollTag(
                       key: ValueKey(index),
                       highlightColor: Colors.blue,
@@ -697,68 +697,6 @@ class _AlkitabState extends State<Alkitab> {
                                 textAlign: TextAlign.center,
                               )),
                             ),
-                            GestureDetector(
-                              child: Container(
-                                color: globals.ayatDipilih.contains(globals
-                                        .kitab[book].pasal[chapter].ayat[index])
-                                    ? Colors.blue
-                                    : null,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text(
-                                        globals.kitab[book].pasal[chapter]
-                                            .ayat[index].nomor,
-                                        style: TextStyle(
-                                          fontSize: fontSizeAyat,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                        child: Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: Text(
-                                        convertSpecialString(convertUnicode(
-                                            globals.kitab[book].pasal[chapter]
-                                                .ayat[index].text)),
-                                        style: TextStyle(
-                                          fontSize: fontSizeAyat,
-                                        ),
-                                      ),
-                                    ))
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  globals.ayatDipilih.remove(globals
-                                      .kitab[book].pasal[chapter].ayat[index]);
-                                });
-                              },
-                              onLongPress: () {
-                                setState(() {
-                                  globals.ayatDipilih.contains(globals
-                                          .kitab[book]
-                                          .pasal[chapter]
-                                          .ayat[index])
-                                      ? globals.ayatDipilih.remove(globals
-                                          .kitab[book]
-                                          .pasal[chapter]
-                                          .ayat[index])
-                                      : globals.ayatDipilih.add(globals
-                                          .kitab[book]
-                                          .pasal[chapter]
-                                          .ayat[index]);
-                                  globals.ayatDipilih
-                                      .sort((a, b) => a.id.compareTo(b.id));
-                                  for (Ayat ayat in globals.ayatDipilih) {
-                                    debugPrint(ayat.id.toString());
-                                  }
-                                });
-                              },
-                            )
                           ],
                         ),
                       ),

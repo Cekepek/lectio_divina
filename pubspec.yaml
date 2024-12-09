@@ -94,6 +94,7 @@ flutter:
     - assets/images/Logo.png
     - assets/images/blank.jpeg
     - assets/json/ayt.json
+    - assets/json/Alkitab.json
     - assets/animations/
     - assets/audio/
   fonts:
