@@ -8,6 +8,7 @@ import 'package:lectio_divina/class/komunitas.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/class/user.dart';
 
+bool sinkronasiSelesai = false;
 List<Kitab> kitab = [];
 List<LD> MyLd = [];
 List<Ayat> ayatDipilih = [];

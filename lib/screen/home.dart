@@ -96,8 +96,9 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width / 2,
               image: AssetImage('assets/images/new_logo.png'),
               fit: BoxFit.fill),
+          globals.sinkronasiSelesai?Container():CircularProgressIndicator(),
           Text(
-            "Selamat Datang di Aplikasi Lectio Divina",
+            globals.sinkronasiSelesai?"Selamat Datang di Aplikasi Lectio Divina":"Sedang Memuat Data",
             style: TextStyle(
               fontSize: 24,
             ),

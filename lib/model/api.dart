@@ -27,7 +27,9 @@ Future<ResponseRequestApi> connectApi(
       return responseRequest;
     }
   } else if (method == "get") {
+    print(urlApi + url);
     final response = await http.get(Uri.parse(urlApi + url));
+    print(response);
     if (response.statusCode == 200) {
       Map json = jsonDecode(response.body);
       ResponseRequestApi responseRequest = ResponseRequestApi(

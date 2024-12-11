@@ -49,8 +49,6 @@ Future<void> main() async {
     if (result == "") {
       runApp(MyLogin());
     } else {
-      WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
       await initializeDateFormatting('id_ID', null).then((_) => runApp(
             ChangeNotifierProvider(
               create: (_) => ThemeModel(),
@@ -128,6 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     FlameAudio.bgm.initialize();
     getSettings();
+    setState(() {
+      globals.sinkronasiSelesai = false;
+    });
     loadLd();
   }
 
@@ -210,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
             "tanggalAkhirApp":
                 DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.last.tanggal),
           };
-          print(tanggalSinkron);
+          print("CEK TANGGAL APP: " + ldList.last.tanggal.toString());
           if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
               .isBefore(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
             for (LD ld in ldList) {
@@ -258,8 +259,10 @@ class _MyHomePageState extends State<MyHomePage> {
             String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
             final response2 = await api.connectApi(
                 '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
+            print('CEK API : /lectio_divina/$tanggalAkhir/$tanggalAwal/$id');
             final List<LD> listDb = LD.decode(jsonEncode(response2.data));
             ldList.addAll(listDb);
+
             final prefs = await SharedPreferences.getInstance();
             final String encodedData = LD.encode(ldList);
             await prefs.setString(
@@ -270,12 +273,17 @@ class _MyHomePageState extends State<MyHomePage> {
             globals.MyLd = ldList;
           });
         } else {
+          print("MASUK INI");
           String tanggalAwal = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["first_date"]));
           String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["last_date"]));
+
+          print("CEK API : '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id'");
           final response3 = await api.connectApi(
               '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
+
+          response3.data == null ? print("IYA NULL") : print("GAK NULL");
           if (response3.status == 200) {
             if (response3.data != null) {
               final List<LD> lds = LD.decode(jsonEncode(response3.data));
@@ -285,14 +293,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   'lds_data_${globals.userLogin.id}', encodedData);
               setState(() {
                 globals.MyLd = lds;
+                print(globals.MyLd.length.toString());
               });
             }
+          } else {
+            throw Exception('Failed to read API');
           }
         }
       } else {
         throw Exception('Failed to read API');
       }
     }
+
+    setState(() {
+      globals.sinkronasiSelesai = true;
+    });
   }
 
   void toastExportLD() {
@@ -588,11 +603,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             onTap: () {
-              // setState(() {
-              //   titleHome = "Komunitas";
-              //   globals.currentIndex = 2;
-              //   Navigator.pop(context);
-              // });
+              setState(() {
+                titleHome = "Komunitas";
+                globals.currentIndex = 2;
+                Navigator.pop(context);
+              });
             },
           ),
           ListTile(
@@ -785,25 +800,24 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
-      onPopInvoked: ((didPop) {
-        if (didPop) {
-          return;
-        }
-        backDialog();
-      }),
-      child: Scaffold(
-          drawer: myDrawer(context),
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            iconTheme: IconThemeData(color: Colors.white),
-            title: Text(
-              titleHome,
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-          ),
-          body: _screens[globals.currentIndex]),
-    );
+        canPop: false,
+        onPopInvoked: ((didPop) {
+          if (didPop) {
+            return;
+          }
+          backDialog();
+        }),
+        child:Scaffold(
+                drawer: myDrawer(context),
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  iconTheme: IconThemeData(color: Colors.white),
+                  title: Text(
+                    titleHome,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+                body: _screens[globals.currentIndex]));
   }
 }
