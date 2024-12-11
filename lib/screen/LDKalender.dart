@@ -365,9 +365,10 @@ class _LDKalenderState extends State<LDKalender> {
                                                               ),
                                                               child: Container(
                                                                 width: 10.0,
-                                                                color: Color(int.parse(value[index]
-                                                                        .warna.replaceFirst('#', ''), radix: 16)
-                                                                    ),
+                                                                color: Color(int
+                                                                    .parse(value[
+                                                                            index]
+                                                                        .warna)),
                                                               ),
                                                             ),
                                                             Expanded(
@@ -660,12 +661,7 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                           ),
                           child: Container(
                             width: 10.0,
-                            color: Color(int.parse(
-                                ldHariIni[index]
-                                    .warna
-                                    .split('(0x')[1]
-                                    .split(')')[0],
-                                radix: 16)),
+                            color: Color(int.parse(ldHariIni[index].warna)),
                           ),
                         ),
                         Expanded(

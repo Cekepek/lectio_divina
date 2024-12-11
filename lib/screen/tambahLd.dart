@@ -106,7 +106,8 @@ class _TambahLdState extends State<TambahLd>
                         availableColors: _colors,
                         onColorChanged: (color) => setState(() {
                               _selectedColor = color;
-                              warna = '#${_selectedColor.value.toRadixString(16).padLeft(8, '0')}';
+                              warna = color.value.toString();
+                              print("WARNA PILIHAN : "+warna);
                             })),
                     Text(
                       'SELECT',
@@ -285,7 +286,7 @@ class _TambahLdState extends State<TambahLd>
     tindakan = "";
     catatan = "";
     hashtag = "";
-    warna = Color.fromRGBO(255, 0, 0, 1).toString();
+    warna = Color.fromRGBO(255, 0, 0, 1).value.toString();
   }
 
   @override

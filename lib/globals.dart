@@ -48,7 +48,7 @@ KomunitasClass komunitasTerpilih = KomunitasClass(id: 0, nama: "", bacaan: [
     tipeBacaan: "",
     bacaan: "",
     tanggal: DateTime.now(),
-    warna: "#ffff0000",
+    warna: Colors.red.value.toString(),
   )
 ]);
 Bacaan bacaanTerpilih = Bacaan(
@@ -67,14 +67,14 @@ List<KomunitasClass> listKomunitas = [
         bacaan: "Kel 24:3-8",
         tanggal: DateTime.utc(
             DateTime.now().year, DateTime.now().month, DateTime.now().day),
-        warna: "#ffff0000"),
+        warna: Colors.red.value.toString()),
     Bacaan(
         id: 2,
         judulBacaan: "Bacaan Liturgi",
         tipeBacaan: "Bacaan I",
         bacaan: "Hos 2:13-15,18-19",
         tanggal: DateTime.utc(2024, 7, 7),
-        warna: "#ffff0000"),
+        warna: Colors.red.value.toString()),
     Bacaan(
         id: 3,
         judulBacaan: "Test Bacaan 1",
@@ -82,7 +82,7 @@ List<KomunitasClass> listKomunitas = [
         bacaan: "Kel 24:3-8",
         tanggal: DateTime.utc(
             DateTime.now().year, DateTime.now().month, DateTime.now().day),
-        warna: "#ffff0000"),
+        warna: Colors.red.value.toString()),
   ]),
   KomunitasClass(id: 2, nama: "Paroki Santo Marinus Yohanes", bacaan: [
     Bacaan(
@@ -91,7 +91,7 @@ List<KomunitasClass> listKomunitas = [
       tipeBacaan: "Bacaan Harian",
       bacaan: "2Ptr 1:1-7",
       tanggal: DateTime.utc(2024, 8, 7),
-      warna: "#FFFF00",
+      warna: Colors.yellow.value.toString(),
     ),
     Bacaan(
       id: 2,
@@ -99,7 +99,7 @@ List<KomunitasClass> listKomunitas = [
       tipeBacaan: "Bacaan Harian",
       bacaan: "2Ptr 1:1-7",
       tanggal: DateTime.utc(2024, 8, 7),
-      warna:"#FFFF00",
+      warna:Colors.yellow.value.toString(),
     )
   ]),
   KomunitasClass(id: 3, nama: "Paroki Santo Yohanes Penginjil", bacaan: [
@@ -109,7 +109,7 @@ List<KomunitasClass> listKomunitas = [
       tipeBacaan: "Bacaan Harian",
       bacaan: "2Tim 2:8-15",
       tanggal: DateTime.now(),
-      warna: "#0000FF",
+      warna: Colors.blue.value.toString(),
     )
   ])
 ];
