@@ -408,12 +408,9 @@ class _ListViewBacaanState extends State<ListViewBacaan> {
                                         ),
                               child: Container(
                                 width: 10.0,
-                                color: Color(int.parse(
-                                    bacaanHariIni[index]
-                                        .warna
-                                        .split('(0x')[1]
-                                        .split(')')[0],
-                                    radix: 16)),
+                                color: Color(int.parse(bacaanHariIni[index]
+                                                                        .warna.replaceFirst('#', ''), radix: 16)
+                                                                    ),
                               ),
                             ),
                             Expanded(

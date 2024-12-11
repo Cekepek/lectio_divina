@@ -106,7 +106,7 @@ class _TambahLdState extends State<TambahLd>
                         availableColors: _colors,
                         onColorChanged: (color) => setState(() {
                               _selectedColor = color;
-                              warna = _selectedColor.toString();
+                              warna = '#${_selectedColor.value.toRadixString(16).padLeft(8, '0')}';
                             })),
                     Text(
                       'SELECT',
