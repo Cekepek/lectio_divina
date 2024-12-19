@@ -98,7 +98,7 @@ class LD {
         tindakan: jsonData['Tindakan'],
         catatan: jsonData['Catatan'],
         hashtag: jsonData['Tagline'],
-        warna: "Color(" + jsonData['Color'] + ")",
+        warna: jsonData['Color'],
         shareable: false,
         selesai: false,
         user_id: globals.userLogin.id,
