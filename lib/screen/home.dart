@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ayat.dart';
 import 'package:lectio_divina/class/kitab.dart';
+import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/class/pasal.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lectio_divina/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,6 +22,139 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Future<void> loadLd() async {
+    int id = globals.userLogin.id;
+    print("ID USER : " + globals.userLogin.id.toString());
+
+    final prefs = await SharedPreferences.getInstance();
+    final String ldsstring =
+        await prefs.getString('lds_data_${globals.userLogin.id}') ?? "";
+    final body = jsonEncode({"id_user": id});
+    print(body);
+    final response =
+        await api.connectApi('/sinkronasi?id_user=$id', 'post', null);
+    if (response.status == 200) {
+      print("MASUK");
+      print(response.data);
+      if (response.message == 'berhasil') {
+        if (ldsstring != "") {
+          final List<LD> ldList = LD.decode(ldsstring);
+          ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
+          Map<String, dynamic> tanggalSinkron = {
+            "tanggalAkhirDb": DateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(DateTime.parse(response.data[0]["first_date"])),
+            "tanggalAkhirApp":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(ldList.last.tanggal),
+          };
+          print("CEK TANGGAL APP: " + ldList.last.tanggal.toString());
+          if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
+              .isBefore(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            for (LD ld in ldList) {
+              print("BANDINGKAN TANGGAL : " +
+                  ld.tanggal.toString() +
+                  ":" +
+                  tanggalSinkron["tanggalAkhirDb"]);
+              if (DateTime.parse(
+                      DateFormat("yyyy-MM-dd HH:mm:ss").format(ld.tanggal))
+                  .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirDb"]))) {
+                final body = jsonEncode({
+                  'id': 0,
+                  'tanggal':
+                      DateFormat('yyyy-MM-dd HH:mm:ss').format(ld.tanggal),
+                  'judul1': ld.judul,
+                  'judul2': ld.judul2,
+                  'ayat': ld.ayat,
+                  'isi_ayat': ld.sabda,
+                  'sabda_tuhan': ld.sabdaBagiSaya,
+                  'tanggapan': ld.tanggapan,
+                  'tindakan': ld.tindakan,
+                  'hashtag': ld.hashtag,
+                  'catatan': ld.catatan,
+                  'warna_tagline': ld.warna,
+                  'shareable': ld.shareable ? 1 : 0,
+                  'status': ld.selesai ? 1 : 0,
+                  'id_user': globals.userLogin.id,
+                  'statusUpload': ld.statusUpload ? 1 : 0,
+                });
+                final response2 =
+                    await api.connectApi("/lectio_divina", "post", body);
+                if (response2.status == 200) {
+                  print("KEUPLOAD ");
+
+                  print(response2.data['id']);
+                  ld.id = response2.data['id'];
+                  setState(() {
+                    globals.sinkronasiSelesai = true;
+                  });
+                } else {
+                  throw Exception('Failed to read API');
+                }
+              }
+            }
+          } else if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
+              .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
+            String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
+            final response2 = await api.connectApi(
+                '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
+            print('CEK API : /lectio_divina/$tanggalAkhir/$tanggalAwal/$id');
+            final List<LD> listDb = LD.decode(jsonEncode(response2.data));
+            ldList.addAll(listDb);
+            if (response2.status == 200) {
+              if (response2.data != null) {
+                final prefs = await SharedPreferences.getInstance();
+                final String encodedData = LD.encode(ldList);
+                await prefs.setString(
+                    'lds_data_${globals.userLogin.id}', encodedData);
+
+                setState(() {
+                  globals.MyLd = ldList;
+                });
+              }
+
+              setState(() {
+                globals.sinkronasiSelesai = true;
+              });
+            } else {
+              throw Exception('Failed to read API');
+            }
+          }
+        } else {
+          print("MASUK INI");
+          String tanggalAwal = DateFormat("yyyy-MM-dd HH:mm:ss")
+              .format(DateTime.parse(response.data[0]["first_date"]));
+          String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")
+              .format(DateTime.parse(response.data[0]["last_date"]));
+
+          print("CEK API : '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id'");
+          final response3 = await api.connectApi(
+              '/lectio_divina/$tanggalAkhir/$tanggalAwal/$id', 'get', null);
+
+          response3.data == null ? print("IYA NULL") : print("GAK NULL");
+          if (response3.status == 200) {
+            if (response3.data != null) {
+              final List<LD> lds = LD.decode(jsonEncode(response3.data));
+              final prefs = await SharedPreferences.getInstance();
+              final String encodedData = LD.encode(lds);
+              await prefs.setString(
+                  'lds_data_${globals.userLogin.id}', encodedData);
+              setState(() {
+                globals.MyLd = lds;
+              });
+            }
+            setState(() {
+              globals.sinkronasiSelesai = true;
+            });
+          } else {
+            throw Exception('Failed to read API');
+          }
+        }
+      } else {
+        throw Exception('Failed to read API');
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,6 +163,8 @@ class _HomeState extends State<Home> {
       readJson();
       FlutterNativeSplash.remove();
     }
+    globals.sinkronasiSelesai = false;
+    loadLd();
   }
 
   Future<void> readJson() async {
@@ -96,9 +235,11 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width / 2,
               image: AssetImage('assets/images/new_logo.png'),
               fit: BoxFit.fill),
-          globals.sinkronasiSelesai?Container():CircularProgressIndicator(),
+          globals.sinkronasiSelesai ? Container() : CircularProgressIndicator(),
           Text(
-            globals.sinkronasiSelesai?"Selamat Datang di Aplikasi Lectio Divina":"Sedang Memuat Data",
+            globals.sinkronasiSelesai
+                ? "Selamat Datang di Aplikasi Lectio Divina"
+                : "Sedang Memuat Data",
             style: TextStyle(
               fontSize: 24,
             ),

@@ -6,8 +6,8 @@ class LD {
   DateTime tanggal;
   String judul = "";
   String judul2 = "";
-  String ayat = "";
-  String sabda = "";
+  String ayat = ""; // Perubahan nama jadi Ayat Bacaan
+  String sabda = ""; //Perubahan nama jadi Ayat yang berkesan
   String sabdaBagiSaya = "";
   String tanggapan = "";
   String tindakan = "";

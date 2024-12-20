@@ -107,7 +107,7 @@ class _TambahLdState extends State<TambahLd>
                         onColorChanged: (color) => setState(() {
                               _selectedColor = color;
                               warna = color.value.toString();
-                              print("WARNA PILIHAN : "+warna);
+                              print("WARNA PILIHAN : " + warna);
                             })),
                     Text(
                       'SELECT',
@@ -535,8 +535,8 @@ class _TambahLdState extends State<TambahLd>
                   },
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Ayat yang berkesan',
-                      hintText: 'Masukkan Ayat'),
+                      labelText: 'Ayat Bacaan',
+                      hintText: 'Masukkan Ayat Bacaan'),
                 ),
               ),
               Padding(
@@ -555,8 +555,8 @@ class _TambahLdState extends State<TambahLd>
                       minLines: 4,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Sabda Tuhan',
-                          hintText: 'Masukkan isi sabda Tuhan'),
+                          labelText: 'Ayat yang berkesan',
+                          hintText: 'Masukkan Ayat yang Berkesan'),
                     )
                   ],
                 ),

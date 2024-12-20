@@ -17,6 +17,7 @@ String tesUsername = "tes";
 String tesPassword = "tes";
 User userLogin = User(id: 0, username: "", password: "", name: "", foto: "");
 Color colorTheme = Color.fromRGBO(255, 141, 116, 1);
+//Kalau false-> Nyala, kalau true-> Mati
 bool backgroundMusic = true;
 bool autoJudul = true;
 //kalau true -> bold, kalau false-> normal
@@ -99,7 +100,7 @@ List<KomunitasClass> listKomunitas = [
       tipeBacaan: "Bacaan Harian",
       bacaan: "2Ptr 1:1-7",
       tanggal: DateTime.utc(2024, 8, 7),
-      warna:Colors.yellow.value.toString(),
+      warna: Colors.yellow.value.toString(),
     )
   ]),
   KomunitasClass(id: 3, nama: "Paroki Santo Yohanes Penginjil", bacaan: [

@@ -55,8 +55,8 @@ class _PilihAyatState extends State<PilihAyat> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(right: 5),
-                                    child: Text(
-                                        globals.kitab[widget.kitab].singkatan),
+                                    child:
+                                        Text(globals.kitab[widget.kitab].nama),
                                   ),
                                   GestureDetector(
                                     child: Icon(

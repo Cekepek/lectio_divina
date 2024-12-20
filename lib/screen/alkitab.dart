@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -21,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lectio_divina/model/api.dart' as api;
 
 class Alkitab extends StatefulWidget {
   const Alkitab({super.key});
@@ -264,11 +266,29 @@ class _AlkitabState extends State<Alkitab> {
         String? filePath = result.files.single.path;
         final File file = File(filePath!);
         text = await file.readAsString();
-        final List<LD> importedLd = LD.decode(text);
+        final List<LD> importedLd = LD.decodeImport(text);
+        for (LD ld in importedLd) {
+          final body = jsonEncode(LD.toMap(ld));
+          final response2 =
+              await api.connectApi("/lectio_divina", "post", body);
+          if (response2.status == 200) {
+            ld.id = response2.data['id'];
+          }
+        }
         globals.MyLd.addAll(importedLd);
         final prefs = await SharedPreferences.getInstance();
         final String encodedData = LD.encode(globals.MyLd);
         await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+        Fluttertoast.showToast(
+            msg: "LD berhasil di Import",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        setState(() {
+          globals.currentIndex = 0;
+        });
         print(encodedData);
       } catch (e) {
         print("Couldn't read file");
