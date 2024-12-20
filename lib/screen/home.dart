@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
             }
           }
         } else {
-          print("MASUK INI");
+          //Error KALAU APP DAN DB TIDAK ADA ISI
           String tanggalAwal = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["first_date"]));
           String tanggalAkhir = DateFormat("yyyy-MM-dd HH:mm:ss")

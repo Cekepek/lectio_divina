@@ -136,19 +136,49 @@ class _MyHomePageState extends State<MyHomePage> {
         String? filePath = result.files.single.path;
         final File file = File(filePath!);
         text = await file.readAsString();
+        String cekVersi = LD.cekVersi(text);
         final List<LD> importedLd = LD.decodeImport(text);
-        for (LD ld in importedLd) {
-          final body = jsonEncode(LD.toMap(ld));
-          final response2 =
-              await api.connectApi("/lectio_divina", "post", body);
-          if (response2.status == 200) {
-            ld.id = response2.data['id'];
+        if (cekVersi == "Lama") {
+          String action = "";
+          for (LD ldTersimpan in globals.MyLd) {
+            for (LD ldImport in importedLd) {
+              if (ldImport.sabdaBagiSaya == ldTersimpan.sabdaBagiSaya) {
+                if (action == "") {
+                  action = await importSamaDialog();
+                }
+              }
+            }
           }
+          if (action == "tambah") {
+            for (LD ld in importedLd) {
+              final body = jsonEncode(LD.toMap(ld));
+              final response2 =
+                  await api.connectApi("/lectio_divina", "post", body);
+              if (response2.status == 200) {
+                ld.id = response2.data['id'];
+              }
+            }
+            globals.MyLd.addAll(importedLd);
+            final prefs = await SharedPreferences.getInstance();
+            final String encodedData = LD.encode(globals.MyLd);
+            await prefs.setString(
+                'lds_data_${globals.userLogin.id}', encodedData);
+          }
+        } else {
+          for (LD ld in importedLd) {
+            final body = jsonEncode(LD.toMap(ld));
+            final response2 =
+                await api.connectApi("/lectio_divina", "post", body);
+            if (response2.status == 200) {
+              ld.id = response2.data['id'];
+            }
+          }
+          globals.MyLd.addAll(importedLd);
+          final prefs = await SharedPreferences.getInstance();
+          final String encodedData = LD.encode(globals.MyLd);
+          await prefs.setString(
+              'lds_data_${globals.userLogin.id}', encodedData);
         }
-        globals.MyLd.addAll(importedLd);
-        final prefs = await SharedPreferences.getInstance();
-        final String encodedData = LD.encode(globals.MyLd);
-        await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
         Fluttertoast.showToast(
             msg: "LD berhasil di Import",
             toastLength: Toast.LENGTH_SHORT,
@@ -159,7 +189,6 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           globals.currentIndex = 0;
         });
-        print(encodedData);
       } catch (e) {
         print("Couldn't read file");
       }
@@ -241,6 +270,53 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ));
+  Future<String> importSamaDialog() async {
+    String tambah = "tidak";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'LD sudah ada, apakah Anda ingin tetap menambahkan ?',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              tambah = "tidak";
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1, color: Colors.black),
+                ),
+                child: Text("TIDAK")),
+          ),
+          MaterialButton(
+            onPressed: () {
+              tambah = "tambah";
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // border: Border.all(width: 1, color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
+                child: Text(
+                  "YA",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
+    return tambah;
+  }
 
   void exportDialog() => showDialog(
         context: context,
@@ -285,6 +361,48 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 
+  void importDialogFileLama() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            'Apakah Anda ingin melakukan export data ? tekan "Ya" kemudian pilihlah folder yang ingin Anda gunakan untuk menyimpan!',
+            textAlign: TextAlign.center,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  child: Text("TIDAK")),
+            ),
+            MaterialButton(
+              onPressed: () {
+                pickDirectoryPath();
+                Navigator.pop(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(width: 1, color: Colors.grey),
+                      color: Theme.of(context).primaryColor),
+                  child: Text(
+                    "YA",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      );
 
   Future<void> saveTheme() async {
     final prefs = await SharedPreferences.getInstance();

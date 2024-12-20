@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
 class LD {
@@ -115,4 +116,17 @@ class LD {
       (json.decode(lds) as List<dynamic>)
           .map<LD>((item) => LD.fromJsonImport(item))
           .toList();
+
+  static String cekVersi(String lds) {
+    final decodedJson = json.decode(lds) as List<dynamic>;
+    String versi = "";
+    for (var item in decodedJson) {
+      if (item is Map<String, dynamic> && item.containsKey('version')) {
+        versi = "Baru";
+      } else {
+        versi = "Lama";
+      }
+    }
+    return versi;
+  }
 }
