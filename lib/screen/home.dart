@@ -33,12 +33,14 @@ class _HomeState extends State<Home> {
     print(body);
     final response =
         await api.connectApi('/sinkronasi?id_user=$id', 'post', null);
+
     if (response.status == 200) {
-      print("MASUK");
-      print(response.data);
+      print((response.data as List).isEmpty);
       if (response.message == 'berhasil') {
-        if (ldsstring != "") {
+        if (ldsstring != "" && (response.data as List).isNotEmpty) {
+          print("MASUK SINI DULU");
           final List<LD> ldList = LD.decode(ldsstring);
+          print(ldList.length);
           ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
           Map<String, dynamic> tanggalSinkron = {
             "tanggalAkhirDb": DateFormat("yyyy-MM-dd HH:mm:ss")
@@ -49,11 +51,12 @@ class _HomeState extends State<Home> {
           print("CEK TANGGAL APP: " + ldList.last.tanggal.toString());
           if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
               .isBefore(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            print("MASUK 1");
             for (LD ld in ldList) {
-              print("BANDINGKAN TANGGAL : " +
-                  ld.tanggal.toString() +
-                  ":" +
-                  tanggalSinkron["tanggalAkhirDb"]);
+              // print("BANDINGKAN TANGGAL : " +
+              //     ld.tanggal.toString() +
+              //     ":" +
+              //     tanggalSinkron["tanggalAkhirDb"]);
               if (DateTime.parse(
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(ld.tanggal))
                   .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirDb"]))) {
@@ -83,8 +86,10 @@ class _HomeState extends State<Home> {
 
                   print(response2.data['id']);
                   ld.id = response2.data['id'];
+
                   setState(() {
                     globals.sinkronasiSelesai = true;
+                    globals.MyLd = ldList;
                   });
                 } else {
                   throw Exception('Failed to read API');
@@ -93,6 +98,7 @@ class _HomeState extends State<Home> {
             }
           } else if (DateTime.parse(tanggalSinkron["tanggalAkhirDb"])
               .isAfter(DateTime.parse(tanggalSinkron["tanggalAkhirApp"]))) {
+            print("MASUK 2");
             String tanggalAwal = tanggalSinkron["tanggalAkhirDb"];
             String tanggalAkhir = tanggalSinkron["tanggalAkhirApp"];
             final response2 = await api.connectApi(
@@ -118,8 +124,19 @@ class _HomeState extends State<Home> {
             } else {
               throw Exception('Failed to read API');
             }
+          } else {
+            setState(() {
+              globals.MyLd = ldList;
+              globals.sinkronasiSelesai = true;
+            });
           }
-        } else {
+        } else if (ldsstring == "" && (response.data as List).isEmpty) {
+          print("MASUK 3");
+          setState(() {
+            globals.sinkronasiSelesai = true;
+          });
+        } else if (ldsstring == "" && (response.data as List).isNotEmpty) {
+          print("MASUK 4");
           //Error KALAU APP DAN DB TIDAK ADA ISI
           String tanggalAwal = DateFormat("yyyy-MM-dd HH:mm:ss")
               .format(DateTime.parse(response.data[0]["first_date"]));
@@ -148,6 +165,44 @@ class _HomeState extends State<Home> {
           } else {
             throw Exception('Failed to read API');
           }
+        } else if (ldsstring != "" && (response.data as List).isEmpty) {
+          print("MASUK 5");
+          final List<LD> ldList = LD.decode(ldsstring);
+          ldList.sort((a, b) => a.tanggal.compareTo(b.tanggal));
+          for (LD ld in ldList) {
+            final body = jsonEncode({
+              'id': 0,
+              'tanggal': DateFormat('yyyy-MM-dd HH:mm:ss').format(ld.tanggal),
+              'judul1': ld.judul,
+              'judul2': ld.judul2,
+              'ayat': ld.ayat,
+              'isi_ayat': ld.sabda,
+              'sabda_tuhan': ld.sabdaBagiSaya,
+              'tanggapan': ld.tanggapan,
+              'tindakan': ld.tindakan,
+              'hashtag': ld.hashtag,
+              'catatan': ld.catatan,
+              'warna_tagline': ld.warna,
+              'shareable': ld.shareable ? 1 : 0,
+              'status': ld.selesai ? 1 : 0,
+              'id_user': globals.userLogin.id,
+              'statusUpload': ld.statusUpload ? 1 : 0,
+            });
+            final response2 =
+                await api.connectApi("/lectio_divina", "post", body);
+            if (response2.status == 200) {
+              print("KEUPLOAD ");
+
+              print(response2.data['id']);
+              ld.id = response2.data['id'];
+              setState(() {
+                globals.sinkronasiSelesai = true;
+                globals.MyLd = ldList;
+              });
+            } else {
+              throw Exception('Failed to read API');
+            }
+          }
         }
       } else {
         throw Exception('Failed to read API');
@@ -163,8 +218,9 @@ class _HomeState extends State<Home> {
       readJson();
       FlutterNativeSplash.remove();
     }
-    globals.sinkronasiSelesai = false;
-    loadLd();
+    if (!globals.sinkronasiSelesai) {
+      loadLd();
+    }
   }
 
   Future<void> readJson() async {

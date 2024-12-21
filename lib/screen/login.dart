@@ -55,6 +55,7 @@ class _LoginState extends State<Login> {
     error_login = "";
 
     isObscured = true;
+    globals.sinkronasiSelesai = false;
   }
 
   // void doLogin() {
