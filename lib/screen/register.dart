@@ -41,6 +41,8 @@ class _RegisterState extends State<Register> {
   late String name;
   late String repeat_password;
   late String error_register;
+  TextEditingController email = TextEditingController();
+  TextEditingController noHp = TextEditingController();
 
   @override
   void initState() {
@@ -66,7 +68,9 @@ class _RegisterState extends State<Register> {
           'username': username,
           'password': password,
           'nama': name,
-          'foto': ""
+          'foto': "",
+          'email': email.text,
+          'no_hp': noHp.text,
         });
         final response = await api.connectApi("/user", "post", body);
         if (response.status == 200) {
@@ -164,6 +168,36 @@ class _RegisterState extends State<Register> {
                       border: OutlineInputBorder(),
                       labelText: 'Nama',
                       hintText: 'Masukkan nama anda'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: email,
+                  onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                      hintText: 'Masukkan Email anda'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: noHp,
+                  onChanged: (value) {
+                    setState(() {
+                      error_register = "";
+                    });
+                  },
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'No Handphone',
+                      hintText: 'Masukkan no HP anda'),
                 ),
               ),
               Padding(
