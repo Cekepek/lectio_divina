@@ -5,23 +5,23 @@
 // import 'package:lectio_divina/globals.dart' as globals;
 // import 'package:lectio_divina/screen/login.dart';
 
-// // class Emaillupapassword extends StatelessWidget {
-// //   const Emaillupapassword({super.key});
+// // // class Emaillupapassword extends StatelessWidget {
+// // //   const Emaillupapassword({super.key});
 
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return MaterialApp(
-// //       title: 'LECTIO DIVINA',
-// //       theme: ThemeData(
-// //         fontFamily: "Poppins",
-// //         primaryColor: globals.colorTheme,
-// //         colorScheme: ColorScheme.fromSeed(seedColor: globals.colorTheme),
-// //         useMaterial3: true,
-// //       ),
-// //       home: const EmailLupaPasswordState(),
-// //     );
-// //   }
-// // }
+// // //   @override
+// // //   Widget build(BuildContext context) {
+// // //     return MaterialApp(
+// // //       title: 'LECTIO DIVINA',
+// // //       theme: ThemeData(
+// // //         fontFamily: "Poppins",
+// // //         primaryColor: globals.colorTheme,
+// // //         colorScheme: ColorScheme.fromSeed(seedColor: globals.colorTheme),
+// // //         useMaterial3: true,
+// // //       ),
+// // //       home: const EmailLupaPasswordState(),
+// // //     );
+// // //   }
+// // // }
 
 // class EmailLupaPassword extends StatefulWidget {
 //   const EmailLupaPassword({super.key});
@@ -47,7 +47,7 @@
 //         appBar: AppBar(
 //           centerTitle: true,
 //           title: Text(
-//             'Register',
+//             'Lupa Password',
 //             style: TextStyle(
 //                 fontFamily: 'Poppins',
 //                 fontWeight: FontWeight.bold,
