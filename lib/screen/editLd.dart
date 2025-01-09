@@ -88,8 +88,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     catatan.text = editLd.catatan;
     hashtag.text = editLd.hashtag;
     shareable = editLd.shareable;
-    warna =
-        Color(int.parse(editLd.warna.split('(0x')[1].split(')')[0], radix: 16));
+    warna = Color(int.parse(editLd.warna));
     selesai = editLd.selesai;
     editedLd = LD(
         id: editLd.id,
