@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/screen/emailLupaPassword.dart';
 import 'package:lectio_divina/screen/register.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -208,7 +209,14 @@ class _LoginState extends State<Login> {
           Padding(
             padding: const EdgeInsets.only(right: 10, bottom: 10),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EmailLupaPassword(),
+                  ),
+                );
+              },
               child: Container(
                 child: const Align(
                   alignment: Alignment.centerRight,
