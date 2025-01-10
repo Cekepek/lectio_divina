@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 
 class LD {
