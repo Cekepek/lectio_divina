@@ -50,6 +50,7 @@ dependencies:
   flame_audio: ^2.10.1
   http: ^1.2.1
   flutter_native_splash: ^2.2.16
+  flex_color_picker: ^3.6.0
   
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/model/api.dart' as api;
+import 'package:flex_color_picker/flex_color_picker.dart' as ColorPicker;
 
 class TambahLd extends StatefulWidget {
   const TambahLd({super.key});
@@ -30,8 +31,11 @@ class _TambahLdState extends State<TambahLd>
   TextEditingController controllerSabda = TextEditingController(text: "");
   TextEditingController controllerJudul = TextEditingController(text: "");
   late AnimationController animationController;
+  late Color screenPickerColor;
+  late Color dialogPickerColor;
+  late Color dialogSelectColor;
 
-  Color _selectedColor = Color.fromRGBO(255, 0, 0, 1);
+  // Color _selectedColor = Color.fromRGBO(255, 0, 0, 1);
   late String judul;
   late String judul2;
   late String ayat;
@@ -96,28 +100,70 @@ class _TambahLdState extends State<TambahLd>
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Pick Your Color'),
-              content: TextButton(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    BlockPicker(
-                        pickerColor: _selectedColor,
-                        availableColors: _colors,
-                        onColorChanged: (color) => setState(() {
-                              _selectedColor = color;
-                              warna = color.value.toString();
-                              print("WARNA PILIHAN : " + warna);
-                            })),
-                    Text(
-                      'SELECT',
-                      style: TextStyle(fontSize: 20),
+                content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  child: ColorPicker.ColorPicker(
+                    enableShadesSelection: false,
+                    // Use the screenPickerColor as start and active color.
+                    color: screenPickerColor,
+                    // Update the screenPickerColor using the callback.
+                    onColorChanged: (Color color) => setState(() {
+                      screenPickerColor = color;
+                      print(screenPickerColor.value.toString());
+                    }),
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    heading: Text(
+                      'Pilih Warna',
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                  ],
+                  ),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ));
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).primaryColor),
+                        child: Text(
+                          "OK",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  ),
+                )
+              ],
+            )
+                // TextButton(
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       BlockPicker(
+                //           pickerColor: _selectedColor,
+                //           availableColors: _colors,
+                //           onColorChanged: (color) => setState(() {
+                //                 _selectedColor = color;
+                //                 warna = color.value.toString();
+                //                 print("WARNA PILIHAN : " + warna);
+                //               })),
+                //       Text(
+                //         'SELECT',
+                //         style: TextStyle(fontSize: 20),
+                //       ),
+                //     ],
+                //   ),
+                //   onPressed: () => Navigator.of(context).pop(),
+                // ),
+                ));
   }
 
   void _showDatePicker() {
@@ -148,6 +194,10 @@ class _TambahLdState extends State<TambahLd>
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    screenPickerColor = Colors.blue; // Material blue.
+    dialogPickerColor = Colors.red; // Material red.
+    dialogSelectColor = const Color(0xFFA239CA); // A purple color.
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
     animationController.addStatusListener((status) async {
@@ -164,7 +214,7 @@ class _TambahLdState extends State<TambahLd>
             tindakan: tindakan,
             catatan: catatan,
             hashtag: hashtag,
-            warna: warna,
+            warna: screenPickerColor.value.toString(),
             shareable: shareable,
             selesai: selesai,
             user_id: globals.userLogin.id,
@@ -688,7 +738,7 @@ class _TambahLdState extends State<TambahLd>
                               Container(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _selectedColor),
+                                    color: screenPickerColor),
                                 width: 24,
                                 height: 24,
                               ),

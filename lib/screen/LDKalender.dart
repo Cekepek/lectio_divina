@@ -382,6 +382,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                         .start,
                                                                 children: [
                                                                   Text(
+                                                                    
                                                                     value[index].judul !=
                                                                             ""
                                                                         ? value[index]

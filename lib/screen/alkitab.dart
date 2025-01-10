@@ -140,12 +140,199 @@ class _AlkitabState extends State<Alkitab> {
             ));
   }
 
+  Future<void> importLd() async {
+    bool validation = await importDialog();
+    int jumlahSama = 0;
+    int jumlahLd = 0;
+    String text;
+    bool validationFileLama = false;
+    ValueNotifier<int> ldTerimport = ValueNotifier<int>(0);
+    if (validation) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      if (result != null) {
+        try {
+          String? filePath = result.files.single.path;
+          final File file = File(filePath!);
+          text = await file.readAsString();
+          String cekVersi = LD.cekVersi(text);
+          final List<LD> importedLd = LD.decodeImport(text);
+          jumlahLd = importedLd.length;
+          if (cekVersi == "Lama") {
+            validationFileLama = await importDialogFileLama();
+          }
+          if (validationFileLama || cekVersi == "Baru") {
+            String action = "";
+            bool sama = false;
+            for (LD ldImport in importedLd) {
+              for (LD ldTersimpan in globals.MyLd) {
+                if (ldImport.sabdaBagiSaya == ldTersimpan.sabdaBagiSaya &&
+                    ldImport.catatan == ldTersimpan.catatan &&
+                    ldImport.ayat == ldTersimpan.ayat) {
+                  jumlahSama += 1;
+                  print(jumlahSama);
+                  sama = true;
+                  break;
+                }
+              }
+            }
+            if (sama == true && action == "") {
+              action = await importSamaDialog(jumlahSama, jumlahLd);
+            }
+            if (!sama) {
+              progressDialog(context, ldTerimport, jumlahLd);
+              for (LD ld in importedLd) {
+                final body = jsonEncode(LD.toMap(ld));
+                final response2 =
+                    await api.connectApi("/lectio_divina", "post", body);
+                if (response2.status == 200) {
+                  ld.id = response2.data['id'];
+                }
+                ldTerimport.value++;
+              }
+              globals.MyLd.addAll(importedLd);
+              final prefs = await SharedPreferences.getInstance();
+              final String encodedData = LD.encode(globals.MyLd);
+              await prefs.setString(
+                  'lds_data_${globals.userLogin.id}', encodedData);
+
+              if (ldTerimport.value == jumlahLd) {
+                Navigator.of(context).pop();
+              }
+              toastImportLD();
+            } else {
+              if (action == "tambah") {
+                ValueNotifier<int> ldTerimport = ValueNotifier<int>(0);
+                progressDialog(context, ldTerimport, jumlahLd);
+                for (LD ld in importedLd) {
+                  final body = jsonEncode(LD.toMap(ld));
+                  final response2 =
+                      await api.connectApi("/lectio_divina", "post", body);
+                  if (response2.status == 200) {
+                    ld.id = response2.data['id'];
+                  }
+                  ldTerimport.value += 1;
+                  if (ldTerimport.value == jumlahLd) {
+                    Navigator.of(context).pop();
+                  }
+                }
+                globals.MyLd.addAll(importedLd);
+                final prefs = await SharedPreferences.getInstance();
+                final String encodedData = LD.encode(globals.MyLd);
+                await prefs.setString(
+                    'lds_data_${globals.userLogin.id}', encodedData);
+
+                toastImportLD();
+              } else if (action == "tidak") {
+                List<LD> ldUpload = [];
+
+                ValueNotifier<int> ldTerimport = ValueNotifier<int>(0);
+
+                progressDialog(context, ldTerimport, jumlahLd - jumlahSama);
+                for (LD ld in importedLd) {
+                  bool ldSama = false;
+                  for (LD ldTersimpan in globals.MyLd) {
+                    if (ld.sabdaBagiSaya == ldTersimpan.sabdaBagiSaya &&
+                        ld.catatan == ldTersimpan.catatan &&
+                        ld.ayat == ldTersimpan.ayat) {
+                      ldSama = true;
+                      break;
+                    }
+                  }
+                  if (!ldSama) {
+                    final body = jsonEncode(LD.toMap(ld));
+                    final response2 =
+                        await api.connectApi("/lectio_divina", "post", body);
+                    if (response2.status == 200) {
+                      ld.id = response2.data['id'];
+                    }
+                    ldUpload.add(ld);
+                    ldTerimport.value++;
+                  }
+                }
+                globals.MyLd.addAll(ldUpload);
+                final prefs = await SharedPreferences.getInstance();
+                final String encodedData = LD.encode(globals.MyLd);
+                await prefs.setString(
+                    'lds_data_${globals.userLogin.id}', encodedData);
+                if (ldTerimport.value == jumlahLd - jumlahSama) {
+                  Navigator.of(context).pop();
+                }
+                toastImportLD();
+              }
+            }
+          }
+          setState(() {
+            globals.currentIndex = 0;
+          });
+        } catch (e) {
+          print("Couldn't read file");
+        }
+      } else {}
+    }
+  }
+
+  Future<void> progressDialog(BuildContext context,
+      ValueNotifier<int> jumlahImport, int totalImport) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Sedang mengimport data LD", textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+            ValueListenableBuilder<int>(
+              valueListenable: jumlahImport,
+              builder: (context, value, child) {
+                return Text("$value/$totalImport");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> pickDirectoryPath() async {
+    directoryPath = await FilePicker.platform.getDirectoryPath();
+
+    if (directoryPath != null) {
+      print("Path direktori yang dipilih: $directoryPath");
+      namaFileDialog();
+    } else {}
+  }
+
   Future<void> exportFile(String namaFile) async {
     final File file = File('$directoryPath/$namaFile.txt');
     String text = LD.encode(globals.MyLd);
     print(text);
     await file.writeAsString(text);
     toastExportLD();
+  }
+
+  void toastExportLD() {
+    Fluttertoast.showToast(
+      msg: "File LD berhasil export",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black54,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  void toastImportLD() {
+    Fluttertoast.showToast(
+        msg: "LD berhasil di Import",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   void namaFileDialog() => showDialog(
@@ -194,13 +381,100 @@ class _AlkitabState extends State<Alkitab> {
               ),
             ],
           ));
-  Future<void> pickDirectoryPath() async {
-    directoryPath = await FilePicker.platform.getDirectoryPath();
 
-    if (directoryPath != null) {
-      print("Path direktori yang dipilih: $directoryPath");
-      namaFileDialog();
-    } else {}
+  Future<String> importSamaDialog(int jumlahSama, int jumlahLd) async {
+    String tambah = "tidak";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Terdapat $jumlahSama dari $jumlahLd LD yang ingin diimport sama, apakah Anda ingin tetap menambahkan LD tersebut ?',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              tambah = "tidak";
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1, color: Colors.black),
+                ),
+                child: Text("TIDAK")),
+          ),
+          MaterialButton(
+            onPressed: () {
+              tambah = "tambah";
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // border: Border.all(width: 1, color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
+                child: Text(
+                  "YA",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
+    return tambah;
+  }
+
+  Future<bool> importDialog() async {
+    bool validation = false;
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Apakah Anda ingin melakukan import data ? tekan "Ya" kemudian pilihlah file yang ingin Anda import!',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1, color: Colors.black),
+                ),
+                child: Text("TIDAK")),
+          ),
+          MaterialButton(
+            onPressed: () {
+              validation = true;
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // border: Border.all(width: 1, color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
+                child: Text(
+                  "YA",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
+    return validation;
   }
 
   void exportDialog() => showDialog(
@@ -246,54 +520,51 @@ class _AlkitabState extends State<Alkitab> {
         ),
       );
 
-  void toastExportLD() {
-    Fluttertoast.showToast(
-      msg: "File LD berhasil export",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black54,
-      textColor: Colors.white,
-      fontSize: 16.0,
+  Future<bool> importDialogFileLama() async {
+    bool validation = false;
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'File LD merupakan file dari aplikasi versi lama, apakah Anda ingin mengimport ?',
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(width: 1, color: Colors.black),
+                ),
+                child: Text("TIDAK")),
+          ),
+          MaterialButton(
+            onPressed: () {
+              validation = true;
+              Navigator.pop(context);
+            },
+            child: Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // border: Border.all(width: 1, color: Colors.grey),
+                    color: Theme.of(context).primaryColor),
+                child: Text(
+                  "YA",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ),
+        ],
+      ),
     );
-  }
-
-  Future<void> importLd() async {
-    String text;
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      try {
-        String? filePath = result.files.single.path;
-        final File file = File(filePath!);
-        text = await file.readAsString();
-        final List<LD> importedLd = LD.decodeImport(text);
-        for (LD ld in importedLd) {
-          final body = jsonEncode(LD.toMap(ld));
-          final response2 =
-              await api.connectApi("/lectio_divina", "post", body);
-          if (response2.status == 200) {
-            ld.id = response2.data['id'];
-          }
-        }
-        globals.MyLd.addAll(importedLd);
-        final prefs = await SharedPreferences.getInstance();
-        final String encodedData = LD.encode(globals.MyLd);
-        await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
-        Fluttertoast.showToast(
-            msg: "LD berhasil di Import",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        setState(() {
-          globals.currentIndex = 0;
-        });
-        print(encodedData);
-      } catch (e) {
-        print("Couldn't read file");
-      }
-    } else {}
+    return validation;
   }
 
   //DRAWER DI ALKITAB HARUS DI NAVIGATOR PUSH UNTUK PINDAH PAGE TIDAK BISA NAVIGATOR POP

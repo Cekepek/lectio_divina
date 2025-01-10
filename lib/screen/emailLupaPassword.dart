@@ -64,6 +64,22 @@ class EmailLupaPasswordState extends State<EmailLupaPassword> {
     super.initState();
   }
 
+  void kirimEmail() async {
+    String emailKirim = email.text;
+    final response =
+        await api.connectApi("/forgotPassword/'$emailKirim'", "get", null);
+    if (response.status == 200) {
+      if (response.message == 'berhasil') {
+      } else {
+        setState(() {
+          // error_login = "Username atau password salah";
+        });
+      }
+    } else {
+      throw Exception('Failed to read API');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +132,7 @@ class EmailLupaPasswordState extends State<EmailLupaPassword> {
                   child: InkWell(
                     onTap: () {
                       if (emailErrorText == "") {
-                        print("VALIDDDDDD");
+                        kirimEmail();
                       }
                     },
                     child: Container(

@@ -57,10 +57,23 @@ class _RegisterState extends State<Register> {
     isObscuredRepeatPassword = true;
   }
 
+  bool isEmailValid(String email) {
+    return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
+  }
+
   void createAccount() async {
-    if (username.isEmpty || password.isEmpty || name.isEmpty) {
+    if (username.isEmpty ||
+        password.isEmpty ||
+        name.isEmpty ||
+        email.text.isEmpty ||
+        noHp.text.isEmpty) {
       setState(() {
-        error_register = "Username/Password/Nama tidak boleh kosong";
+        error_register =
+            "Username/Password/Nama/Email/No HP tidak boleh kosong";
+      });
+    } else if (!isEmailValid(email.text)) {
+      setState(() {
+        error_register = "Email tidak Valid";
       });
     } else {
       if (repeat_password == password) {
@@ -174,6 +187,7 @@ class _RegisterState extends State<Register> {
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   controller: email,
+                  keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
                     setState(() {
                       error_register = "";
@@ -188,6 +202,7 @@ class _RegisterState extends State<Register> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
+                  keyboardType: TextInputType.phone,
                   controller: noHp,
                   onChanged: (value) {
                     setState(() {
