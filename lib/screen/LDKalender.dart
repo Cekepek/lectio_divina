@@ -120,7 +120,7 @@ class _LDKalenderState extends State<LDKalender> {
         listTanggal.add(_removeTime(ld.tanggal));
       }
     }
-    listTanggal.sort((a, b) => b.compareTo(a));
+    listTanggal.sort((a, b) => a.compareTo(b));
     return listTanggal;
   }
 
@@ -163,6 +163,7 @@ class _LDKalenderState extends State<LDKalender> {
                           onTap: () {
                             _goToPreviousMonth();
                             selectedDay = focusedDay;
+                            _selectedLD.value = _getLDForDay(selectedDay);
                             monthLd = _getLDForMonth(
                                 focusedDay.year, focusedDay.month);
                             listTanggalLd = getTanggalLd(monthLd);
@@ -182,6 +183,7 @@ class _LDKalenderState extends State<LDKalender> {
                           onTap: () {
                             _goToNextMonth();
                             selectedDay = focusedDay;
+                            _selectedLD.value = _getLDForDay(selectedDay);
                             monthLd = _getLDForMonth(
                                 focusedDay.year, focusedDay.month);
                             listTanggalLd = getTanggalLd(monthLd);
@@ -221,6 +223,13 @@ class _LDKalenderState extends State<LDKalender> {
                       ),
                     ),
                     focusedDay: focusedDay,
+                    onPageChanged: (_focusedDay) {
+                      setState(() {
+                        focusedDay = _focusedDay;
+                        selectedDay = _focusedDay;
+                        _selectedLD.value = _getLDForDay(selectedDay);
+                      });
+                    },
                     firstDay: DateTime.utc(2020, 5, 15),
                     lastDay: DateTime.utc(2030, 5, 15),
                     onDaySelected: _onDaySelected,
@@ -235,7 +244,6 @@ class _LDKalenderState extends State<LDKalender> {
                 child: TextButton(
                   onPressed: () {
                     setState(() {
-                      focusedDay = selectedDay;
                       monthLd =
                           _getLDForMonth(focusedDay.year, focusedDay.month);
                       listTanggalLd = getTanggalLd(monthLd);
@@ -382,7 +390,6 @@ class _LDKalenderState extends State<LDKalender> {
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                    
                                                                     value[index].judul !=
                                                                             ""
                                                                         ? value[index]

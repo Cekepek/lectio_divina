@@ -198,35 +198,11 @@ class _AlkitabState extends State<Alkitab> {
               if (ldTerimport.value == jumlahLd) {
                 Navigator.of(context).pop();
               }
-              toastImportLD();
+              toastImportLD("tambah");
             } else {
               if (action == "tambah") {
-                ValueNotifier<int> ldTerimport = ValueNotifier<int>(0);
-                progressDialog(context, ldTerimport, jumlahLd);
-                for (LD ld in importedLd) {
-                  final body = jsonEncode(LD.toMap(ld));
-                  final response2 =
-                      await api.connectApi("/lectio_divina", "post", body);
-                  if (response2.status == 200) {
-                    ld.id = response2.data['id'];
-                  }
-                  ldTerimport.value += 1;
-                  if (ldTerimport.value == jumlahLd) {
-                    Navigator.of(context).pop();
-                  }
-                }
-                globals.MyLd.addAll(importedLd);
-                final prefs = await SharedPreferences.getInstance();
-                final String encodedData = LD.encode(globals.MyLd);
-                await prefs.setString(
-                    'lds_data_${globals.userLogin.id}', encodedData);
-
-                toastImportLD();
-              } else if (action == "tidak") {
                 List<LD> ldUpload = [];
-
                 ValueNotifier<int> ldTerimport = ValueNotifier<int>(0);
-
                 progressDialog(context, ldTerimport, jumlahLd - jumlahSama);
                 for (LD ld in importedLd) {
                   bool ldSama = false;
@@ -257,9 +233,13 @@ class _AlkitabState extends State<Alkitab> {
                 if (ldTerimport.value == jumlahLd - jumlahSama) {
                   Navigator.of(context).pop();
                 }
-                toastImportLD();
+                toastImportLD("tambah");
+              } else {
+                toastImportLD("batal");
               }
             }
+          } else {
+            toastImportLD("batal");
           }
           setState(() {
             globals.currentIndex = 0;
@@ -325,9 +305,11 @@ class _AlkitabState extends State<Alkitab> {
     );
   }
 
-  void toastImportLD() {
+  void toastImportLD(String status) {
     Fluttertoast.showToast(
-        msg: "LD berhasil di Import",
+        msg: status == "tambah"
+            ? "LD berhasil di Import"
+            : "Import LD dibatalkan",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -359,7 +341,13 @@ class _AlkitabState extends State<Alkitab> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(width: 1, color: Colors.black),
                     ),
-                    child: Text("BATALKAN")),
+                    child: Text(
+                      "BATALKAN",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
               ),
               MaterialButton(
                 onPressed: () {
@@ -375,6 +363,7 @@ class _AlkitabState extends State<Alkitab> {
                     child: Text(
                       "OK",
                       style: TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     )),
@@ -384,49 +373,87 @@ class _AlkitabState extends State<Alkitab> {
 
   Future<String> importSamaDialog(int jumlahSama, int jumlahLd) async {
     String tambah = "tidak";
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Terdapat $jumlahSama dari $jumlahLd LD yang ingin diimport sama, apakah Anda ingin tetap menambahkan LD tersebut ?',
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        actions: [
-          MaterialButton(
-            onPressed: () {
-              tambah = "tidak";
-              Navigator.pop(context);
-            },
-            child: Container(
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black),
+    jumlahSama == jumlahLd
+        ? await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(
+                'Terdapat $jumlahSama dari $jumlahLd LD yang ingin diimport sudah tersimpan dalam perangkat, tidak ada LD yang dapat diimport',
+                textAlign: TextAlign.center,
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                MaterialButton(
+                  onPressed: () {
+                    tambah = "ok";
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // border: Border.all(width: 1, color: Colors.grey),
+                          color: Theme.of(context).primaryColor),
+                      child: Text(
+                        "OK",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
                 ),
-                child: Text("TIDAK")),
-          ),
-          MaterialButton(
-            onPressed: () {
-              tambah = "tambah";
-              Navigator.pop(context);
-            },
-            child: Container(
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    // border: Border.all(width: 1, color: Colors.grey),
-                    color: Theme.of(context).primaryColor),
-                child: Text(
-                  "YA",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          )
+        : await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(
+                'Terdapat $jumlahSama dari $jumlahLd LD yang ingin diimport sudah tersimpan dalam perangkat, apakah Anda ingin menambahkan LD yang belum ada ?',
+                textAlign: TextAlign.center,
+              ),
+              actionsAlignment: MainAxisAlignment.spaceBetween,
+              actions: [
+                MaterialButton(
+                  onPressed: () {
+                    tambah = "tidak";
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(width: 1, color: Colors.black),
+                      ),
+                      child: Text(
+                        "TIDAK",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    tambah = "tambah";
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // border: Border.all(width: 1, color: Colors.grey),
+                          color: Theme.of(context).primaryColor),
+                      child: Text(
+                        "YA",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ),
+              ],
+            ),
+          );
     return tambah;
   }
 
@@ -444,6 +471,7 @@ class _AlkitabState extends State<Alkitab> {
           MaterialButton(
             onPressed: () {
               Navigator.pop(context);
+              toastImportLD("batal");
             },
             child: Container(
                 padding: EdgeInsets.all(15),
@@ -451,7 +479,12 @@ class _AlkitabState extends State<Alkitab> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(width: 1, color: Colors.black),
                 ),
-                child: Text("TIDAK")),
+                child: Text(
+                  "TIDAK",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
           ),
           MaterialButton(
             onPressed: () {
@@ -467,6 +500,7 @@ class _AlkitabState extends State<Alkitab> {
                 child: Text(
                   "YA",
                   style: TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 )),
@@ -496,7 +530,12 @@ class _AlkitabState extends State<Alkitab> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(width: 1, color: Colors.black),
                   ),
-                  child: Text("TIDAK")),
+                  child: Text(
+                    "TIDAK",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
             ),
             MaterialButton(
               onPressed: () {
@@ -512,6 +551,7 @@ class _AlkitabState extends State<Alkitab> {
                   child: Text(
                     "YA",
                     style: TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   )),
@@ -541,7 +581,12 @@ class _AlkitabState extends State<Alkitab> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(width: 1, color: Colors.black),
                 ),
-                child: Text("TIDAK")),
+                child: Text(
+                  "TIDAK",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
           ),
           MaterialButton(
             onPressed: () {
@@ -557,6 +602,7 @@ class _AlkitabState extends State<Alkitab> {
                 child: Text(
                   "YA",
                   style: TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 )),
