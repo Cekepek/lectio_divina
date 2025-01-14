@@ -67,9 +67,10 @@ class EmailLupaPasswordState extends State<EmailLupaPassword> {
   void kirimEmail() async {
     String emailKirim = email.text;
     final response =
-        await api.connectApi("/forgotPassword/'$emailKirim'", "get", null);
+        await api.connectApi("/email/$emailKirim", "post", null);
     if (response.status == 200) {
       if (response.message == 'berhasil') {
+        
       } else {
         setState(() {
           // error_login = "Username atau password salah";
