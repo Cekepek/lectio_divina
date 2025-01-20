@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/emailLupaPassword.dart';
 import 'package:lectio_divina/screen/register.dart';
@@ -27,6 +28,7 @@ class MyLogin extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Login(),
+      builder: EasyLoading.init(),
     );
   }
 }

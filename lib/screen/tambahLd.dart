@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ayat.dart';
@@ -198,45 +199,45 @@ class _TambahLdState extends State<TambahLd>
     screenPickerColor = Colors.blue; // Material blue.
     dialogPickerColor = Colors.red; // Material red.
     dialogSelectColor = const Color(0xFFA239CA); // A purple color.
-    animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
-    animationController.addStatusListener((status) async {
-      if (status == AnimationStatus.completed) {
-        LD ldBaru = LD(
-            id: idLd,
-            tanggal: globals.tanggalTerpilih,
-            judul: judul,
-            judul2: judul2,
-            ayat: ayat,
-            sabda: sabda,
-            sabdaBagiSaya: sabdaBagiSaya,
-            tanggapan: tanggapan,
-            tindakan: tindakan,
-            catatan: catatan,
-            hashtag: hashtag,
-            warna: screenPickerColor.value.toString(),
-            shareable: shareable,
-            selesai: selesai,
-            user_id: globals.userLogin.id,
-            statusUpload: statusUpload);
-        TambahLd(ldBaru);
-        globals.ayatDipilih.clear();
-        globals.currentIndex = 1;
-        Fluttertoast.showToast(
-            msg: "Berhasil membuat LD",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: "Lectio Divina",
-                    )));
-      }
-    });
+    // animationController =
+    //     AnimationController(vsync: this, duration: Duration(seconds: 3));
+    // animationController.addStatusListener((status) async {
+    //   if (status == AnimationStatus.completed) {
+    //     LD ldBaru = LD(
+    //         id: idLd,
+    //         tanggal: globals.tanggalTerpilih,
+    //         judul: judul,
+    //         judul2: judul2,
+    //         ayat: ayat,
+    //         sabda: sabda,
+    //         sabdaBagiSaya: sabdaBagiSaya,
+    //         tanggapan: tanggapan,
+    //         tindakan: tindakan,
+    //         catatan: catatan,
+    //         hashtag: hashtag,
+    //         warna: screenPickerColor.value.toString(),
+    //         shareable: shareable,
+    //         selesai: selesai,
+    //         user_id: globals.userLogin.id,
+    //         statusUpload: statusUpload);
+    //     TambahLd(ldBaru);
+    //     globals.ayatDipilih.clear();
+    //     globals.currentIndex = 1;
+    //     Fluttertoast.showToast(
+    //         msg: "Berhasil membuat LD",
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         textColor: Colors.white,
+    //         fontSize: 16.0);
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => MyHomePage(
+    //                   title: "Lectio Divina",
+    //                 )));
+    //   }
+    // });
     judul = "";
     judul2 = "";
     ayat = "";
@@ -349,6 +350,22 @@ class _TambahLdState extends State<TambahLd>
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
     await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+    globals.ayatDipilih.clear();
+    globals.currentIndex = 1;
+    await EasyLoading.showSuccess("LD Berhasil Disimpan");
+    Fluttertoast.showToast(
+        msg: "Berhasil membuat LD",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyHomePage(
+                  title: "Lectio Divina",
+                )));
   }
 
   void uploadLd() async {
@@ -369,7 +386,7 @@ class _TambahLdState extends State<TambahLd>
       'shareable': shareable ? 1 : 0,
       'status': selesai ? 1 : 0,
       'id_user': globals.userLogin.id,
-      'statusUpload': statusUpload ? 1 : 0,
+      'statusUpload': 1,
     });
     // final response = await http.post(
     //     Uri.parse("http://sw.crossnet.co.id:5868/lectio_divina"),
@@ -380,6 +397,7 @@ class _TambahLdState extends State<TambahLd>
         statusUpload = true;
         idLd = response.data['id'];
       });
+      print(statusUpload);
       print("KEUPLOAD ");
 
       print(response.data['id']);
@@ -401,10 +419,34 @@ class _TambahLdState extends State<TambahLd>
   }
 
   // Tambahkan satu event ke daftar di SharedPreferences
-  Future<void> TambahLd(LD ld) async {
+  // Future<void> TambahLd(LD ld) async {
+  //   final lds = await loadLd();
+  //   lds.add(ld);
+  //   globals.MyLd.add(ld);
+  //   await saveLd(lds);
+  // }
+
+  Future<void> TambahLd() async {
+    LD ldBaru = LD(
+        id: idLd,
+        tanggal: globals.tanggalTerpilih,
+        judul: judul,
+        judul2: judul2,
+        ayat: ayat,
+        sabda: sabda,
+        sabdaBagiSaya: sabdaBagiSaya,
+        tanggapan: tanggapan,
+        tindakan: tindakan,
+        catatan: catatan,
+        hashtag: hashtag,
+        warna: screenPickerColor.value.toString(),
+        shareable: shareable,
+        selesai: selesai,
+        user_id: globals.userLogin.id,
+        statusUpload: statusUpload);
     final lds = await loadLd();
-    lds.add(ld);
-    globals.MyLd.add(ld);
+    lds.add(ldBaru);
+    globals.MyLd.add(ldBaru);
     await saveLd(lds);
   }
 
@@ -467,10 +509,13 @@ class _TambahLdState extends State<TambahLd>
                   child: Text("TIDAK")),
             ),
             MaterialButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
+                await EasyLoading.show(
+                    status: "Menyimpan LD",
+                    maskType: EasyLoadingMaskType.black);
                 uploadLd();
-                ldTersimpan();
+                TambahLd();
               },
               child: Container(
                   padding: EdgeInsets.all(15),
@@ -771,10 +816,14 @@ class _TambahLdState extends State<TambahLd>
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               simpanClicked == true;
+                              await EasyLoading.show(
+                                  status: "Menyimpan LD",
+                                  maskType: EasyLoadingMaskType.black);
                               uploadLd();
-                              ldTersimpan();
+                              TambahLd();
+                              // ldTersimpan();
                             },
                             child: Container(
                               height: 40,

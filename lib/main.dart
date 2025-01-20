@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -87,6 +88,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: Get.navigatorKey,
       theme: theme.currentTheme,
       home: const MyHomePage(title: "Lectio Divina"),
+      builder: EasyLoading.init(),
     );
   }
 }
