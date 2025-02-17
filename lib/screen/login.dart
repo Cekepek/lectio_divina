@@ -14,11 +14,6 @@ class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
   @override
   Widget build(BuildContext context) {
-    // final theme = Provider.of<ThemeModel>(context);
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    //   DeviceOrientation.portraitDown,
-    // ]);
     return MaterialApp(
       title: 'LECTIO DIVINA',
       theme: ThemeData(
