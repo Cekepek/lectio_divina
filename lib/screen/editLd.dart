@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
@@ -10,6 +10,7 @@ import 'package:lectio_divina/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/model/api.dart' as api;
+import 'package:flex_color_picker/flex_color_picker.dart' as ColorPicker;
 
 class EditLd extends StatefulWidget {
   const EditLd({super.key});
@@ -102,7 +103,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
         tindakan: tindakan.text,
         catatan: catatan.text,
         hashtag: hashtag.text,
-        warna: warna.toString(),
+        warna: warna.value.toString(),
         shareable: shareable,
         selesai: selesai,
         user_id: globals.userLogin.id,
@@ -331,38 +332,56 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
             }));
   }
 
-  final List<Color> _colors = [
-    Color.fromRGBO(255, 0, 0, 1),
-    Color.fromRGBO(255, 255, 0, 1),
-    Color.fromRGBO(0, 255, 0, 1),
-    Color.fromRGBO(0, 0, 255, 1),
-    // Colors.orange,
-    // Colors.purple,
-  ];
-  void colorPicker(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text('Pick Your Color'),
-            content: TextButton(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BlockPicker(
-                      pickerColor: warna,
-                      availableColors: _colors,
-                      onColorChanged: (color) => setState(() {
-                            warna = color;
-                            editedLd.warna = color.toString();
-                          })),
-                  Text(
-                    'SELECT',
-                    style: TextStyle(fontSize: 20),
+  void colorPicker(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  child: ColorPicker.ColorPicker(
+                    enableShadesSelection: false,
+                    // Use the screenPickerColor as start and active color.
+                    color: warna,
+                    // Update the screenPickerColor using the callback.
+                    onColorChanged: (Color color) => setState(() {
+                      warna = color;
+                      print(warna.value.toString());
+                    }),
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    heading: Text(
+                      'Pilih Warna',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                   ),
-                ],
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ));
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).primaryColor),
+                        child: Text(
+                          "OK",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  ),
+                )
+              ],
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(

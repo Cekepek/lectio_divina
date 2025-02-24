@@ -41,6 +41,8 @@ class _DetailLdState extends State<DetailLd> {
     for (LD ld in globals.MyLd) {
       if (ld.id == globals.idLdDetail) {
         detailLd = ld;
+        print(detailLd.id);
+        print(globals.idLdDetail);
       }
     }
   }

@@ -32,7 +32,7 @@ class _TambahLdState extends State<TambahLd>
   TextEditingController controllerSabda = TextEditingController(text: "");
   TextEditingController controllerJudul = TextEditingController(text: "");
   late AnimationController animationController;
-  late Color screenPickerColor;
+  // late Color screenPickerColor;
   late Color dialogPickerColor;
   late Color dialogSelectColor;
 
@@ -46,7 +46,7 @@ class _TambahLdState extends State<TambahLd>
   late String tindakan;
   late String catatan;
   late String hashtag;
-  late String warna;
+  late Color warna;
   int idLd = 0;
   bool selesai = false;
   bool shareable = false;
@@ -108,11 +108,11 @@ class _TambahLdState extends State<TambahLd>
                   child: ColorPicker.ColorPicker(
                     enableShadesSelection: false,
                     // Use the screenPickerColor as start and active color.
-                    color: screenPickerColor,
+                    color: warna,
                     // Update the screenPickerColor using the callback.
                     onColorChanged: (Color color) => setState(() {
-                      screenPickerColor = color;
-                      print(screenPickerColor.value.toString());
+                      warna = color;
+                      print(warna.value.toString());
                     }),
                     width: 44,
                     height: 44,
@@ -196,7 +196,7 @@ class _TambahLdState extends State<TambahLd>
     // TODO: implement initState
     super.initState();
 
-    screenPickerColor = Colors.blue; // Material blue.
+    warna = Colors.blue; // Material blue.
     dialogPickerColor = Colors.red; // Material red.
     dialogSelectColor = const Color(0xFFA239CA); // A purple color.
     // animationController =
@@ -337,7 +337,7 @@ class _TambahLdState extends State<TambahLd>
     tindakan = "";
     catatan = "";
     hashtag = "";
-    warna = Color.fromRGBO(255, 0, 0, 1).value.toString();
+    warna = Colors.blue;
   }
 
   @override
@@ -382,7 +382,7 @@ class _TambahLdState extends State<TambahLd>
       'tindakan': tindakan,
       'hashtag': hashtag,
       'catatan': catatan,
-      'warna_tagline': warna,
+      'warna_tagline': warna.value.toString(),
       'shareable': shareable ? 1 : 0,
       'status': selesai ? 1 : 0,
       'id_user': globals.userLogin.id,
@@ -439,7 +439,7 @@ class _TambahLdState extends State<TambahLd>
         tindakan: tindakan,
         catatan: catatan,
         hashtag: hashtag,
-        warna: screenPickerColor.value.toString(),
+        warna: warna.value.toString(),
         shareable: shareable,
         selesai: selesai,
         user_id: globals.userLogin.id,
@@ -782,8 +782,7 @@ class _TambahLdState extends State<TambahLd>
                             child: Row(children: [
                               Container(
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: screenPickerColor),
+                                    shape: BoxShape.circle, color: warna),
                                 width: 24,
                                 height: 24,
                               ),

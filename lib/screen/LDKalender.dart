@@ -311,7 +311,6 @@ class _LDKalenderState extends State<LDKalender> {
                                                   setState(() {
                                                     globals.idLdDetail =
                                                         value[index].id;
-                                                    print(globals.idLdDetail);
                                                     globals.idLdEdit =
                                                         value[index].id;
                                                   });
