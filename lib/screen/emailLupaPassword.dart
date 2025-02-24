@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lectio_divina/model/api.dart' as api;
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/screen/login.dart';
@@ -66,17 +67,17 @@ class EmailLupaPasswordState extends State<EmailLupaPassword> {
 
   void kirimEmail() async {
     String emailKirim = email.text;
-    final response =
-        await api.connectApi("/forgotPassword/'$emailKirim'", "get", null);
+    final response = await api.connectApi("/email/$emailKirim", "post", null);
     if (response.status == 200) {
       if (response.message == 'berhasil') {
+        await EasyLoading.showSuccess("Silahkan Cek Email Anda");
+        Navigator.pop(context);
       } else {
-        setState(() {
-          // error_login = "Username atau password salah";
-        });
+        setState(() {});
       }
     } else {
-      throw Exception('Failed to read API');
+      await EasyLoading.showError("Email tidak ditemukan");
+      // throw Exception('Failed to read API');
     }
   }
 
@@ -130,8 +131,11 @@ class EmailLupaPasswordState extends State<EmailLupaPassword> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (emailErrorText == "") {
+                        await EasyLoading.show(
+                            status: "Sedang mengirim Email",
+                            maskType: EasyLoadingMaskType.black);
                         kirimEmail();
                       }
                     },

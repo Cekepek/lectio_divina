@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:lectio_divina/main.dart';
 import 'package:lectio_divina/screen/emailLupaPassword.dart';
 import 'package:lectio_divina/screen/register.dart';
@@ -13,11 +14,6 @@ class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
   @override
   Widget build(BuildContext context) {
-    // final theme = Provider.of<ThemeModel>(context);
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    //   DeviceOrientation.portraitDown,
-    // ]);
     return MaterialApp(
       title: 'LECTIO DIVINA',
       theme: ThemeData(
@@ -27,6 +23,7 @@ class MyLogin extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Login(),
+      builder: EasyLoading.init(),
     );
   }
 }
