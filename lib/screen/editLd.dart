@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 // import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -108,29 +109,29 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
         selesai: selesai,
         user_id: globals.userLogin.id,
         statusUpload: statusUpload);
-    animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
-    animationController.addStatusListener((status) async {
-      if (status == AnimationStatus.completed) {
-        editLd.selesai = selesai;
-        EditLd(editedLd);
-        globals.ayatDipilih.clear();
-        Fluttertoast.showToast(
-            msg: "LD berhasil di update",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        globals.currentIndex = 1;
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: "Lectio Divina",
-                    )));
-      }
-    });
+    // animationController =
+    //     AnimationController(vsync: this, duration: Duration(seconds: 3));
+    // animationController.addStatusListener((status) async {
+    //   if (status == AnimationStatus.completed) {
+    //     editLd.selesai = selesai;
+    //     // EditLd(editedLd);
+    //     globals.ayatDipilih.clear();
+    //     Fluttertoast.showToast(
+    //         msg: "LD berhasil di update",
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         textColor: Colors.white,
+    //         fontSize: 16.0);
+    //     globals.currentIndex = 1;
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => MyHomePage(
+    //                   title: "Lectio Divina",
+    //                 )));
+    //   }
+    // });
   }
 
   @override
@@ -201,15 +202,30 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = LD.encode(lds);
     await prefs.setString('lds_data_${globals.userLogin.id}', encodedData);
+    globals.currentIndex = 1;
+    await EasyLoading.showSuccess("LD Berhasil Diedit");
+    Fluttertoast.showToast(
+        msg: "Berhasil mengedit LD",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyHomePage(
+                  title: "Lectio Divina",
+                )));
   }
 
-  Future<void> EditLd(LD ld) async {
+  Future<void> EditLd() async {
     final lds = await loadLd();
     int indexLd = 0;
     for (LD savedLd in lds) {
-      if (savedLd.id == ld.id) {
+      if (savedLd.id == editedLd.id) {
         print(savedLd.id);
-        lds[indexLd] = ld;
+        lds[indexLd] = editedLd;
         await saveLd(lds);
         break;
       }
@@ -278,10 +294,14 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                   child: Text("TIDAK")),
             ),
             MaterialButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context);
+                simpanClicked == true;
+                await EasyLoading.show(
+                    status: 'Menyimpan LD',
+                    maskType: EasyLoadingMaskType.black);
                 uploadLd(editedLd);
-                ldTersimpan();
+                EditLd();
               },
               child: Container(
                   padding: EdgeInsets.all(15),
@@ -768,10 +788,14 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               simpanClicked == true;
-                              uploadLd(editLd);
-                              ldTersimpan();
+                              await EasyLoading.show(
+                                  status: 'Menyimpan LD',
+                                  maskType: EasyLoadingMaskType.black);
+                              uploadLd(editedLd);
+                              EditLd();
+                              // ldTersimpan();
                             },
                             child: Container(
                               height: 40,

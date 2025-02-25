@@ -19,6 +19,9 @@ class PilihAyat extends StatefulWidget {
 class _PilihAyatState extends State<PilihAyat> {
   @override
   Widget build(BuildContext context) {
+    final filteredAyat = globals.kitab[widget.kitab].pasal[widget.bab].ayat
+        .where((ayat) => ayat.tipe == "c")
+        .toList();
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -109,8 +112,7 @@ class _PilihAyatState extends State<PilihAyat> {
                   child: Column(
                     children: [
                       GridView.builder(
-                          itemCount: globals.kitab[widget.kitab]
-                              .pasal[widget.bab].ayat.length,
+                          itemCount: filteredAyat.length,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           gridDelegate:
@@ -123,15 +125,13 @@ class _PilihAyatState extends State<PilihAyat> {
                                       globals.kitab[widget.kitab].id;
                                   globals.bab = globals
                                       .kitab[widget.kitab].pasal[widget.bab].id;
-                                  globals.ayat = globals.kitab[widget.kitab]
-                                      .pasal[widget.bab].ayat[index].nomor;
+                                  globals.ayat = filteredAyat[index].nomor;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Alkitab()));
                                 },
-                                child: Text(globals.kitab[widget.kitab]
-                                    .pasal[widget.bab].ayat[index].nomor));
+                                child: Text(filteredAyat[index].nomor));
                           })
                     ],
                   ),

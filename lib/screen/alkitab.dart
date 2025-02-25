@@ -54,7 +54,7 @@ class _AlkitabState extends State<Alkitab> {
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
-    controller.scrollToIndex(int.parse(globals.ayat) - 1,
+    controller.scrollToIndex(int.parse(globals.ayat),
         preferPosition: AutoScrollPosition.begin);
   }
 
