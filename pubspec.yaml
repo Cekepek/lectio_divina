@@ -1,5 +1,5 @@
 name: lectio_divina
-description: "A new Flutter project."
+description: "Lectio Divina"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -52,7 +52,7 @@ dependencies:
   flutter_native_splash: ^2.2.16
   flex_color_picker: ^3.6.0
   flutter_easyloading: ^3.0.5
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,7 +64,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
-
 
 flutter_native_splash:
   color: "#ffffff"

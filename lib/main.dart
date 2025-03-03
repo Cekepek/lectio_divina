@@ -743,7 +743,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onTap: () {
                 setState(() {
-                  // titleHome = "Alkitab";
+                  titleHome = "Alkitab";
                   // globals.currentIndex = 1;
                   globals.namaKitab = 0;
                   globals.bab = 0;
