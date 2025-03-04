@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:lectio_divina/class/ld.dart';
 import 'package:lectio_divina/globals.dart' as globals;
 import 'package:lectio_divina/main.dart';
+import 'package:lectio_divina/screen/lihatAlkitab.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lectio_divina/model/api.dart' as api;
@@ -517,6 +518,39 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           hintText: 'Masukkan topik yang dibahas'),
                     )
                   ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LihatAlkitab()));
+                  },
+                  child: Container(
+                    width: 150,
+                    margin: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.book_outlined,
+                          color: Colors.white,
+                        ),
+                        Text("Baca Alkitab",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               Padding(

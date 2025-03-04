@@ -229,7 +229,7 @@ class EditProfileState extends State<EditProfile> {
                               obscuredRepeat = !obscuredRepeat;
                             });
                           })),
-                      labelText: label,
+                      labelText: "Repeat Password",
                     ),
                   ),
                 )
