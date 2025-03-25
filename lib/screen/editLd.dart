@@ -93,23 +93,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     shareable = editLd.shareable;
     warna = Color(int.parse(editLd.warna));
     selesai = editLd.selesai;
-    editedLd = LD(
-        id: editLd.id,
-        tanggal: tanggalLd,
-        judul: judul.text,
-        judul2: judul2.text,
-        ayat: ayat.text,
-        sabda: sabda.text,
-        sabdaBagiSaya: sabdaBagiSaya.text,
-        tanggapan: tanggapan.text,
-        tindakan: tindakan.text,
-        catatan: catatan.text,
-        hashtag: hashtag.text,
-        warna: warna.value.toString(),
-        shareable: shareable,
-        selesai: selesai,
-        user_id: globals.userLogin.id,
-        statusUpload: statusUpload);
+    editedLd = editLd;
     // animationController =
     //     AnimationController(vsync: this, duration: Duration(seconds: 3));
     // animationController.addStatusListener((status) async {
@@ -161,7 +145,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
     return [];
   }
 
-  void uploadLd(LD ld) async {
+  Future<void> uploadLd(LD ld) async {
     final body = jsonEncode({
       'id': ld.id,
       'tanggal': DateFormat('yyyy-MM-dd HH:mm:ss').format(ld.tanggal),
@@ -301,7 +285,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                 await EasyLoading.show(
                     status: 'Menyimpan LD',
                     maskType: EasyLoadingMaskType.black);
-                uploadLd(editedLd);
+                await uploadLd(editedLd);
                 EditLd();
               },
               child: Container(
@@ -478,9 +462,10 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                         keyboardUsed = false;
                       }
                       print(keyboardUsed);
+
+                      judul.text = value;
+                      editedLd.judul = value;
                     });
-                    judul.text = value;
-                    editedLd.judul = value;
                   },
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -505,9 +490,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                             keyboardUsed = false;
                           }
                           print(keyboardUsed);
+                          judul2.text = value;
+                          editedLd.judul2 = value;
                         });
-                        judul2.text = value;
-                        editedLd.judul2 = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -565,9 +550,10 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                       } else {
                         keyboardUsed = false;
                       }
+
+                      ayat.text = value;
+                      editedLd.ayat = value;
                     });
-                    ayat.text = value;
-                    editedLd.ayat = value;
                   },
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -591,9 +577,10 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+
+                          sabda.text = value;
+                          editedLd.sabda = value;
                         });
-                        sabda.text = value;
-                        editedLd.sabda = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -622,9 +609,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+                          sabdaBagiSaya.text = value;
+                          editedLd.sabdaBagiSaya = value;
                         });
-                        sabdaBagiSaya.text = value;
-                        editedLd.sabdaBagiSaya = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -653,9 +640,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+                          tanggapan.text = value;
+                          editedLd.tanggapan = value;
                         });
-                        tanggapan.text = value;
-                        editedLd.tanggapan = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -684,9 +671,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+                          tindakan.text = value;
+                          editedLd.tindakan = value;
                         });
-                        tindakan.text = value;
-                        editedLd.tindakan = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -735,9 +722,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+                          catatan.text = value;
+                          editedLd.catatan = value;
                         });
-                        catatan.text = value;
-                        editedLd.catatan = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -758,9 +745,9 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                           } else {
                             keyboardUsed = false;
                           }
+                          hashtag.text = value;
+                          editedLd.hashtag = value;
                         });
-                        hashtag.text = value;
-                        editedLd.hashtag = value;
                       },
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -827,7 +814,7 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                               await EasyLoading.show(
                                   status: 'Menyimpan LD',
                                   maskType: EasyLoadingMaskType.black);
-                              uploadLd(editedLd);
+                              await uploadLd(editedLd);
                               EditLd();
                               // ldTersimpan();
                             },

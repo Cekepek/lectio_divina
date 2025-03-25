@@ -313,6 +313,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                         value[index].id;
                                                     globals.idLdEdit =
                                                         value[index].id;
+                                                    print(globals.idLdEdit);
                                                   });
                                                   value[index].selesai
                                                       ? Navigator.push(
@@ -446,6 +447,7 @@ class _LDKalenderState extends State<LDKalender> {
                                                                               1) {
                                                                             setState(() {
                                                                               globals.idLdEdit = value[index].id;
+                                                                              print(globals.idLdEdit);
                                                                             });
                                                                             Navigator.push(
                                                                               context,
@@ -626,6 +628,7 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
               setState(() {
                 globals.idLdDetail = ldHariIni[index].id;
                 globals.idLdEdit = ldHariIni[index].id;
+                print(globals.idLdEdit);
               });
               ldHariIni[index].selesai
                   ? Navigator.push(
@@ -718,6 +721,7 @@ class _ListViewLdBulananState extends State<ListViewLdBulanan> {
                                         setState(() {
                                           globals.idLdEdit =
                                               ldHariIni[index].id;
+                                          print(globals.idLdEdit);
                                         });
                                         Navigator.push(
                                           context,

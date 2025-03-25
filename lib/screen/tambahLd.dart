@@ -48,7 +48,7 @@ class _TambahLdState extends State<TambahLd>
   late String catatan;
   late String hashtag;
   late Color warna;
-  int idLd = 0;
+  int idLd = globals.MyLd[globals.MyLd.length - 1].id + 1;
   bool selesai = false;
   bool shareable = false;
   late String headerSabda;
@@ -369,7 +369,7 @@ class _TambahLdState extends State<TambahLd>
                 )));
   }
 
-  void uploadLd() async {
+  Future<void> uploadLd() async {
     final body = jsonEncode({
       'id': 0,
       'tanggal':
@@ -401,7 +401,7 @@ class _TambahLdState extends State<TambahLd>
       print(statusUpload);
       print("KEUPLOAD ");
 
-      print(response.data['id']);
+      print(idLd);
     } else {
       throw Exception('Failed to read API');
     }
@@ -446,6 +446,7 @@ class _TambahLdState extends State<TambahLd>
         user_id: globals.userLogin.id,
         statusUpload: statusUpload);
     final lds = await loadLd();
+    print("ID LD BARU : " + ldBaru.id.toString());
     lds.add(ldBaru);
     globals.MyLd.add(ldBaru);
     await saveLd(lds);
@@ -515,7 +516,8 @@ class _TambahLdState extends State<TambahLd>
                 await EasyLoading.show(
                     status: "Menyimpan LD",
                     maskType: EasyLoadingMaskType.black);
-                uploadLd();
+                await uploadLd();
+                print("TES ID " + idLd.toString());
                 TambahLd();
               },
               child: Container(
@@ -854,7 +856,7 @@ class _TambahLdState extends State<TambahLd>
                               await EasyLoading.show(
                                   status: "Menyimpan LD",
                                   maskType: EasyLoadingMaskType.black);
-                              uploadLd();
+                              await uploadLd();
                               TambahLd();
                               // ldTersimpan();
                             },
