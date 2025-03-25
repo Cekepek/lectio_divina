@@ -259,8 +259,8 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
-            Expanded(
-              flex: 2,
+            SizedBox(
+              width: double.infinity,
               child: MaterialButton(
                 onPressed: () {
                   globals.ayatDipilih.clear();
@@ -281,8 +281,8 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
                     child: Text("TIDAK")),
               ),
             ),
-            Expanded(
-              flex: 2,
+            SizedBox(
+              width: double.infinity,
               child: MaterialButton(
                 onPressed: () async {
                   Navigator.pop(context);

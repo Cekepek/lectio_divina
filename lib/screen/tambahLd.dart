@@ -491,47 +491,53 @@ class _TambahLdState extends State<TambahLd>
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
-            MaterialButton(
-              onPressed: () {
-                globals.ayatDipilih.clear();
-                globals.currentIndex = 1;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                              title: "Lectio Divina",
-                            )));
-              },
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1, color: Colors.black),
-                  ),
-                  child: Text("TIDAK")),
-            ),
-            MaterialButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                await EasyLoading.show(
-                    status: "Menyimpan LD",
-                    maskType: EasyLoadingMaskType.black);
-                await uploadLd();
-                print("TES ID " + idLd.toString());
-                TambahLd();
-              },
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
+            SizedBox(
+              width: double.infinity,
+              child: MaterialButton(
+                onPressed: () {
+                  globals.ayatDipilih.clear();
+                  globals.currentIndex = 1;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyHomePage(
+                                title: "Lectio Divina",
+                              )));
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      // border: Border.all(width: 1, color: Colors.grey),
-                      color: Theme.of(context).primaryColor),
-                  child: Text(
-                    "SIMPAN",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      border: Border.all(width: 1, color: Colors.black),
                     ),
-                  )),
+                    child: Text("TIDAK")),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: MaterialButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await EasyLoading.show(
+                      status: "Menyimpan LD",
+                      maskType: EasyLoadingMaskType.black);
+                  await uploadLd();
+                  print("TES ID " + idLd.toString());
+                  TambahLd();
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(width: 1, color: Colors.grey),
+                        color: Theme.of(context).primaryColor),
+                    child: Text(
+                      "SIMPAN",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ),
             ),
           ],
         ),
