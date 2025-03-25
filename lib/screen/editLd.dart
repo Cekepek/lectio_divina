@@ -259,47 +259,53 @@ class _EditLdState extends State<EditLd> with SingleTickerProviderStateMixin {
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
-            MaterialButton(
-              onPressed: () {
-                globals.ayatDipilih.clear();
-                globals.currentIndex = 1;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                              title: "Lectio Divina",
-                            )));
-              },
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1, color: Colors.black),
-                  ),
-                  child: Text("TIDAK")),
-            ),
-            MaterialButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                simpanClicked == true;
-                await EasyLoading.show(
-                    status: 'Menyimpan LD',
-                    maskType: EasyLoadingMaskType.black);
-                await uploadLd(editedLd);
-                EditLd();
-              },
-              child: Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
+            Expanded(
+              flex: 2,
+              child: MaterialButton(
+                onPressed: () {
+                  globals.ayatDipilih.clear();
+                  globals.currentIndex = 1;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyHomePage(
+                                title: "Lectio Divina",
+                              )));
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      // border: Border.all(width: 1, color: Colors.grey),
-                      color: Theme.of(context).primaryColor),
-                  child: Text(
-                    "SIMPAN",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      border: Border.all(width: 1, color: Colors.black),
                     ),
-                  )),
+                    child: Text("TIDAK")),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: MaterialButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  simpanClicked == true;
+                  await EasyLoading.show(
+                      status: 'Menyimpan LD',
+                      maskType: EasyLoadingMaskType.black);
+                  await uploadLd(editedLd);
+                  EditLd();
+                },
+                child: Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(width: 1, color: Colors.grey),
+                        color: Theme.of(context).primaryColor),
+                    child: Text(
+                      "SIMPAN",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ),
             ),
           ],
         ),
